@@ -1,6 +1,7 @@
 features:
-  helloworld:
-    system:
+  - name: helloworld
+    scopes:
+    - match: system
       documents:
-        - source: "README.md.liquid"
+        - source: "README.md.tpl"
           target: "README.md"

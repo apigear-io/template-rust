@@ -4,11 +4,9 @@ version: "0.1"
 
 layers:
   - name: goldenmaster
-    modules:
-      - testbed.module.yaml
+    inputs:
+      - testbed.simple.module.yaml
     output: ../test
-    blueprint:
-      package: ""
-      rules: ../rules.yaml
-      features:
-        - all
+    template: ..
+    force: true
+    features: [ "all" ]

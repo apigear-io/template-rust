@@ -1,19 +1,16 @@
-node_modules/
-*/**/node_modules/
-./lib/
-out/
-dist/
-coverage/
-*.log
-*.local.json
-tsconfig.tsbuildinfo
-demo/
+build/
 
-# do not add temporary test folder
-test/
+# ignore folder for local apigear copy
+bin
 
-# cross plattform line breaks shall be ignored
-* text=auto eol=lf
+# goldenmaster test folder
+test
+
+# objectapi tooling dependencies
+node_modules
+.air.toml
+tmp/
+tmp2/
 
 # OS generated files #
 ######################
