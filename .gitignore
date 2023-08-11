@@ -16,3 +16,7 @@ tmp2/
 ######################
 .DS_Store
 .DS_Store?
+
+# Rust specific
+**/Cargo.lock
+**/target/
