@@ -1,6 +1,6 @@
 schema: apigear.module/1.0
 name: tb.simple
-version: "1.0"
+version: "1.0.0"
 
 # test properties with simple types
 # test properties with arrays of simple types
@@ -12,6 +12,11 @@ version: "1.0"
 # test return with arrays of simple types
 
 interfaces:
+  - name: VoidInterface
+    operations:
+      - name: funcVoid
+    signals:
+      - name: sigVoid
   - name: SimpleInterface
     properties:
       - { name: propBool, type: bool }
@@ -23,17 +28,14 @@ interfaces:
       - { name: propFloat64, type: float64 }
       - { name: propString, type: string }
     operations:
-      - name: funcVoid
       - name: funcBool
         params:
           - { name: paramBool, type: bool }
-        return:
-          type: bool
+        return: { type: bool }
       - name: funcInt
         params:
           - { name: paramInt, type: int }
-        return:
-          type: int
+        return: { type: int }
       - name: funcInt32
         params:
           - { name: paramInt32, type: int32 }
@@ -45,8 +47,7 @@ interfaces:
       - name: funcFloat
         params:
           - { name: paramFloat, type: float }
-        return:
-          type: float
+        return: { type: float }
       - name: funcFloat32
         params:
           - { name: paramFloat32, type: float32 }
@@ -58,10 +59,8 @@ interfaces:
       - name: funcString
         params:
           - { name: paramString, type: string }
-        return:
-          type: string
+        return: { type: string }
     signals:
-      - name: sigVoid
       - name: sigBool
         params:
           - { name: paramBool, type: bool }
@@ -100,15 +99,11 @@ interfaces:
       - name: funcBool
         params:
           - { name: paramBool, type: bool, array: true }
-        return:
-          type: bool
-          array: true
+        return: { type: bool, array: true }
       - name: funcInt
         params:
           - { name: paramInt, type: int, array: true }
-        return:
-          type: int
-          array: true
+        return: { type: int, array: true }
       - name: funcInt32
         params:
           - { name: paramInt32, type: int32, array: true }
@@ -120,9 +115,7 @@ interfaces:
       - name: funcFloat
         params:
           - { name: paramFloat, type: float, array: true }
-        return:
-          type: float
-          array: true
+        return: { type: float, array: true }
       - name: funcFloat32
         params:
           - { name: paramFloat32, type: float32, array: true }
@@ -134,9 +127,8 @@ interfaces:
       - name: funcString
         params:
           - { name: paramString, type: string, array: true }
-        return:
-          type: string
-          array: true
+
+        return: { type: string, array: true }
     signals:
       - name: sigBool
         params:
@@ -195,4 +187,3 @@ interfaces:
           - { name: paramBool, type: bool }
         return:
           type: bool
-  - name: EmptyInterface

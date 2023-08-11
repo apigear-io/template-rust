@@ -1,7 +1,10 @@
 features:
-  - name: helloworld
+  - name: stubs
     scopes:
-    - match: system
+    - match: module
+      prefix: "{{snake .Module.Name}}/"
       documents:
-        - source: "README.md.tpl"
-          target: "README.md"
+        - source: "module/Cargo.toml.tpl"
+          target: "Cargo.toml"
+        - source: "module/src/lib.rs.tpl"
+          target: "src/lib.rs"
