@@ -1,6 +1,10 @@
 features:
   - name: stubs
     scopes:
+    - match: system
+      documents:
+        - source: "Cargo.toml.tpl"
+          target: "Cargo.toml"
     - match: module
       prefix: "{{snake .Module.Name}}/"
       documents:

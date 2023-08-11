@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "testbed2",
+    "tb_enum",
+    "tb_same1",
+    "tb_same2",
+    "tb_simple",
+    "testbed1",
+]
