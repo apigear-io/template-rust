@@ -1,0 +1,46 @@
+# This workflow will ensure that all changes to the goldenmaster are tested
+
+name: Technology Template Build Test
+
+on:
+  pull_request:
+    paths:
+      - 'goldenmaster/**'
+    branches: [main]
+
+jobs:
+  cargo_test:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { name: "Ubuntu Latest", os: ubuntu-latest }
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: stable
+            override: true
+            components: rustfmt, clippy
+      - name: Run cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --manifest-path goldenmaster/Cargo.toml
+      
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --manifest-path goldenmaster/Cargo.toml --all -- --check
+
+      - name: Run cargo test 
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --manifest-path goldenmaster/Cargo.toml
