@@ -1,4 +1,18 @@
 features:
+  - name: api
+    scopes:
+    - match: interface
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/src/api/interface.rs.tpl"
+          target: "src/api/{{snake .Interface.Name}}.rs"
+    - match: module
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/src/api/mod.rs.tpl"
+          target: "src/api/mod.rs"
+        - source: "module/src/api/data_structs.rs.tpl"
+          target: "src/api/data_structs.rs"
   - name: stubs
     scopes:
     - match: system

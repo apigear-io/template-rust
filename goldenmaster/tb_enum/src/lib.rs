@@ -1,4 +1,12 @@
-pub fn add(left: usize, right: usize) -> usize {
+pub use crate::api::data_structs;
+pub use crate::api::enum_interface;
+
+pub mod api;
+
+pub fn add(
+    left: usize,
+    right: usize,
+) -> usize {
     left + right
 }
 

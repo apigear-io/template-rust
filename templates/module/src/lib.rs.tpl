@@ -1,4 +1,15 @@
-pub fn add(left: usize, right: usize) -> usize {
+{{- if or .Module.Structs .Module.Enums -}}
+pub use crate::api::data_structs;{{ nl }}
+{{- end }}
+{{- range .Module.Interfaces -}}
+pub use crate::api::{{snake .Name}};{{ nl }}
+{{- end}}
+pub mod api;
+
+pub fn add(
+    left: usize,
+    right: usize,
+) -> usize {
     left + right
 }
 
