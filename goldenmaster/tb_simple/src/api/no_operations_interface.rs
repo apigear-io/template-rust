@@ -1,4 +1,4 @@
-pub trait NoOperationsInterface {
+pub trait NoOperationsInterfaceTrait {
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool;
     /// Sets the value of the propBool property.

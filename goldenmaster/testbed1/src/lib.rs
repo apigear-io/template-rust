@@ -1,8 +1,11 @@
-pub use crate::api::data_structs;
-pub use crate::api::struct_interface;
-pub use crate::api::struct_array_interface;
+//pub mod crate::api::data_structs;
+//pub mod crate::api::struct_interface;
+//pub mod crate::impl::struct_interface;
+//pub mod crate::api::struct_array_interface;
+//pub mod crate::impl::struct_array_interface;
 
 pub mod api;
+pub mod implementation;
 
 pub fn add(
     left: usize,

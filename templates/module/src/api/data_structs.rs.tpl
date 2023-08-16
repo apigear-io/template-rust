@@ -3,15 +3,19 @@
 {{- /* ***************************************************************** */ -}}
 // Enumerations
 {{- range $i, $e := .Module.Enums }}
+{{- $enum := . }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $class := .Name }}
 /// Enumeration {{$class}}
  {{- if .Description }}
 /// {{.Description}}
 {{- end }}
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default, PartialEq)]
 pub enum {{$class}}Enum {
 {{- range $idx, $elem := .Members }}
+    {{- if eq .Name $enum.Default.Name }}
+    #[default]
+    {{- end }}
     {{ upper1 .Name }} = {{ .Value }}, 
     {{- if .Description -}}
     /// .Description
@@ -37,7 +41,7 @@ pub enum {{$class}}Enum {
 {{- if .Description }}
 /// {{.Description}}
 {{- end }}
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq)]
 pub struct {{$class}} {
 {{- /* members */}}
 {{- range  .Fields }}

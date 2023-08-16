@@ -1,6 +1,7 @@
+use std::pin::Pin;
 use std::future::Future;
 
-pub trait SimpleArrayInterface {
+pub trait SimpleArrayInterfaceTrait {
     fn func_bool(
         &mut self,
         param_bool: &[bool],
@@ -10,7 +11,7 @@ pub trait SimpleArrayInterface {
     fn func_bool_async(
         &mut self,
         param_bool: &[bool],
-    ) -> dyn Future<Output = Vec<bool>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<bool>, ()>> + Unpin>>;
 
     fn func_int(
         &mut self,
@@ -21,7 +22,7 @@ pub trait SimpleArrayInterface {
     fn func_int_async(
         &mut self,
         param_int: &[i32],
-    ) -> dyn Future<Output = Vec<i32>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<i32>, ()>> + Unpin>>;
 
     fn func_int32(
         &mut self,
@@ -32,7 +33,7 @@ pub trait SimpleArrayInterface {
     fn func_int32_async(
         &mut self,
         param_int32: &[i32],
-    ) -> dyn Future<Output = Vec<i32>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<i32>, ()>> + Unpin>>;
 
     fn func_int64(
         &mut self,
@@ -43,7 +44,7 @@ pub trait SimpleArrayInterface {
     fn func_int64_async(
         &mut self,
         param_int64: &[i64],
-    ) -> dyn Future<Output = Vec<i64>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<i64>, ()>> + Unpin>>;
 
     fn func_float(
         &mut self,
@@ -54,7 +55,7 @@ pub trait SimpleArrayInterface {
     fn func_float_async(
         &mut self,
         param_float: &[f32],
-    ) -> dyn Future<Output = Vec<f32>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<f32>, ()>> + Unpin>>;
 
     fn func_float32(
         &mut self,
@@ -65,7 +66,7 @@ pub trait SimpleArrayInterface {
     fn func_float32_async(
         &mut self,
         param_float32: &[f32],
-    ) -> dyn Future<Output = Vec<f32>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<f32>, ()>> + Unpin>>;
 
     fn func_float64(
         &mut self,
@@ -76,7 +77,7 @@ pub trait SimpleArrayInterface {
     fn func_float64_async(
         &mut self,
         param_float: &[f64],
-    ) -> dyn Future<Output = Vec<f64>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<f64>, ()>> + Unpin>>;
 
     fn func_string(
         &mut self,
@@ -87,7 +88,7 @@ pub trait SimpleArrayInterface {
     fn func_string_async(
         &mut self,
         param_string: &[String],
-    ) -> dyn Future<Output = Vec<String>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<String>, ()>> + Unpin>>;
 
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> &Vec<bool>;

@@ -5,17 +5,18 @@
 {{- $data_structs = true -}}
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
-use crate::data_structs::*;{{ nl }}
+use crate::api::data_structs::*;{{ nl }}
 {{- end }}
 
 {{- if len .Interface.Operations -}}
 {{- $ops = true -}}
+use std::pin::Pin;
 use std::future::Future;{{ nl }}
 {{- end }}
 
 {{- if or $data_structs $ops }}{{ nl }}{{ end -}}
 
-pub trait {{Camel .Interface.Name}} {
+pub trait {{Camel .Interface.Name}}Trait {
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
@@ -31,7 +32,7 @@ pub trait {{Camel .Interface.Name}} {
 {{- if len $operation.Params }}
     fn {{snake $operation.Name }}(
         &mut self,
-        {{rustParams "" ",\n        " $operation.Params}},
+        {{rustParams "" "" ",\n        " $operation.Params}},
     ){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }};
 {{- else }}
     fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }};
@@ -50,10 +51,10 @@ pub trait {{Camel .Interface.Name}} {
 {{- if len $operation.Params }}
     fn {{snake $operation.Name }}_async(
         &mut self,
-        {{rustParams "" ",\n        " $operation.Params}},
-    ) -> dyn Future<Output = {{rustReturn "" $operation.Return}}>;
+        {{rustParams "" "" ",\n        " $operation.Params}},
+    ) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>>;
 {{- else }}
-    fn {{snake $operation.Name }}_async(&mut self) -> dyn Future<Output = {{rustReturn "" $operation.Return}}>;
+    fn {{snake $operation.Name }}_async(&mut self) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>>;
 {{- end }}
 {{- end }}   {{- /* end range operations */}}
 
@@ -74,7 +75,7 @@ pub trait {{Camel .Interface.Name}} {
     {{- end }}    {{- /* end if property.Description */}}
     fn set_{{snake $property.Name}}(
         &mut self,
-        {{ rustParam "" $property }},
+        {{ rustParam "" "" $property }},
     );
     {{- end }}
 {{- end }}    {{- /* end range properties */}}

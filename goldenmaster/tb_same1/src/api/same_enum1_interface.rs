@@ -1,9 +1,10 @@
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
-use crate::data_structs::*;
+use crate::api::data_structs::*;
+use std::pin::Pin;
 use std::future::Future;
 
-pub trait SameEnum1Interface {
+pub trait SameEnum1InterfaceTrait {
     fn func1(
         &mut self,
         param1: Enum1Enum,
@@ -13,7 +14,7 @@ pub trait SameEnum1Interface {
     fn func1_async(
         &mut self,
         param1: Enum1Enum,
-    ) -> dyn Future<Output = Enum1Enum>;
+    ) -> Pin<Box<dyn Future<Output = Result<Enum1Enum, ()>> + Unpin>>;
 
     /// Gets the value of the prop1 property.
     fn prop1(&self) -> Enum1Enum;

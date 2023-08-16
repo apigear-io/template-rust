@@ -1,9 +1,10 @@
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
-use crate::data_structs::*;
+use crate::api::data_structs::*;
+use std::pin::Pin;
 use std::future::Future;
 
-pub trait StructInterface {
+pub trait StructInterfaceTrait {
     fn func_bool(
         &mut self,
         param_bool: &StructBool,
@@ -13,7 +14,7 @@ pub trait StructInterface {
     fn func_bool_async(
         &mut self,
         param_bool: &StructBool,
-    ) -> dyn Future<Output = StructBool>;
+    ) -> Pin<Box<dyn Future<Output = Result<StructBool, ()>> + Unpin>>;
 
     fn func_int(
         &mut self,
@@ -24,7 +25,7 @@ pub trait StructInterface {
     fn func_int_async(
         &mut self,
         param_int: &StructInt,
-    ) -> dyn Future<Output = StructBool>;
+    ) -> Pin<Box<dyn Future<Output = Result<StructBool, ()>> + Unpin>>;
 
     fn func_float(
         &mut self,
@@ -35,7 +36,7 @@ pub trait StructInterface {
     fn func_float_async(
         &mut self,
         param_float: &StructFloat,
-    ) -> dyn Future<Output = StructFloat>;
+    ) -> Pin<Box<dyn Future<Output = Result<StructFloat, ()>> + Unpin>>;
 
     fn func_string(
         &mut self,
@@ -46,7 +47,7 @@ pub trait StructInterface {
     fn func_string_async(
         &mut self,
         param_string: &StructString,
-    ) -> dyn Future<Output = StructString>;
+    ) -> Pin<Box<dyn Future<Output = Result<StructString, ()>> + Unpin>>;
 
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> &StructBool;

@@ -2,25 +2,25 @@
 
 // Structs
 /// Struct StructBool
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq)]
 pub struct StructBool {
     pub field_bool: bool,
 }
 
 /// Struct StructInt
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq)]
 pub struct StructInt {
     pub field_int: i32,
 }
 
 /// Struct StructFloat
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq)]
 pub struct StructFloat {
     pub field_float: f32,
 }
 
 /// Struct StructString
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq)]
 pub struct StructString {
     pub field_string: String,
 }

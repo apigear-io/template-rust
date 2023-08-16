@@ -1,9 +1,10 @@
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
-use crate::data_structs::*;
+use crate::api::data_structs::*;
+use std::pin::Pin;
 use std::future::Future;
 
-pub trait ManyParamInterface {
+pub trait ManyParamInterfaceTrait {
     fn func1(
         &mut self,
         param1: i32,
@@ -13,7 +14,7 @@ pub trait ManyParamInterface {
     fn func1_async(
         &mut self,
         param1: i32,
-    ) -> dyn Future<Output = i32>;
+    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
 
     fn func2(
         &mut self,
@@ -26,7 +27,7 @@ pub trait ManyParamInterface {
         &mut self,
         param1: i32,
         param2: i32,
-    ) -> dyn Future<Output = i32>;
+    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
 
     fn func3(
         &mut self,
@@ -41,7 +42,7 @@ pub trait ManyParamInterface {
         param1: i32,
         param2: i32,
         param3: i32,
-    ) -> dyn Future<Output = i32>;
+    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
 
     fn func4(
         &mut self,
@@ -58,7 +59,7 @@ pub trait ManyParamInterface {
         param2: i32,
         param3: i32,
         param4: i32,
-    ) -> dyn Future<Output = i32>;
+    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
 
     /// Gets the value of the prop1 property.
     fn prop1(&self) -> i32;

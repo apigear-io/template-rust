@@ -1,10 +1,15 @@
-pub use crate::api::data_structs;
-pub use crate::api::same_struct1_interface;
-pub use crate::api::same_struct2_interface;
-pub use crate::api::same_enum1_interface;
-pub use crate::api::same_enum2_interface;
+//pub mod crate::api::data_structs;
+//pub mod crate::api::same_struct1_interface;
+//pub mod crate::impl::same_struct1_interface;
+//pub mod crate::api::same_struct2_interface;
+//pub mod crate::impl::same_struct2_interface;
+//pub mod crate::api::same_enum1_interface;
+//pub mod crate::impl::same_enum1_interface;
+//pub mod crate::api::same_enum2_interface;
+//pub mod crate::impl::same_enum2_interface;
 
 pub mod api;
+pub mod implementation;
 
 pub fn add(
     left: usize,

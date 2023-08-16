@@ -2,18 +2,20 @@ features:
   - name: api
     scopes:
     - match: interface
-      prefix: "{{snake .Module.Name}}/"
+      prefix: "{{snake .Module.Name}}/src/api/"
       documents:
         - source: "module/src/api/interface.rs.tpl"
-          target: "src/api/{{snake .Interface.Name}}.rs"
+          target: "{{snake .Interface.Name}}.rs"
     - match: module
-      prefix: "{{snake .Module.Name}}/"
+      prefix: "{{snake .Module.Name}}/src/api/"
       documents:
         - source: "module/src/api/mod.rs.tpl"
-          target: "src/api/mod.rs"
+          target: "mod.rs"
         - source: "module/src/api/data_structs.rs.tpl"
-          target: "src/api/data_structs.rs"
+          target: "data_structs.rs"
   - name: stubs
+    requires:
+      - api
     scopes:
     - match: system
       documents:
@@ -29,3 +31,10 @@ features:
           target: "Cargo.toml"
         - source: "module/src/lib.rs.tpl"
           target: "src/lib.rs"
+        - source: "module/src/implementation/mod.rs.tpl"
+          target: "src/implementation/mod.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/implementation/"
+      documents:
+        - source: "module/src/implementation/interface.rs.tpl"
+          target: "{{snake .Interface.Name}}.rs"

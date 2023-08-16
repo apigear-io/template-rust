@@ -1,7 +1,9 @@
-pub use crate::api::data_structs;
-pub use crate::api::enum_interface;
+//pub mod crate::api::data_structs;
+//pub mod crate::api::enum_interface;
+//pub mod crate::impl::enum_interface;
 
 pub mod api;
+pub mod implementation;
 
 pub fn add(
     left: usize,

@@ -1,10 +1,12 @@
 {{- if or .Module.Structs .Module.Enums -}}
-pub use crate::api::data_structs;{{ nl }}
+//pub mod crate::api::data_structs;{{ nl }}
 {{- end }}
 {{- range .Module.Interfaces -}}
-pub use crate::api::{{snake .Name}};{{ nl }}
+//pub mod crate::api::{{snake .Name}};
+//pub mod crate::impl::{{snake .Name}};{{ nl }}
 {{- end}}
 pub mod api;
+pub mod implementation;
 
 pub fn add(
     left: usize,
