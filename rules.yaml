@@ -5,6 +5,9 @@ features:
       documents:
         - source: "Cargo.toml.tpl"
           target: "Cargo.toml"
+        - source: "rustfmt.toml"
+          target: "rustfmt.toml"
+          raw: true
     - match: module
       prefix: "{{snake .Module.Name}}/"
       documents:

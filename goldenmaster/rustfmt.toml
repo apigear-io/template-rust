@@ -1,0 +1,4 @@
+max_width = 200
+reorder_imports = false
+reorder_modules = false
+fn_params_layout = "Vertical"
