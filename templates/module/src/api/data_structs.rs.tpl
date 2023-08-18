@@ -10,7 +10,7 @@
  {{- if .Description }}
 /// {{.Description}}
 {{- end }}
-#[derive(Copy, Clone, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub enum {{$class}}Enum {
 {{- range $idx, $elem := .Members }}
     {{- if eq .Name $enum.Default.Name }}
@@ -41,7 +41,7 @@ pub enum {{$class}}Enum {
 {{- if .Description }}
 /// {{.Description}}
 {{- end }}
-#[derive(Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct {{$class}} {
 {{- /* members */}}
 {{- range  .Fields }}

@@ -1,6 +1,6 @@
 // Enumerations
 /// Enumeration Enum1
-#[derive(Copy, Clone, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub enum Enum1Enum {
     #[default]
     Value1 = 1,
@@ -10,7 +10,7 @@ pub enum Enum1Enum {
 // fn fromEnum1Enum(v: Enum1Enum, ok: *mut bool) -> u8;
 
 /// Enumeration Enum2
-#[derive(Copy, Clone, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub enum Enum2Enum {
     #[default]
     Value1 = 1,
@@ -21,7 +21,7 @@ pub enum Enum2Enum {
 
 // Structs
 /// Struct Struct1
-#[derive(Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Struct1 {
     pub field1: i32,
     pub field2: i32,
@@ -29,7 +29,7 @@ pub struct Struct1 {
 }
 
 /// Struct Struct2
-#[derive(Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Struct2 {
     pub field1: i32,
     pub field2: i32,

@@ -34,7 +34,9 @@ features:
         - source: "module/src/implementation/mod.rs.tpl"
           target: "src/implementation/mod.rs"
     - match: interface
-      prefix: "{{snake .Module.Name}}/src/implementation/"
+      prefix: "{{snake .Module.Name}}/"
       documents:
         - source: "module/src/implementation/interface.rs.tpl"
-          target: "{{snake .Interface.Name}}.rs"
+          target: "src/implementation/{{snake .Interface.Name}}.rs"
+        - source: "module/tests/implementation_interface_test.rs.tpl"
+          target: "tests/implementation_{{snake .Interface.Name}}_test.rs"
