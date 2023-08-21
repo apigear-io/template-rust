@@ -3,8 +3,7 @@ use crate::api::nested_struct3_interface::NestedStruct3InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct NestedStruct3Interface {
@@ -13,6 +12,7 @@ pub struct NestedStruct3Interface {
     prop3: NestedStruct3,
 }
 
+#[async_trait]
 impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     fn func1(
         &mut self,
@@ -22,14 +22,12 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type NestedStruct1 which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: &NestedStruct1,
-    ) -> Pin<Box<dyn Future<Output = Result<NestedStruct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &NestedStruct1,
+    ) -> Result<NestedStruct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     fn func2(
@@ -41,15 +39,13 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     }
     /// Asynchronous version of `func2`
     /// returns future of type NestedStruct1 which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
-        _param1: &NestedStruct1,
-        _param2: &NestedStruct2,
-    ) -> Pin<Box<dyn Future<Output = Result<NestedStruct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &NestedStruct1,
+        param2: &NestedStruct2,
+    ) -> Result<NestedStruct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func2(param1, param2))
     }
 
     fn func3(
@@ -62,16 +58,14 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     }
     /// Asynchronous version of `func3`
     /// returns future of type NestedStruct1 which is set once the function has completed
-    fn func3_async(
+    async fn func3_async(
         &mut self,
-        _param1: &NestedStruct1,
-        _param2: &NestedStruct2,
-        _param3: &NestedStruct3,
-    ) -> Pin<Box<dyn Future<Output = Result<NestedStruct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &NestedStruct1,
+        param2: &NestedStruct2,
+        param3: &NestedStruct3,
+    ) -> Result<NestedStruct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func3(param1, param2, param3))
     }
 
     /// Gets the value of the prop1 property.

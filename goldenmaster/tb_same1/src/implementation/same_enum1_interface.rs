@@ -3,14 +3,14 @@ use crate::api::same_enum1_interface::SameEnum1InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct SameEnum1Interface {
     prop1: Enum1Enum,
 }
 
+#[async_trait]
 impl SameEnum1InterfaceTrait for SameEnum1Interface {
     fn func1(
         &mut self,
@@ -20,14 +20,12 @@ impl SameEnum1InterfaceTrait for SameEnum1Interface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type Enum1Enum which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: Enum1Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum1Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: Enum1Enum,
+    ) -> Result<Enum1Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     /// Gets the value of the prop1 property.

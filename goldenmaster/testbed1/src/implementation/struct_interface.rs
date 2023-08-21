@@ -3,8 +3,7 @@ use crate::api::struct_interface::StructInterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct StructInterface {
@@ -14,6 +13,7 @@ pub struct StructInterface {
     prop_string: StructString,
 }
 
+#[async_trait]
 impl StructInterfaceTrait for StructInterface {
     fn func_bool(
         &mut self,
@@ -23,14 +23,12 @@ impl StructInterfaceTrait for StructInterface {
     }
     /// Asynchronous version of `func_bool`
     /// returns future of type StructBool which is set once the function has completed
-    fn func_bool_async(
+    async fn func_bool_async(
         &mut self,
-        _param_bool: &StructBool,
-    ) -> Pin<Box<dyn Future<Output = Result<StructBool, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_bool: &StructBool,
+    ) -> Result<StructBool, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_bool(param_bool))
     }
 
     fn func_int(
@@ -41,14 +39,12 @@ impl StructInterfaceTrait for StructInterface {
     }
     /// Asynchronous version of `func_int`
     /// returns future of type StructBool which is set once the function has completed
-    fn func_int_async(
+    async fn func_int_async(
         &mut self,
-        _param_int: &StructInt,
-    ) -> Pin<Box<dyn Future<Output = Result<StructBool, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int: &StructInt,
+    ) -> Result<StructBool, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int(param_int))
     }
 
     fn func_float(
@@ -59,14 +55,12 @@ impl StructInterfaceTrait for StructInterface {
     }
     /// Asynchronous version of `func_float`
     /// returns future of type StructFloat which is set once the function has completed
-    fn func_float_async(
+    async fn func_float_async(
         &mut self,
-        _param_float: &StructFloat,
-    ) -> Pin<Box<dyn Future<Output = Result<StructFloat, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float: &StructFloat,
+    ) -> Result<StructFloat, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float(param_float))
     }
 
     fn func_string(
@@ -77,14 +71,12 @@ impl StructInterfaceTrait for StructInterface {
     }
     /// Asynchronous version of `func_string`
     /// returns future of type StructString which is set once the function has completed
-    fn func_string_async(
+    async fn func_string_async(
         &mut self,
-        _param_string: &StructString,
-    ) -> Pin<Box<dyn Future<Output = Result<StructString, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_string: &StructString,
+    ) -> Result<StructString, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_string(param_string))
     }
 
     /// Gets the value of the propBool property.

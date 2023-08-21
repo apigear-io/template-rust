@@ -1,21 +1,19 @@
 use crate::api::no_properties_interface::NoPropertiesInterfaceTrait;
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct NoPropertiesInterface {}
 
+#[async_trait]
 impl NoPropertiesInterfaceTrait for NoPropertiesInterface {
     fn func_void(&mut self) {
         Default::default()
     }
     /// Asynchronous version of `func_void`
     /// returns future of type () which is set once the function has completed
-    fn func_void_async(&mut self) -> Pin<Box<dyn Future<Output = Result<(), ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+    async fn func_void_async(&mut self) -> Result<(), ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_void())
     }
 
     fn func_bool(
@@ -26,13 +24,11 @@ impl NoPropertiesInterfaceTrait for NoPropertiesInterface {
     }
     /// Asynchronous version of `func_bool`
     /// returns future of type bool which is set once the function has completed
-    fn func_bool_async(
+    async fn func_bool_async(
         &mut self,
-        _param_bool: bool,
-    ) -> Pin<Box<dyn Future<Output = Result<bool, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_bool: bool,
+    ) -> Result<bool, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_bool(param_bool))
     }
 }

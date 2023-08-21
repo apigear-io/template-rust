@@ -1,6 +1,6 @@
-use std::pin::Pin;
-use std::future::Future;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait SimpleInterfaceTrait {
     fn func_bool(
         &mut self,
@@ -8,10 +8,10 @@ pub trait SimpleInterfaceTrait {
     ) -> bool;
     /// Asynchronous version of `func_bool`
     /// returns future of type bool which is set once the function has completed
-    fn func_bool_async(
+    async fn func_bool_async(
         &mut self,
         param_bool: bool,
-    ) -> Pin<Box<dyn Future<Output = Result<bool, ()>> + Unpin>>;
+    ) -> Result<bool, ()>;
 
     fn func_int(
         &mut self,
@@ -19,10 +19,10 @@ pub trait SimpleInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func_int`
     /// returns future of type i32 which is set once the function has completed
-    fn func_int_async(
+    async fn func_int_async(
         &mut self,
         param_int: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     fn func_int32(
         &mut self,
@@ -30,10 +30,10 @@ pub trait SimpleInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func_int32`
     /// returns future of type i32 which is set once the function has completed
-    fn func_int32_async(
+    async fn func_int32_async(
         &mut self,
         param_int32: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     fn func_int64(
         &mut self,
@@ -41,10 +41,10 @@ pub trait SimpleInterfaceTrait {
     ) -> i64;
     /// Asynchronous version of `func_int64`
     /// returns future of type i64 which is set once the function has completed
-    fn func_int64_async(
+    async fn func_int64_async(
         &mut self,
         param_int64: i64,
-    ) -> Pin<Box<dyn Future<Output = Result<i64, ()>> + Unpin>>;
+    ) -> Result<i64, ()>;
 
     fn func_float(
         &mut self,
@@ -52,10 +52,10 @@ pub trait SimpleInterfaceTrait {
     ) -> f32;
     /// Asynchronous version of `func_float`
     /// returns future of type f32 which is set once the function has completed
-    fn func_float_async(
+    async fn func_float_async(
         &mut self,
         param_float: f32,
-    ) -> Pin<Box<dyn Future<Output = Result<f32, ()>> + Unpin>>;
+    ) -> Result<f32, ()>;
 
     fn func_float32(
         &mut self,
@@ -63,10 +63,10 @@ pub trait SimpleInterfaceTrait {
     ) -> f32;
     /// Asynchronous version of `func_float32`
     /// returns future of type f32 which is set once the function has completed
-    fn func_float32_async(
+    async fn func_float32_async(
         &mut self,
         param_float32: f32,
-    ) -> Pin<Box<dyn Future<Output = Result<f32, ()>> + Unpin>>;
+    ) -> Result<f32, ()>;
 
     fn func_float64(
         &mut self,
@@ -74,10 +74,10 @@ pub trait SimpleInterfaceTrait {
     ) -> f64;
     /// Asynchronous version of `func_float64`
     /// returns future of type f64 which is set once the function has completed
-    fn func_float64_async(
+    async fn func_float64_async(
         &mut self,
         param_float: f64,
-    ) -> Pin<Box<dyn Future<Output = Result<f64, ()>> + Unpin>>;
+    ) -> Result<f64, ()>;
 
     fn func_string(
         &mut self,
@@ -85,10 +85,10 @@ pub trait SimpleInterfaceTrait {
     ) -> String;
     /// Asynchronous version of `func_string`
     /// returns future of type String which is set once the function has completed
-    fn func_string_async(
+    async fn func_string_async(
         &mut self,
         param_string: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<String, ()>> + Unpin>>;
+    ) -> Result<String, ()>;
 
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool;

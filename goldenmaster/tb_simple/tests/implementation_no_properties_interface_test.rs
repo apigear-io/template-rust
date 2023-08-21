@@ -18,7 +18,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_void_async() {
         let mut test_object: NoPropertiesInterface = Default::default();
-        test_object.func_void_async(
+        let _ = test_object.func_void_async(
         );
     }
 
@@ -35,7 +35,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_bool_async() {
         let mut test_object: NoPropertiesInterface = Default::default();
-        test_object.func_bool_async(
+        let _ = test_object.func_bool_async(
         Default::default(),
         );
     }

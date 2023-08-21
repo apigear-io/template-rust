@@ -22,7 +22,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func0_async() {
         let mut test_object: EnumInterface = Default::default();
-        test_object.func0_async(
+        let _ = test_object.func0_async(
         Default::default(),
         );
     }
@@ -40,7 +40,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func1_async() {
         let mut test_object: EnumInterface = Default::default();
-        test_object.func1_async(
+        let _ = test_object.func1_async(
         Default::default(),
         );
     }
@@ -58,7 +58,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func2_async() {
         let mut test_object: EnumInterface = Default::default();
-        test_object.func2_async(
+        let _ = test_object.func2_async(
         Default::default(),
         );
     }
@@ -76,7 +76,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func3_async() {
         let mut test_object: EnumInterface = Default::default();
-        test_object.func3_async(
+        let _ = test_object.func3_async(
         Default::default(),
         );
     }

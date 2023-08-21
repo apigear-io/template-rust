@@ -3,14 +3,14 @@ use crate::api::nested_struct1_interface::NestedStruct1InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct NestedStruct1Interface {
     prop1: NestedStruct1,
 }
 
+#[async_trait]
 impl NestedStruct1InterfaceTrait for NestedStruct1Interface {
     fn func1(
         &mut self,
@@ -20,14 +20,12 @@ impl NestedStruct1InterfaceTrait for NestedStruct1Interface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type NestedStruct1 which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: &NestedStruct1,
-    ) -> Pin<Box<dyn Future<Output = Result<NestedStruct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &NestedStruct1,
+    ) -> Result<NestedStruct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     /// Gets the value of the prop1 property.

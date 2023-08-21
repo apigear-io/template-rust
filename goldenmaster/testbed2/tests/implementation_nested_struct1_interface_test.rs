@@ -22,7 +22,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func1_async() {
         let mut test_object: NestedStruct1Interface = Default::default();
-        test_object.func1_async(
+        let _ = test_object.func1_async(
         &Default::default(),
         );
     }

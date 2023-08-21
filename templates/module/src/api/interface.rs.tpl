@@ -10,12 +10,12 @@ use crate::api::data_structs::*;{{ nl }}
 
 {{- if len .Interface.Operations -}}
 {{- $ops = true -}}
-use std::pin::Pin;
-use std::future::Future;{{ nl }}
+use async_trait::async_trait;
 {{- end }}
 
-{{- if or $data_structs $ops }}{{ nl }}{{ end -}}
-
+{{- if len .Interface.Operations }}{{nl}}
+#[async_trait]{{ nl }}
+{{- end -}}
 pub trait {{Camel .Interface.Name}}Trait {
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
@@ -49,12 +49,12 @@ pub trait {{Camel .Interface.Name}}Trait {
 {{- end }}   {{- /* end range operation params */}}
     /// returns future of type {{rustReturn "" $operation.Return}} which is set once the function has completed
 {{- if len $operation.Params }}
-    fn {{snake $operation.Name }}_async(
+    async fn {{snake $operation.Name }}_async(
         &mut self,
         {{rustParams "" "" ",\n        " $operation.Params}},
-    ) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>>;
+    ) -> Result<{{rustReturn "" $operation.Return}}, ()>;
 {{- else }}
-    fn {{snake $operation.Name }}_async(&mut self) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>>;
+    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rustReturn "" $operation.Return}}, ()>;
 {{- end }}
 {{- end }}   {{- /* end range operations */}}
 

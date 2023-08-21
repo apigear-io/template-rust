@@ -3,8 +3,7 @@ use crate::api::same_struct2_interface::SameStruct2InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct SameStruct2Interface {
@@ -12,6 +11,7 @@ pub struct SameStruct2Interface {
     prop2: Struct2,
 }
 
+#[async_trait]
 impl SameStruct2InterfaceTrait for SameStruct2Interface {
     fn func1(
         &mut self,
@@ -21,14 +21,12 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type Struct1 which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: &Struct1,
-    ) -> Pin<Box<dyn Future<Output = Result<Struct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &Struct1,
+    ) -> Result<Struct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     fn func2(
@@ -40,15 +38,13 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
     }
     /// Asynchronous version of `func2`
     /// returns future of type Struct1 which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
-        _param1: &Struct1,
-        _param2: &Struct2,
-    ) -> Pin<Box<dyn Future<Output = Result<Struct1, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: &Struct1,
+        param2: &Struct2,
+    ) -> Result<Struct1, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func2(param1, param2))
     }
 
     /// Gets the value of the prop1 property.

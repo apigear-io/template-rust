@@ -37,7 +37,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_{{snake $operation.Name }}_async() {
         let mut test_object: {{Camel $.Interface.Name}} = Default::default();
-        test_object.{{snake $operation.Name }}_async(
+        let _ = test_object.{{snake $operation.Name }}_async(
         {{- range $operation.Params }}
         {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
         {{- $param := . }}

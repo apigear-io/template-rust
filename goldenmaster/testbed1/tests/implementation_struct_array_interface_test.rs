@@ -22,7 +22,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_bool_async() {
         let mut test_object: StructArrayInterface = Default::default();
-        test_object.func_bool_async(
+        let _ = test_object.func_bool_async(
         Default::default(),
         );
     }
@@ -40,7 +40,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_int_async() {
         let mut test_object: StructArrayInterface = Default::default();
-        test_object.func_int_async(
+        let _ = test_object.func_int_async(
         Default::default(),
         );
     }
@@ -58,7 +58,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_float_async() {
         let mut test_object: StructArrayInterface = Default::default();
-        test_object.func_float_async(
+        let _ = test_object.func_float_async(
         Default::default(),
         );
     }
@@ -76,7 +76,7 @@ mod tests {
     #[rustfmt::skip]
     fn test_func_string_async() {
         let mut test_object: StructArrayInterface = Default::default();
-        test_object.func_string_async(
+        let _ = test_object.func_string_async(
         Default::default(),
         );
     }

@@ -3,8 +3,7 @@ use crate::api::same_enum2_interface::SameEnum2InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct SameEnum2Interface {
@@ -12,6 +11,7 @@ pub struct SameEnum2Interface {
     prop2: Enum2Enum,
 }
 
+#[async_trait]
 impl SameEnum2InterfaceTrait for SameEnum2Interface {
     fn func1(
         &mut self,
@@ -21,14 +21,12 @@ impl SameEnum2InterfaceTrait for SameEnum2Interface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type Enum1Enum which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: Enum1Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum1Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: Enum1Enum,
+    ) -> Result<Enum1Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     fn func2(
@@ -40,15 +38,13 @@ impl SameEnum2InterfaceTrait for SameEnum2Interface {
     }
     /// Asynchronous version of `func2`
     /// returns future of type Enum1Enum which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
-        _param1: Enum1Enum,
-        _param2: Enum2Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum1Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: Enum1Enum,
+        param2: Enum2Enum,
+    ) -> Result<Enum1Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func2(param1, param2))
     }
 
     /// Gets the value of the prop1 property.

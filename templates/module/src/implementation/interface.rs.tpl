@@ -11,10 +11,8 @@ use crate::api::data_structs::*;{{ nl }}
 
 {{- if len .Interface.Operations -}}
 {{- $ops = true }}
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 {{- end }}
-
 {{- if or (len .Interface.Properties) $ops }}{{ nl }}{{ end }}
 #[derive(Default, Clone)]
 {{- if len .Interface.Properties }}
@@ -23,11 +21,13 @@ pub struct {{Camel .Interface.Name}} {
 {{- $property:= . }}
     {{snake $property.Name}}: {{rustType "" $property}},
 {{- end }}
-}
+}{{nl}}
 {{- else }}
-pub struct {{Camel .Interface.Name}} {}
+pub struct {{Camel .Interface.Name}} {}{{nl}}
 {{- end }}
-
+{{- if len .Interface.Operations }}
+#[async_trait]
+{{- end }}
 impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
@@ -65,21 +65,22 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
 {{- end }}   {{- /* end range operation params */}}
     /// returns future of type {{rustReturn "" $operation.Return}} which is set once the function has completed
 {{- if len $operation.Params }}
-    fn {{snake $operation.Name }}_async(
+    async fn {{snake $operation.Name }}_async(
         &mut self,
-        {{rustParams "_" "" ",\n        " $operation.Params}},
-    ) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        {{rustParams "" "" ",\n        " $operation.Params}},
+    ) -> Result<{{rustReturn "" $operation.Return}}, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.{{snake $operation.Name }}(
+        {{- range $i, $e := $operation.Params }}
+        {{- $param := . }}
+        {{- if $i }}, {{ end }}
+        {{- rustVar "" .}}{{ end -}}
+        ))
     }
 {{- else }}
-    fn {{snake $operation.Name }}_async(&mut self) -> Pin<Box<dyn Future<Output = Result<{{rustReturn "" $operation.Return}}, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rustReturn "" $operation.Return}}, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.{{snake $operation.Name }}())
     }
 {{- end }}
 {{- end }}   {{- /* end range operations */}}

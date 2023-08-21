@@ -3,8 +3,7 @@ use crate::api::enum_interface::EnumInterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct EnumInterface {
@@ -14,6 +13,7 @@ pub struct EnumInterface {
     prop3: Enum3Enum,
 }
 
+#[async_trait]
 impl EnumInterfaceTrait for EnumInterface {
     fn func0(
         &mut self,
@@ -23,14 +23,12 @@ impl EnumInterfaceTrait for EnumInterface {
     }
     /// Asynchronous version of `func0`
     /// returns future of type Enum0Enum which is set once the function has completed
-    fn func0_async(
+    async fn func0_async(
         &mut self,
-        _param0: Enum0Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum0Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param0: Enum0Enum,
+    ) -> Result<Enum0Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func0(param0))
     }
 
     fn func1(
@@ -41,14 +39,12 @@ impl EnumInterfaceTrait for EnumInterface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type Enum1Enum which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: Enum1Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum1Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: Enum1Enum,
+    ) -> Result<Enum1Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     fn func2(
@@ -59,14 +55,12 @@ impl EnumInterfaceTrait for EnumInterface {
     }
     /// Asynchronous version of `func2`
     /// returns future of type Enum2Enum which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
-        _param2: Enum2Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum2Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param2: Enum2Enum,
+    ) -> Result<Enum2Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func2(param2))
     }
 
     fn func3(
@@ -77,14 +71,12 @@ impl EnumInterfaceTrait for EnumInterface {
     }
     /// Asynchronous version of `func3`
     /// returns future of type Enum3Enum which is set once the function has completed
-    fn func3_async(
+    async fn func3_async(
         &mut self,
-        _param3: Enum3Enum,
-    ) -> Pin<Box<dyn Future<Output = Result<Enum3Enum, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param3: Enum3Enum,
+    ) -> Result<Enum3Enum, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func3(param3))
     }
 
     /// Gets the value of the prop0 property.

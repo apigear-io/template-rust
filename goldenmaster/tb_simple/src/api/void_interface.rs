@@ -1,9 +1,9 @@
-use std::pin::Pin;
-use std::future::Future;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait VoidInterfaceTrait {
     fn func_void(&mut self);
     /// Asynchronous version of `func_void`
     /// returns future of type () which is set once the function has completed
-    fn func_void_async(&mut self) -> Pin<Box<dyn Future<Output = Result<(), ()>> + Unpin>>;
+    async fn func_void_async(&mut self) -> Result<(), ()>;
 }

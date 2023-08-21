@@ -3,8 +3,7 @@ use crate::api::many_param_interface::ManyParamInterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct ManyParamInterface {
@@ -14,6 +13,7 @@ pub struct ManyParamInterface {
     prop4: i32,
 }
 
+#[async_trait]
 impl ManyParamInterfaceTrait for ManyParamInterface {
     fn func1(
         &mut self,
@@ -23,14 +23,12 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     }
     /// Asynchronous version of `func1`
     /// returns future of type i32 which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
-        _param1: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func1(param1))
     }
 
     fn func2(
@@ -42,15 +40,13 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     }
     /// Asynchronous version of `func2`
     /// returns future of type i32 which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
-        _param1: i32,
-        _param2: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: i32,
+        param2: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func2(param1, param2))
     }
 
     fn func3(
@@ -63,16 +59,14 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     }
     /// Asynchronous version of `func3`
     /// returns future of type i32 which is set once the function has completed
-    fn func3_async(
+    async fn func3_async(
         &mut self,
-        _param1: i32,
-        _param2: i32,
-        _param3: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: i32,
+        param2: i32,
+        param3: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func3(param1, param2, param3))
     }
 
     fn func4(
@@ -86,17 +80,15 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     }
     /// Asynchronous version of `func4`
     /// returns future of type i32 which is set once the function has completed
-    fn func4_async(
+    async fn func4_async(
         &mut self,
-        _param1: i32,
-        _param2: i32,
-        _param3: i32,
-        _param4: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param1: i32,
+        param2: i32,
+        param3: i32,
+        param4: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func4(param1, param2, param3, param4))
     }
 
     /// Gets the value of the prop1 property.

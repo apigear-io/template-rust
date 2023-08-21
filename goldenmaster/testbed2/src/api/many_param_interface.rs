@@ -1,9 +1,9 @@
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use std::pin::Pin;
-use std::future::Future;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait ManyParamInterfaceTrait {
     fn func1(
         &mut self,
@@ -11,10 +11,10 @@ pub trait ManyParamInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func1`
     /// returns future of type i32 which is set once the function has completed
-    fn func1_async(
+    async fn func1_async(
         &mut self,
         param1: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     fn func2(
         &mut self,
@@ -23,11 +23,11 @@ pub trait ManyParamInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func2`
     /// returns future of type i32 which is set once the function has completed
-    fn func2_async(
+    async fn func2_async(
         &mut self,
         param1: i32,
         param2: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     fn func3(
         &mut self,
@@ -37,12 +37,12 @@ pub trait ManyParamInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func3`
     /// returns future of type i32 which is set once the function has completed
-    fn func3_async(
+    async fn func3_async(
         &mut self,
         param1: i32,
         param2: i32,
         param3: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     fn func4(
         &mut self,
@@ -53,13 +53,13 @@ pub trait ManyParamInterfaceTrait {
     ) -> i32;
     /// Asynchronous version of `func4`
     /// returns future of type i32 which is set once the function has completed
-    fn func4_async(
+    async fn func4_async(
         &mut self,
         param1: i32,
         param2: i32,
         param3: i32,
         param4: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>>;
+    ) -> Result<i32, ()>;
 
     /// Gets the value of the prop1 property.
     fn prop1(&self) -> i32;

@@ -1,6 +1,5 @@
 use crate::api::simple_array_interface::SimpleArrayInterfaceTrait;
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct SimpleArrayInterface {
@@ -14,6 +13,7 @@ pub struct SimpleArrayInterface {
     prop_string: Vec<String>,
 }
 
+#[async_trait]
 impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     fn func_bool(
         &mut self,
@@ -23,14 +23,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_bool`
     /// returns future of type Vec<bool> which is set once the function has completed
-    fn func_bool_async(
+    async fn func_bool_async(
         &mut self,
-        _param_bool: &[bool],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<bool>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_bool: &[bool],
+    ) -> Result<Vec<bool>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_bool(param_bool))
     }
 
     fn func_int(
@@ -41,14 +39,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_int`
     /// returns future of type Vec<i32> which is set once the function has completed
-    fn func_int_async(
+    async fn func_int_async(
         &mut self,
-        _param_int: &[i32],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<i32>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int: &[i32],
+    ) -> Result<Vec<i32>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int(param_int))
     }
 
     fn func_int32(
@@ -59,14 +55,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_int32`
     /// returns future of type Vec<i32> which is set once the function has completed
-    fn func_int32_async(
+    async fn func_int32_async(
         &mut self,
-        _param_int32: &[i32],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<i32>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int32: &[i32],
+    ) -> Result<Vec<i32>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int32(param_int32))
     }
 
     fn func_int64(
@@ -77,14 +71,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_int64`
     /// returns future of type Vec<i64> which is set once the function has completed
-    fn func_int64_async(
+    async fn func_int64_async(
         &mut self,
-        _param_int64: &[i64],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<i64>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int64: &[i64],
+    ) -> Result<Vec<i64>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int64(param_int64))
     }
 
     fn func_float(
@@ -95,14 +87,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_float`
     /// returns future of type Vec<f32> which is set once the function has completed
-    fn func_float_async(
+    async fn func_float_async(
         &mut self,
-        _param_float: &[f32],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<f32>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float: &[f32],
+    ) -> Result<Vec<f32>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float(param_float))
     }
 
     fn func_float32(
@@ -113,14 +103,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_float32`
     /// returns future of type Vec<f32> which is set once the function has completed
-    fn func_float32_async(
+    async fn func_float32_async(
         &mut self,
-        _param_float32: &[f32],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<f32>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float32: &[f32],
+    ) -> Result<Vec<f32>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float32(param_float32))
     }
 
     fn func_float64(
@@ -131,14 +119,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_float64`
     /// returns future of type Vec<f64> which is set once the function has completed
-    fn func_float64_async(
+    async fn func_float64_async(
         &mut self,
-        _param_float: &[f64],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<f64>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float: &[f64],
+    ) -> Result<Vec<f64>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float64(param_float))
     }
 
     fn func_string(
@@ -149,14 +135,12 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     }
     /// Asynchronous version of `func_string`
     /// returns future of type Vec<String> which is set once the function has completed
-    fn func_string_async(
+    async fn func_string_async(
         &mut self,
-        _param_string: &[String],
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<String>, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_string: &[String],
+    ) -> Result<Vec<String>, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_string(param_string))
     }
 
     /// Gets the value of the propBool property.

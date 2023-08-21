@@ -1,6 +1,5 @@
 use crate::api::simple_interface::SimpleInterfaceTrait;
-use std::pin::Pin;
-use futures::{future, Future};
+use async_trait::async_trait;
 
 #[derive(Default, Clone)]
 pub struct SimpleInterface {
@@ -14,6 +13,7 @@ pub struct SimpleInterface {
     prop_string: String,
 }
 
+#[async_trait]
 impl SimpleInterfaceTrait for SimpleInterface {
     fn func_bool(
         &mut self,
@@ -23,14 +23,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_bool`
     /// returns future of type bool which is set once the function has completed
-    fn func_bool_async(
+    async fn func_bool_async(
         &mut self,
-        _param_bool: bool,
-    ) -> Pin<Box<dyn Future<Output = Result<bool, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_bool: bool,
+    ) -> Result<bool, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_bool(param_bool))
     }
 
     fn func_int(
@@ -41,14 +39,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_int`
     /// returns future of type i32 which is set once the function has completed
-    fn func_int_async(
+    async fn func_int_async(
         &mut self,
-        _param_int: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int(param_int))
     }
 
     fn func_int32(
@@ -59,14 +55,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_int32`
     /// returns future of type i32 which is set once the function has completed
-    fn func_int32_async(
+    async fn func_int32_async(
         &mut self,
-        _param_int32: i32,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int32: i32,
+    ) -> Result<i32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int32(param_int32))
     }
 
     fn func_int64(
@@ -77,14 +71,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_int64`
     /// returns future of type i64 which is set once the function has completed
-    fn func_int64_async(
+    async fn func_int64_async(
         &mut self,
-        _param_int64: i64,
-    ) -> Pin<Box<dyn Future<Output = Result<i64, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_int64: i64,
+    ) -> Result<i64, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_int64(param_int64))
     }
 
     fn func_float(
@@ -95,14 +87,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_float`
     /// returns future of type f32 which is set once the function has completed
-    fn func_float_async(
+    async fn func_float_async(
         &mut self,
-        _param_float: f32,
-    ) -> Pin<Box<dyn Future<Output = Result<f32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float: f32,
+    ) -> Result<f32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float(param_float))
     }
 
     fn func_float32(
@@ -113,14 +103,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_float32`
     /// returns future of type f32 which is set once the function has completed
-    fn func_float32_async(
+    async fn func_float32_async(
         &mut self,
-        _param_float32: f32,
-    ) -> Pin<Box<dyn Future<Output = Result<f32, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float32: f32,
+    ) -> Result<f32, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float32(param_float32))
     }
 
     fn func_float64(
@@ -131,14 +119,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_float64`
     /// returns future of type f64 which is set once the function has completed
-    fn func_float64_async(
+    async fn func_float64_async(
         &mut self,
-        _param_float: f64,
-    ) -> Pin<Box<dyn Future<Output = Result<f64, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_float: f64,
+    ) -> Result<f64, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_float64(param_float))
     }
 
     fn func_string(
@@ -149,14 +135,12 @@ impl SimpleInterfaceTrait for SimpleInterface {
     }
     /// Asynchronous version of `func_string`
     /// returns future of type String which is set once the function has completed
-    fn func_string_async(
+    async fn func_string_async(
         &mut self,
-        _param_string: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<String, ()>> + Unpin>> {
-        Box::pin({
-            #[allow(clippy::unit_arg)]
-            future::ok(Default::default())
-        })
+        param_string: &str,
+    ) -> Result<String, ()> {
+        #[allow(clippy::unit_arg)]
+        Ok(self.func_string(param_string))
     }
 
     /// Gets the value of the propBool property.
