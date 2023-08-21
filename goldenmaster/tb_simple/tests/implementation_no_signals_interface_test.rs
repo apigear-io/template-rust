@@ -7,41 +7,30 @@ mod tests {
     use super::*;
 
     #[test]
-    #[rustfmt::skip]
     fn test_func_void() {
         let mut test_object: NoSignalsInterface = Default::default();
-        test_object.func_void(
-        );
+        test_object.func_void();
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func_void_async() {
         let mut test_object: NoSignalsInterface = Default::default();
-        let _ = test_object.func_void_async(
-        );
+        let _ = test_object.func_void_async();
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func_bool() {
         let mut test_object: NoSignalsInterface = Default::default();
-        test_object.func_bool(
-        Default::default(),
-        );
+        test_object.func_bool(Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func_bool_async() {
         let mut test_object: NoSignalsInterface = Default::default();
-        let _ = test_object.func_bool_async(
-        Default::default(),
-        );
+        let _ = test_object.func_bool_async(Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop_bool() {
         let mut test_object: NoSignalsInterface = Default::default();
         let default_value: bool = Default::default();
@@ -50,7 +39,6 @@ mod tests {
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop_int() {
         let mut test_object: NoSignalsInterface = Default::default();
         let default_value: i32 = Default::default();

@@ -10,45 +10,30 @@ mod tests {
     use super::*;
 
     #[test]
-    #[rustfmt::skip]
     fn test_func1() {
         let mut test_object: SameStruct2Interface = Default::default();
-        test_object.func1(
-        &Default::default(),
-        );
+        test_object.func1(&Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func1_async() {
         let mut test_object: SameStruct2Interface = Default::default();
-        let _ = test_object.func1_async(
-        &Default::default(),
-        );
+        let _ = test_object.func1_async(&Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func2() {
         let mut test_object: SameStruct2Interface = Default::default();
-        test_object.func2(
-        &Default::default(),
-        &Default::default(),
-        );
+        test_object.func2(&Default::default(), &Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_func2_async() {
         let mut test_object: SameStruct2Interface = Default::default();
-        let _ = test_object.func2_async(
-        &Default::default(),
-        &Default::default(),
-        );
+        let _ = test_object.func2_async(&Default::default(), &Default::default());
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop1() {
         let mut test_object: SameStruct2Interface = Default::default();
         let default_value: Struct2 = Default::default();
@@ -57,7 +42,6 @@ mod tests {
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop2() {
         let mut test_object: SameStruct2Interface = Default::default();
         let default_value: Struct2 = Default::default();

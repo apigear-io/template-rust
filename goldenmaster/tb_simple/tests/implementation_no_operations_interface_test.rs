@@ -7,7 +7,6 @@ mod tests {
     use super::*;
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop_bool() {
         let mut test_object: NoOperationsInterface = Default::default();
         let default_value: bool = Default::default();
@@ -16,7 +15,6 @@ mod tests {
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_prop_int() {
         let mut test_object: NoOperationsInterface = Default::default();
         let default_value: i32 = Default::default();

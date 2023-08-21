@@ -21,28 +21,28 @@ mod tests {
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
     #[test]
-    #[rustfmt::skip]
     fn test_{{ snake $operation.Name }}() {
         let mut test_object: {{Camel $.Interface.Name}} = Default::default();
         test_object.{{snake $operation.Name }}(
-        {{- range $operation.Params }}
+        {{- range $i, $e := $operation.Params }}
+        {{- if $i }}, {{ end }}
         {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
         {{- $param := . }}
-        {{ if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default(),
-        {{- end }}   {{- /* end range operation params */}}
+        {{- if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default()
+        {{- end }}   {{- /* end range operation params */ -}}
         );
     }
 
     #[test]
-    #[rustfmt::skip]
     fn test_{{snake $operation.Name }}_async() {
         let mut test_object: {{Camel $.Interface.Name}} = Default::default();
         let _ = test_object.{{snake $operation.Name }}_async(
-        {{- range $operation.Params }}
+        {{- range $i, $e := $operation.Params }}
+        {{- if $i }}, {{ end }}
         {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
         {{- $param := . }}
-        {{ if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default(),
-        {{- end }}   {{- /* end range operation params */}}
+        {{- if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default()
+        {{- end }}   {{- /* end range operation params */ -}}
         );
     }
 {{- end }}
@@ -54,7 +54,6 @@ mod tests {
 {{- $property := . }}
 {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
     #[test]
-    #[rustfmt::skip]
     fn test_{{snake $property.Name }}() {
         let mut test_object: {{Camel $.Interface.Name}} = Default::default();
         let default_value: {{rustType "" $property}} = Default::default();
