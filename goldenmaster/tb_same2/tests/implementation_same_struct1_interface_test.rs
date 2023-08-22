@@ -10,6 +10,46 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_to_enum1_enum() {
+        assert_eq!(Enum1Enum::try_from(1), Ok(Enum1Enum::Value1));
+        assert_eq!(Enum1Enum::try_from(1), Ok(Enum1Enum::default()));
+        assert_eq!(Enum1Enum::try_from(2), Ok(Enum1Enum::Value2));
+        // test error case assuming 254 is not defined in IDL
+        assert_eq!(Enum1Enum::try_from(254), Err(()));
+    }
+
+    #[test]
+    fn test_from_enum1_enum() {
+        let result: Result<Enum1Enum, ()> = 1u8.try_into();
+        assert_eq!(result, Ok(Enum1Enum::Value1));
+        let result: Result<Enum1Enum, ()> = 2u8.try_into();
+        assert_eq!(result, Ok(Enum1Enum::Value2));
+        // test error case assuming 254 is not defined in IDL
+        let result: Result<Enum1Enum, ()> = 254u8.try_into();
+        assert_eq!(result, Err(()));
+    }
+
+    #[test]
+    fn test_to_enum2_enum() {
+        assert_eq!(Enum2Enum::try_from(1), Ok(Enum2Enum::Value1));
+        assert_eq!(Enum2Enum::try_from(1), Ok(Enum2Enum::default()));
+        assert_eq!(Enum2Enum::try_from(2), Ok(Enum2Enum::Value2));
+        // test error case assuming 254 is not defined in IDL
+        assert_eq!(Enum2Enum::try_from(254), Err(()));
+    }
+
+    #[test]
+    fn test_from_enum2_enum() {
+        let result: Result<Enum2Enum, ()> = 1u8.try_into();
+        assert_eq!(result, Ok(Enum2Enum::Value1));
+        let result: Result<Enum2Enum, ()> = 2u8.try_into();
+        assert_eq!(result, Ok(Enum2Enum::Value2));
+        // test error case assuming 254 is not defined in IDL
+        let result: Result<Enum2Enum, ()> = 254u8.try_into();
+        assert_eq!(result, Err(()));
+    }
+
+    #[test]
     fn test_func1() {
         let mut test_object: SameStruct1Interface = Default::default();
         test_object.func1(&Default::default());

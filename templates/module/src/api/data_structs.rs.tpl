@@ -1,3 +1,6 @@
+{{- if len .Module.Enums -}}
+use std::convert::TryFrom;{{nl}}
+{{- end }}
 {{- /* ***************************************************************** */ -}}
 {{- /* *** ENUMERATIONS                                              *** */ -}}
 {{- /* ***************************************************************** */ -}}
@@ -10,6 +13,7 @@
  {{- if .Description }}
 /// {{.Description}}
 {{- end }}
+#[repr(u8)]
 #[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub enum {{$class}}Enum {
 {{- range $idx, $elem := .Members }}
@@ -22,8 +26,19 @@ pub enum {{$class}}Enum {
     {{- end }}
 {{- end }}
 }
-// fn to{{ upper1 $class }}Enum(v: u8, ok: *mut bool) -> {{$class}}Enum;
-// fn from{{ upper1 $class }}Enum(v: {{$class}}Enum, ok: *mut bool) -> u8;
+
+impl TryFrom<u8> for {{$class}}Enum {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+{{- range $idx, $elem := .Members }}
+            {{ .Value }} => Ok({{$class}}Enum::{{ upper1 .Name }}), 
+{{- end }}
+            _ => Err(()),
+        }
+    }
+}
 {{- end }}
 
 {{- if len .Module.Structs}}

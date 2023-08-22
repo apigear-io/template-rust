@@ -17,6 +17,42 @@ use {{snake .Module.Name}}::implementation::{{snake .Interface.Name}}::{{Camel .
 mod tests {
     use super::*;{{nl}}
 
+{{- range $i, $e := .Module.Enums }}
+{{- $enum := . }}
+{{- if $i }}{{nl}}{{ end }}
+    #[test]
+    fn test_to_{{snake .Name}}_enum() {
+        {{- $errValUsed := false }}
+        {{- range $idx, $elem := .Members }}
+        {{- if eq 254 .Value }}{{ $errValUsed = true }}{{ end }}
+        assert_eq!({{$enum}}Enum::try_from({{ .Value }}), Ok({{$enum}}Enum::{{ upper1 .Name }}));
+        {{- if eq .Name $enum.Default.Name }}
+        assert_eq!({{$enum}}Enum::try_from({{ .Value }}), Ok({{$enum}}Enum::default()));
+        {{- end }}
+        {{- end }}
+        {{- if not $errValUsed }}
+        // test error case assuming 254 is not defined in IDL
+        assert_eq!({{$enum}}Enum::try_from(254), Err(()));
+        {{- end }}
+    }
+
+    #[test]
+    fn test_from_{{snake .Name}}_enum() {
+        {{- $errValUsed := false }}
+        {{- range $idx, $elem := .Members }}
+        {{- if eq 254 .Value }}{{ $errValUsed = true }}{{ end }}
+        let result: Result<{{$enum}}Enum, ()> = {{ .Value }}u8.try_into();
+        assert_eq!(result, Ok({{$enum}}Enum::{{ upper1 .Name }}));
+        {{- end }}
+        {{- if not $errValUsed }}
+        // test error case assuming 254 is not defined in IDL
+        let result: Result<{{$enum}}Enum, ()> = 254u8.try_into();
+        assert_eq!(result, Err(()));
+        {{- end }}
+    }
+{{- end }}
+{{- if len .Module.Enums }}{{ nl }}{{ end }}
+
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
