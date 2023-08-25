@@ -7,4 +7,5 @@ members = [
     "tb_same2",
     "tb_simple",
     "testbed1",
+    "examples",
 ]

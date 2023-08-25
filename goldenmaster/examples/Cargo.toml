@@ -1,0 +1,14 @@
+[package]
+name = "test_examples"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+testbed2 = { path = "../testbed2" }
+tb_enum = { path = "../tb_enum" }
+tb_same1 = { path = "../tb_same1" }
+tb_same2 = { path = "../tb_same2" }
+tb_simple = { path = "../tb_simple" }
+testbed1 = { path = "../testbed1" }

@@ -24,6 +24,10 @@ features:
         - source: "rustfmt.toml"
           target: "rustfmt.toml"
           raw: true
+        - source: "examples/Cargo.toml.tpl"
+          target: "examples/Cargo.toml"
+        - source: "examples/src/main.rs.tpl"
+          target: "examples/src/main.rs"
     - match: module
       prefix: "{{snake .Module.Name}}/"
       documents:
