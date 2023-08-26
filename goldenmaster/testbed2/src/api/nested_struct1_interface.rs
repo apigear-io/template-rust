@@ -9,8 +9,8 @@ pub trait NestedStruct1InterfaceTrait {
         &mut self,
         param1: &NestedStruct1,
     ) -> NestedStruct1;
-    /// Asynchronous version of `func1`
-    /// returns future of type NestedStruct1 which is set once the function has completed
+    /// Asynchronous version of [func1](NestedStruct1InterfaceTrait::func1)
+    /// returns future of type [`NestedStruct1`] which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &NestedStruct1,

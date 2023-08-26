@@ -21,8 +21,8 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func1`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func1](ManyParamInterface::func1)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: i32,
@@ -38,8 +38,8 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func2`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func2](ManyParamInterface::func2)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: i32,
@@ -57,8 +57,8 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func3`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func3](ManyParamInterface::func3)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func3_async(
         &mut self,
         param1: i32,
@@ -78,8 +78,8 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func4`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func4](ManyParamInterface::func4)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func4_async(
         &mut self,
         param1: i32,

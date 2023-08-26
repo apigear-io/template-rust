@@ -12,8 +12,8 @@ impl NoSignalsInterfaceTrait for NoSignalsInterface {
     fn func_void(&mut self) {
         Default::default()
     }
-    /// Asynchronous version of `func_void`
-    /// returns future of type () which is set once the function has completed
+    /// Asynchronous version of [func_void](NoSignalsInterface::func_void)
+    /// returns future of type [`()`] which is set once the function has completed
     async fn func_void_async(&mut self) -> Result<(), ()> {
         #[allow(clippy::unit_arg)]
         Ok(self.func_void())
@@ -25,8 +25,8 @@ impl NoSignalsInterfaceTrait for NoSignalsInterface {
     ) -> bool {
         Default::default()
     }
-    /// Asynchronous version of `func_bool`
-    /// returns future of type bool which is set once the function has completed
+    /// Asynchronous version of [func_bool](NoSignalsInterface::func_bool)
+    /// returns future of type [`bool`] which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: bool,

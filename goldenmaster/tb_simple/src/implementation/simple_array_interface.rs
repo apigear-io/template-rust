@@ -21,8 +21,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<bool> {
         Default::default()
     }
-    /// Asynchronous version of `func_bool`
-    /// returns future of type Vec<bool> which is set once the function has completed
+    /// Asynchronous version of [func_bool](SimpleArrayInterface::func_bool)
+    /// returns future of type [`Vec<bool>`] which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: &[bool],
@@ -37,8 +37,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<i32> {
         Default::default()
     }
-    /// Asynchronous version of `func_int`
-    /// returns future of type Vec<i32> which is set once the function has completed
+    /// Asynchronous version of [func_int](SimpleArrayInterface::func_int)
+    /// returns future of type [`Vec<i32>`] which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: &[i32],
@@ -53,8 +53,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<i32> {
         Default::default()
     }
-    /// Asynchronous version of `func_int32`
-    /// returns future of type Vec<i32> which is set once the function has completed
+    /// Asynchronous version of [func_int32](SimpleArrayInterface::func_int32)
+    /// returns future of type [`Vec<i32>`] which is set once the function has completed
     async fn func_int32_async(
         &mut self,
         param_int32: &[i32],
@@ -69,8 +69,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<i64> {
         Default::default()
     }
-    /// Asynchronous version of `func_int64`
-    /// returns future of type Vec<i64> which is set once the function has completed
+    /// Asynchronous version of [func_int64](SimpleArrayInterface::func_int64)
+    /// returns future of type [`Vec<i64>`] which is set once the function has completed
     async fn func_int64_async(
         &mut self,
         param_int64: &[i64],
@@ -85,8 +85,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<f32> {
         Default::default()
     }
-    /// Asynchronous version of `func_float`
-    /// returns future of type Vec<f32> which is set once the function has completed
+    /// Asynchronous version of [func_float](SimpleArrayInterface::func_float)
+    /// returns future of type [`Vec<f32>`] which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: &[f32],
@@ -101,8 +101,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<f32> {
         Default::default()
     }
-    /// Asynchronous version of `func_float32`
-    /// returns future of type Vec<f32> which is set once the function has completed
+    /// Asynchronous version of [func_float32](SimpleArrayInterface::func_float32)
+    /// returns future of type [`Vec<f32>`] which is set once the function has completed
     async fn func_float32_async(
         &mut self,
         param_float32: &[f32],
@@ -117,8 +117,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<f64> {
         Default::default()
     }
-    /// Asynchronous version of `func_float64`
-    /// returns future of type Vec<f64> which is set once the function has completed
+    /// Asynchronous version of [func_float64](SimpleArrayInterface::func_float64)
+    /// returns future of type [`Vec<f64>`] which is set once the function has completed
     async fn func_float64_async(
         &mut self,
         param_float: &[f64],
@@ -133,8 +133,8 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     ) -> Vec<String> {
         Default::default()
     }
-    /// Asynchronous version of `func_string`
-    /// returns future of type Vec<String> which is set once the function has completed
+    /// Asynchronous version of [func_string](SimpleArrayInterface::func_string)
+    /// returns future of type [`Vec<String>`] which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &[String],

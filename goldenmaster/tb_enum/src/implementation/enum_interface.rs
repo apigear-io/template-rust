@@ -21,8 +21,8 @@ impl EnumInterfaceTrait for EnumInterface {
     ) -> Enum0Enum {
         Default::default()
     }
-    /// Asynchronous version of `func0`
-    /// returns future of type Enum0Enum which is set once the function has completed
+    /// Asynchronous version of [func0](EnumInterface::func0)
+    /// returns future of type [`Enum0Enum`] which is set once the function has completed
     async fn func0_async(
         &mut self,
         param0: Enum0Enum,
@@ -37,8 +37,8 @@ impl EnumInterfaceTrait for EnumInterface {
     ) -> Enum1Enum {
         Default::default()
     }
-    /// Asynchronous version of `func1`
-    /// returns future of type Enum1Enum which is set once the function has completed
+    /// Asynchronous version of [func1](EnumInterface::func1)
+    /// returns future of type [`Enum1Enum`] which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: Enum1Enum,
@@ -53,8 +53,8 @@ impl EnumInterfaceTrait for EnumInterface {
     ) -> Enum2Enum {
         Default::default()
     }
-    /// Asynchronous version of `func2`
-    /// returns future of type Enum2Enum which is set once the function has completed
+    /// Asynchronous version of [func2](EnumInterface::func2)
+    /// returns future of type [`Enum2Enum`] which is set once the function has completed
     async fn func2_async(
         &mut self,
         param2: Enum2Enum,
@@ -69,8 +69,8 @@ impl EnumInterfaceTrait for EnumInterface {
     ) -> Enum3Enum {
         Default::default()
     }
-    /// Asynchronous version of `func3`
-    /// returns future of type Enum3Enum which is set once the function has completed
+    /// Asynchronous version of [func3](EnumInterface::func3)
+    /// returns future of type [`Enum3Enum`] which is set once the function has completed
     async fn func3_async(
         &mut self,
         param3: Enum3Enum,

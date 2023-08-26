@@ -9,8 +9,8 @@ pub trait SameStruct2InterfaceTrait {
         &mut self,
         param1: &Struct1,
     ) -> Struct1;
-    /// Asynchronous version of `func1`
-    /// returns future of type Struct1 which is set once the function has completed
+    /// Asynchronous version of [func1](SameStruct2InterfaceTrait::func1)
+    /// returns future of type [`Struct1`] which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &Struct1,
@@ -21,8 +21,8 @@ pub trait SameStruct2InterfaceTrait {
         param1: &Struct1,
         param2: &Struct2,
     ) -> Struct1;
-    /// Asynchronous version of `func2`
-    /// returns future of type Struct1 which is set once the function has completed
+    /// Asynchronous version of [func2](SameStruct2InterfaceTrait::func2)
+    /// returns future of type [`Struct1`] which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: &Struct1,

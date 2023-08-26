@@ -9,8 +9,8 @@ pub trait StructInterfaceTrait {
         &mut self,
         param_bool: &StructBool,
     ) -> StructBool;
-    /// Asynchronous version of `func_bool`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_bool](StructInterfaceTrait::func_bool)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: &StructBool,
@@ -20,8 +20,8 @@ pub trait StructInterfaceTrait {
         &mut self,
         param_int: &StructInt,
     ) -> StructBool;
-    /// Asynchronous version of `func_int`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_int](StructInterfaceTrait::func_int)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: &StructInt,
@@ -31,8 +31,8 @@ pub trait StructInterfaceTrait {
         &mut self,
         param_float: &StructFloat,
     ) -> StructFloat;
-    /// Asynchronous version of `func_float`
-    /// returns future of type StructFloat which is set once the function has completed
+    /// Asynchronous version of [func_float](StructInterfaceTrait::func_float)
+    /// returns future of type [`StructFloat`] which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: &StructFloat,
@@ -42,8 +42,8 @@ pub trait StructInterfaceTrait {
         &mut self,
         param_string: &StructString,
     ) -> StructString;
-    /// Asynchronous version of `func_string`
-    /// returns future of type StructString which is set once the function has completed
+    /// Asynchronous version of [func_string](StructInterfaceTrait::func_string)
+    /// returns future of type [`StructString`] which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &StructString,

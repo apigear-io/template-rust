@@ -29,6 +29,7 @@ pub struct {{Camel .Interface.Name}} {}{{nl}}
 #[async_trait]
 {{- end }}
 impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
+{{- $interface := .Interface }}
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
@@ -53,7 +54,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
         Default::default()
     }
 {{- end }}
-    /// Asynchronous version of `{{ snake $operation.Name}}`
+    /// Asynchronous version of [{{ snake $operation.Name}}]({{Camel $interface.Name}}::{{ snake $operation.Name}})
 {{- if $operation.Description }}
     * {{$operation.Description}}
 {{- end }}   {{- /* end if description */}}
@@ -63,7 +64,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
     /// `{{$param}}` {{$param.Description}}
 {{- end }}   {{- /* end if description */}}
 {{- end }}   {{- /* end range operation params */}}
-    /// returns future of type {{rustReturn "" $operation.Return}} which is set once the function has completed
+    /// returns future of type [`{{rustReturn "" $operation.Return}}`] which is set once the function has completed
 {{- if len $operation.Params }}
     async fn {{snake $operation.Name }}_async(
         &mut self,

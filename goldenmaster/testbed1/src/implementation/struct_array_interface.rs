@@ -21,8 +21,8 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
     ) -> StructBool {
         Default::default()
     }
-    /// Asynchronous version of `func_bool`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_bool](StructArrayInterface::func_bool)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: &[StructBool],
@@ -37,8 +37,8 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
     ) -> StructBool {
         Default::default()
     }
-    /// Asynchronous version of `func_int`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_int](StructArrayInterface::func_int)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: &[StructInt],
@@ -53,8 +53,8 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
     ) -> StructBool {
         Default::default()
     }
-    /// Asynchronous version of `func_float`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_float](StructArrayInterface::func_float)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: &[StructFloat],
@@ -69,8 +69,8 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
     ) -> StructBool {
         Default::default()
     }
-    /// Asynchronous version of `func_string`
-    /// returns future of type StructBool which is set once the function has completed
+    /// Asynchronous version of [func_string](StructArrayInterface::func_string)
+    /// returns future of type [`StructBool`] which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &[StructString],

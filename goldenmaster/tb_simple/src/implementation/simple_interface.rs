@@ -21,8 +21,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> bool {
         Default::default()
     }
-    /// Asynchronous version of `func_bool`
-    /// returns future of type bool which is set once the function has completed
+    /// Asynchronous version of [func_bool](SimpleInterface::func_bool)
+    /// returns future of type [`bool`] which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: bool,
@@ -37,8 +37,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func_int`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func_int](SimpleInterface::func_int)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: i32,
@@ -53,8 +53,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> i32 {
         Default::default()
     }
-    /// Asynchronous version of `func_int32`
-    /// returns future of type i32 which is set once the function has completed
+    /// Asynchronous version of [func_int32](SimpleInterface::func_int32)
+    /// returns future of type [`i32`] which is set once the function has completed
     async fn func_int32_async(
         &mut self,
         param_int32: i32,
@@ -69,8 +69,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> i64 {
         Default::default()
     }
-    /// Asynchronous version of `func_int64`
-    /// returns future of type i64 which is set once the function has completed
+    /// Asynchronous version of [func_int64](SimpleInterface::func_int64)
+    /// returns future of type [`i64`] which is set once the function has completed
     async fn func_int64_async(
         &mut self,
         param_int64: i64,
@@ -85,8 +85,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> f32 {
         Default::default()
     }
-    /// Asynchronous version of `func_float`
-    /// returns future of type f32 which is set once the function has completed
+    /// Asynchronous version of [func_float](SimpleInterface::func_float)
+    /// returns future of type [`f32`] which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: f32,
@@ -101,8 +101,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> f32 {
         Default::default()
     }
-    /// Asynchronous version of `func_float32`
-    /// returns future of type f32 which is set once the function has completed
+    /// Asynchronous version of [func_float32](SimpleInterface::func_float32)
+    /// returns future of type [`f32`] which is set once the function has completed
     async fn func_float32_async(
         &mut self,
         param_float32: f32,
@@ -117,8 +117,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> f64 {
         Default::default()
     }
-    /// Asynchronous version of `func_float64`
-    /// returns future of type f64 which is set once the function has completed
+    /// Asynchronous version of [func_float64](SimpleInterface::func_float64)
+    /// returns future of type [`f64`] which is set once the function has completed
     async fn func_float64_async(
         &mut self,
         param_float: f64,
@@ -133,8 +133,8 @@ impl SimpleInterfaceTrait for SimpleInterface {
     ) -> String {
         Default::default()
     }
-    /// Asynchronous version of `func_string`
-    /// returns future of type String which is set once the function has completed
+    /// Asynchronous version of [func_string](SimpleInterface::func_string)
+    /// returns future of type [`String`] which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &str,

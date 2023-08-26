@@ -20,8 +20,8 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     ) -> NestedStruct1 {
         Default::default()
     }
-    /// Asynchronous version of `func1`
-    /// returns future of type NestedStruct1 which is set once the function has completed
+    /// Asynchronous version of [func1](NestedStruct3Interface::func1)
+    /// returns future of type [`NestedStruct1`] which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &NestedStruct1,
@@ -37,8 +37,8 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     ) -> NestedStruct1 {
         Default::default()
     }
-    /// Asynchronous version of `func2`
-    /// returns future of type NestedStruct1 which is set once the function has completed
+    /// Asynchronous version of [func2](NestedStruct3Interface::func2)
+    /// returns future of type [`NestedStruct1`] which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: &NestedStruct1,
@@ -56,8 +56,8 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
     ) -> NestedStruct1 {
         Default::default()
     }
-    /// Asynchronous version of `func3`
-    /// returns future of type NestedStruct1 which is set once the function has completed
+    /// Asynchronous version of [func3](NestedStruct3Interface::func3)
+    /// returns future of type [`NestedStruct1`] which is set once the function has completed
     async fn func3_async(
         &mut self,
         param1: &NestedStruct1,

@@ -17,6 +17,7 @@ use async_trait::async_trait;
 #[async_trait]{{ nl }}
 {{- end -}}
 pub trait {{Camel .Interface.Name}}Trait {
+{{- $interface := .Interface }}
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
@@ -37,7 +38,7 @@ pub trait {{Camel .Interface.Name}}Trait {
 {{- else }}
     fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }};
 {{- end }}
-    /// Asynchronous version of `{{ snake $operation.Name}}`
+    /// Asynchronous version of [{{ snake $operation.Name}}]({{Camel $interface.Name}}Trait::{{ snake $operation.Name}})
 {{- if $operation.Description }}
     * {{$operation.Description}}
 {{- end }}   {{- /* end if description */}}
@@ -47,7 +48,7 @@ pub trait {{Camel .Interface.Name}}Trait {
     /// `{{$param}}` {{$param.Description}}
 {{- end }}   {{- /* end if description */}}
 {{- end }}   {{- /* end range operation params */}}
-    /// returns future of type {{rustReturn "" $operation.Return}} which is set once the function has completed
+    /// returns future of type [`{{rustReturn "" $operation.Return}}`] which is set once the function has completed
 {{- if len $operation.Params }}
     async fn {{snake $operation.Name }}_async(
         &mut self,
