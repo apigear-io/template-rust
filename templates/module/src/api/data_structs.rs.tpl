@@ -1,10 +1,13 @@
-{{- if len .Module.Enums -}}
-use std::convert::TryFrom;{{nl}}
+{{- if or (len .Module.Enums) (len .Module.Structs) -}}
+use serde::{Deserialize, Serialize};
 {{- end }}
 {{- /* ***************************************************************** */ -}}
 {{- /* *** ENUMERATIONS                                              *** */ -}}
 {{- /* ***************************************************************** */ -}}
+{{- if len .Module.Enums }}
+use std::convert::TryFrom;
 // Enumerations
+{{- end }}
 {{- range $i, $e := .Module.Enums }}
 {{- $enum := . }}
 {{- if $i }}{{nl}}{{ end }}
@@ -14,7 +17,7 @@ use std::convert::TryFrom;{{nl}}
 /// {{.Description}}
 {{- end }}
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum {{$class}}Enum {
 {{- range $idx, $elem := .Members }}
     {{- if eq .Name $enum.Default.Name }}
@@ -56,7 +59,7 @@ impl TryFrom<u8> for {{$class}}Enum {
 {{- if .Description }}
 /// {{.Description}}
 {{- end }}
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct {{$class}} {
 {{- /* members */}}
 {{- range  .Fields }}

@@ -1,8 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 // Enumerations
 /// Enumeration Enum0
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum0Enum {
     #[default]
     Value0 = 0,
@@ -25,7 +26,7 @@ impl TryFrom<u8> for Enum0Enum {
 
 /// Enumeration Enum1
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum1Enum {
     #[default]
     Value1 = 1,
@@ -48,7 +49,7 @@ impl TryFrom<u8> for Enum1Enum {
 
 /// Enumeration Enum2
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum2Enum {
     #[default]
     Value2 = 2,
@@ -71,7 +72,7 @@ impl TryFrom<u8> for Enum2Enum {
 
 /// Enumeration Enum3
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum3Enum {
     #[default]
     Value3 = 3,

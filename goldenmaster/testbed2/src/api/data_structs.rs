@@ -1,8 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 // Enumerations
 /// Enumeration Enum1
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum1Enum {
     #[default]
     Value1 = 1,
@@ -27,7 +28,7 @@ impl TryFrom<u8> for Enum1Enum {
 
 /// Enumeration Enum2
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum2Enum {
     #[default]
     Value1 = 1,
@@ -52,7 +53,7 @@ impl TryFrom<u8> for Enum2Enum {
 
 /// Enumeration Enum3
 #[repr(u8)]
-#[derive(Copy, Clone, Debug, Default, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Enum3Enum {
     #[default]
     Value1 = 1,
@@ -77,20 +78,20 @@ impl TryFrom<u8> for Enum3Enum {
 
 // Structs
 /// Struct Struct1
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Struct1 {
     pub field1: i32,
 }
 
 /// Struct Struct2
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Struct2 {
     pub field1: i32,
     pub field2: i32,
 }
 
 /// Struct Struct3
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Struct3 {
     pub field1: i32,
     pub field2: i32,
@@ -98,7 +99,7 @@ pub struct Struct3 {
 }
 
 /// Struct Struct4
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Struct4 {
     pub field1: i32,
     pub field2: i32,
@@ -107,20 +108,20 @@ pub struct Struct4 {
 }
 
 /// Struct NestedStruct1
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NestedStruct1 {
     pub field1: Struct1,
 }
 
 /// Struct NestedStruct2
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NestedStruct2 {
     pub field1: Struct1,
     pub field2: Struct2,
 }
 
 /// Struct NestedStruct3
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NestedStruct3 {
     pub field1: Struct1,
     pub field2: Struct2,
