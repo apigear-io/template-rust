@@ -33,10 +33,10 @@ pub trait {{Camel .Interface.Name}}Trait {
 {{- if len $operation.Params }}
     fn {{snake $operation.Name }}(
         &mut self,
-        {{rustParams "" "" ",\n        " $operation.Params}},
-    ){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }};
+        {{rsParams "" "" ",\n        " $operation.Params}},
+    ){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }};
 {{- else }}
-    fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }};
+    fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }};
 {{- end }}
     /// Asynchronous version of [{{ snake $operation.Name}}]({{Camel $interface.Name}}Trait::{{ snake $operation.Name}})
 {{- if $operation.Description }}
@@ -48,14 +48,14 @@ pub trait {{Camel .Interface.Name}}Trait {
     /// `{{$param}}` {{$param.Description}}
 {{- end }}   {{- /* end if description */}}
 {{- end }}   {{- /* end range operation params */}}
-    /// returns future of type [`{{rustReturn "" $operation.Return}}`] which is set once the function has completed
+    /// returns future of type [`{{rsReturn "" $operation.Return}}`] which is set once the function has completed
 {{- if len $operation.Params }}
     async fn {{snake $operation.Name }}_async(
         &mut self,
-        {{rustParams "" "" ",\n        " $operation.Params}},
-    ) -> Result<{{rustReturn "" $operation.Return}}, ()>;
+        {{rsParams "" "" ",\n        " $operation.Params}},
+    ) -> Result<{{rsReturn "" $operation.Return}}, ()>;
 {{- else }}
-    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rustReturn "" $operation.Return}}, ()>;
+    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rsReturn "" $operation.Return}}, ()>;
 {{- end }}
 {{- end }}   {{- /* end range operations */}}
 
@@ -68,7 +68,7 @@ pub trait {{Camel .Interface.Name}}Trait {
     {{- if $property.Description }}
     /// {{$property.Description}}
     {{- end }}    {{- /* end if property.Description */}}
-    fn {{snake $property.Name }}(&self) -> {{rustTypeRef "" $property}};
+    fn {{snake $property.Name }}(&self) -> {{rsTypeRef "" $property}};
     {{- if not .IsReadOnly }}
     /// Sets the value of the {{$property.Name}} property.
     {{- if $property.Description }}
@@ -76,7 +76,7 @@ pub trait {{Camel .Interface.Name}}Trait {
     {{- end }}    {{- /* end if property.Description */}}
     fn set_{{snake $property.Name}}(
         &mut self,
-        {{ rustParam "" "" $property }},
+        {{ rsParam "" "" $property }},
     );
     {{- end }}
 {{- end }}    {{- /* end range properties */}}

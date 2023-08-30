@@ -66,7 +66,7 @@ pub struct {{$class}} {
 {{- if .Description }}
      /// {{.Description}}
 {{- end }}
-    pub {{snake .Name}}: {{ rustType "" . }},
+    pub {{snake .Name}}: {{ rsType "" . }},
 {{- end }}
 }
 {{- end }}

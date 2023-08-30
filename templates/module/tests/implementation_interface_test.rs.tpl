@@ -92,7 +92,7 @@ mod tests {
     #[test]
     fn test_{{snake $property.Name }}() {
         let mut test_object: {{Camel $.Interface.Name}} = Default::default();
-        let default_value: {{rustType "" $property}} = Default::default();
+        let default_value: {{rsType "" $property}} = Default::default();
         {{- if not .IsReadOnly }}
         test_object.set_{{snake $property.Name }}({{ if $isComplex }}&{{end}}default_value);
         {{- end }}

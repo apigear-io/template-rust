@@ -19,7 +19,7 @@ use async_trait::async_trait;
 pub struct {{Camel .Interface.Name}} {
 {{- range .Interface.Properties }}
 {{- $property:= . }}
-    {{snake $property.Name}}: {{rustType "" $property}},
+    {{snake $property.Name}}: {{rsType "" $property}},
 {{- end }}
 }{{nl}}
 {{- else }}
@@ -45,12 +45,12 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
 {{- if len $operation.Params }}
     fn {{snake $operation.Name }}(
         &mut self,
-        {{rustParams "_" "" ",\n        " $operation.Params}},
-    ){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }} {
+        {{rsParams "_" "" ",\n        " $operation.Params}},
+    ){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }} {
         Default::default()
     }
 {{- else }}
-    fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rustReturn "" $operation.Return}}{{- end }} {
+    fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }} {
         Default::default()
     }
 {{- end }}
@@ -64,22 +64,22 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
     /// `{{$param}}` {{$param.Description}}
 {{- end }}   {{- /* end if description */}}
 {{- end }}   {{- /* end range operation params */}}
-    /// returns future of type [`{{rustReturn "" $operation.Return}}`] which is set once the function has completed
+    /// returns future of type [`{{rsReturn "" $operation.Return}}`] which is set once the function has completed
 {{- if len $operation.Params }}
     async fn {{snake $operation.Name }}_async(
         &mut self,
-        {{rustParams "" "" ",\n        " $operation.Params}},
-    ) -> Result<{{rustReturn "" $operation.Return}}, ()> {
+        {{rsParams "" "" ",\n        " $operation.Params}},
+    ) -> Result<{{rsReturn "" $operation.Return}}, ()> {
         #[allow(clippy::unit_arg)]
         Ok(self.{{snake $operation.Name }}(
         {{- range $i, $e := $operation.Params }}
         {{- $param := . }}
         {{- if $i }}, {{ end }}
-        {{- rustVar "" .}}{{ end -}}
+        {{- rsVar "" .}}{{ end -}}
         ))
     }
 {{- else }}
-    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rustReturn "" $operation.Return}}, ()> {
+    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rsReturn "" $operation.Return}}, ()> {
         #[allow(clippy::unit_arg)]
         Ok(self.{{snake $operation.Name }}())
     }
@@ -96,7 +96,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
     {{- if $property.Description }}
     /// {{$property.Description}}
     {{- end }}    {{- /* end if property.Description */}}
-    fn {{snake $property.Name }}(&self) -> {{rustTypeRef "" $property}} {
+    fn {{snake $property.Name }}(&self) -> {{rsTypeRef "" $property}} {
         {{ if $isComplex }}&{{end}}self.{{ snake $property.Name }}
     }
     {{- if not .IsReadOnly }}
@@ -106,7 +106,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
     {{- end }}    {{- /* end if property.Description */}}
     fn set_{{snake $property.Name}}(
         &mut self,
-        {{ rustParam "" "" $property }},
+        {{ rsParam "" "" $property }},
     ) {
         {{- if and ( eq "string" $property.Type ) ( eq false $property.IsArray )}}
         if self.{{ snake $property.Name }} == {{ snake $property.Name }} {
