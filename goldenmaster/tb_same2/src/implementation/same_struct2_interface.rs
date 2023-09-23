@@ -4,11 +4,14 @@ use crate::api::same_struct2_interface::SameStruct2InterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::same_struct2_interface::SameStruct2InterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct SameStruct2Interface {
     prop1: Struct2,
     prop2: Struct2,
+    _signal_handler: SameStruct2InterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -61,6 +64,7 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
         }
 
         self.prop1 = prop1.clone();
+        self._signal_handler.prop1_changed.emit(self.prop1.clone());
     }
 
     /// Gets the value of the prop2 property.
@@ -77,5 +81,10 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
         }
 
         self.prop2 = prop2.clone();
+        self._signal_handler.prop2_changed.emit(self.prop2.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &SameStruct2InterfaceSignalHandler {
+        &self._signal_handler
     }
 }

@@ -1,4 +1,12 @@
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct NoPropertiesInterfaceSignalHandler {
+    pub sig_void: Signal<()>,
+
+    pub sig_bool: Signal<(bool,)>,
+}
 
 #[async_trait]
 pub trait NoPropertiesInterfaceTrait {
@@ -17,4 +25,6 @@ pub trait NoPropertiesInterfaceTrait {
         &mut self,
         param_bool: bool,
     ) -> Result<bool, ()>;
+
+    fn _get_signal_handler(&mut self) -> &NoPropertiesInterfaceSignalHandler;
 }

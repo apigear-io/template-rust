@@ -4,6 +4,8 @@ use crate::api::struct_array_interface::StructArrayInterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::struct_array_interface::StructArrayInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct StructArrayInterface {
@@ -11,6 +13,7 @@ pub struct StructArrayInterface {
     prop_int: Vec<StructInt>,
     prop_float: Vec<StructFloat>,
     prop_string: Vec<StructString>,
+    _signal_handler: StructArrayInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -93,6 +96,7 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
         }
 
         self.prop_bool = prop_bool.to_vec();
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
     }
 
     /// Gets the value of the propInt property.
@@ -109,6 +113,7 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
         }
 
         self.prop_int = prop_int.to_vec();
+        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
     }
 
     /// Gets the value of the propFloat property.
@@ -125,6 +130,7 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
         }
 
         self.prop_float = prop_float.to_vec();
+        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
     }
 
     /// Gets the value of the propString property.
@@ -141,5 +147,10 @@ impl StructArrayInterfaceTrait for StructArrayInterface {
         }
 
         self.prop_string = prop_string.to_vec();
+        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &StructArrayInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

@@ -4,10 +4,13 @@ use crate::api::same_struct1_interface::SameStruct1InterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::same_struct1_interface::SameStruct1InterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct SameStruct1Interface {
     prop1: Struct1,
+    _signal_handler: SameStruct1InterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -42,5 +45,10 @@ impl SameStruct1InterfaceTrait for SameStruct1Interface {
         }
 
         self.prop1 = prop1.clone();
+        self._signal_handler.prop1_changed.emit(self.prop1.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &SameStruct1InterfaceSignalHandler {
+        &self._signal_handler
     }
 }

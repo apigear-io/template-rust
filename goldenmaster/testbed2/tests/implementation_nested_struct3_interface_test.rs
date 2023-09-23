@@ -1,3 +1,4 @@
+use signals2::*;
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
@@ -145,5 +146,65 @@ mod tests {
         let default_value: NestedStruct3 = Default::default();
         test_object.set_prop3(&default_value);
         assert_eq!(test_object.prop3().clone(), default_value);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig1() {
+        let mut test_object: NestedStruct3Interface = Default::default();
+
+        test_object._get_signal_handler().sig1.connect(move |param1| {
+            let default_value_param1: NestedStruct1 = Default::default();
+            assert_eq!(param1, default_value_param1);
+        });
+
+        let default_value_param1: NestedStruct1 = Default::default();
+        test_object._get_signal_handler().sig1.emit(
+            default_value_param1.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig2() {
+        let mut test_object: NestedStruct3Interface = Default::default();
+
+        test_object._get_signal_handler().sig2.connect(move |param1, param2| {
+            let default_value_param1: NestedStruct1 = Default::default();
+            assert_eq!(param1, default_value_param1);
+            let default_value_param2: NestedStruct2 = Default::default();
+            assert_eq!(param2, default_value_param2);
+        });
+
+        let default_value_param1: NestedStruct1 = Default::default();
+        let default_value_param2: NestedStruct2 = Default::default();
+        test_object._get_signal_handler().sig2.emit(
+            default_value_param1.clone(),
+            default_value_param2.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig3() {
+        let mut test_object: NestedStruct3Interface = Default::default();
+
+        test_object._get_signal_handler().sig3.connect(move |param1, param2, param3| {
+            let default_value_param1: NestedStruct1 = Default::default();
+            assert_eq!(param1, default_value_param1);
+            let default_value_param2: NestedStruct2 = Default::default();
+            assert_eq!(param2, default_value_param2);
+            let default_value_param3: NestedStruct3 = Default::default();
+            assert_eq!(param3, default_value_param3);
+        });
+
+        let default_value_param1: NestedStruct1 = Default::default();
+        let default_value_param2: NestedStruct2 = Default::default();
+        let default_value_param3: NestedStruct3 = Default::default();
+        test_object._get_signal_handler().sig3.emit(
+            default_value_param1.clone(),
+            default_value_param2.clone(),
+            default_value_param3.clone(),
+        );
     }
 }

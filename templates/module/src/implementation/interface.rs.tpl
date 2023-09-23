@@ -13,13 +13,23 @@ use crate::api::data_structs::*;{{ nl }}
 {{- $ops = true }}
 use async_trait::async_trait;
 {{- end }}
+{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
+use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}SignalHandler;
+{{- if not (len .Interface.Properties) }}
+#[allow(unused_imports)]
+{{- end}}
+use signals2::*;
+{{- end }}
 {{- if or (len .Interface.Properties) $ops }}{{ nl }}{{ end }}
 #[derive(Default, Clone)]
-{{- if len .Interface.Properties }}
+{{- if or (len .Interface.Properties) (len .Interface.Signals) }}
 pub struct {{Camel .Interface.Name}} {
 {{- range .Interface.Properties }}
 {{- $property:= . }}
     {{snake $property.Name}}: {{rsType "" $property}},
+{{- end }}
+{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
+    _signal_handler: {{Camel .Interface.Name}}SignalHandler,
 {{- end }}
 }{{nl}}
 {{- else }}
@@ -114,6 +124,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
         }
 
         self.{{ snake $property.Name }} = {{ snake $property.Name }}.to_string();
+        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}.to_string());
         {{- else }}
         {{- if eq false $property.IsArray }}
         if self.{{ snake $property.Name }} == {{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }} {
@@ -121,15 +132,24 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
         }
 
         self.{{ snake $property.Name }} = {{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }};
+        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }});
         {{- else }}
         if self.{{ snake $property.Name }} == {{ snake $property.Name }}{{ if $isComplex }}.to_vec(){{ end }} {
             return;
         }
 
         self.{{ snake $property.Name }} = {{ snake $property.Name }}{{ if $isComplex }}.to_vec(){{ end }};
+        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}.clone());
         {{- end }}
         {{- end }}
     }
     {{- end }}
 {{- end }}    {{- /* end range properties */}}
+
+{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
+
+    fn _get_signal_handler(&mut self) -> &{{Camel .Interface.Name}}SignalHandler {
+        &self._signal_handler
+    }
+{{- end }}
 }

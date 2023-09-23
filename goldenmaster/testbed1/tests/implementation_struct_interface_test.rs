@@ -1,3 +1,4 @@
+use signals2::*;
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed1::api::data_structs::*;
@@ -87,5 +88,69 @@ mod tests {
         let default_value: StructString = Default::default();
         test_object.set_prop_string(&default_value);
         assert_eq!(test_object.prop_string().clone(), default_value);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig_bool() {
+        let mut test_object: StructInterface = Default::default();
+
+        test_object._get_signal_handler().sig_bool.connect(move |param_bool| {
+            let default_value_param_bool: StructBool = Default::default();
+            assert_eq!(param_bool, default_value_param_bool);
+        });
+
+        let default_value_param_bool: StructBool = Default::default();
+        test_object._get_signal_handler().sig_bool.emit(
+            default_value_param_bool.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig_int() {
+        let mut test_object: StructInterface = Default::default();
+
+        test_object._get_signal_handler().sig_int.connect(move |param_int| {
+            let default_value_param_int: StructInt = Default::default();
+            assert_eq!(param_int, default_value_param_int);
+        });
+
+        let default_value_param_int: StructInt = Default::default();
+        test_object._get_signal_handler().sig_int.emit(
+            default_value_param_int.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig_float() {
+        let mut test_object: StructInterface = Default::default();
+
+        test_object._get_signal_handler().sig_float.connect(move |param_float| {
+            let default_value_param_float: StructFloat = Default::default();
+            assert_eq!(param_float, default_value_param_float);
+        });
+
+        let default_value_param_float: StructFloat = Default::default();
+        test_object._get_signal_handler().sig_float.emit(
+            default_value_param_float.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig_string() {
+        let mut test_object: StructInterface = Default::default();
+
+        test_object._get_signal_handler().sig_string.connect(move |param_string| {
+            let default_value_param_string: StructString = Default::default();
+            assert_eq!(param_string, default_value_param_string);
+        });
+
+        let default_value_param_string: StructString = Default::default();
+        test_object._get_signal_handler().sig_string.emit(
+            default_value_param_string.clone(),
+        );
     }
 }

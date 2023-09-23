@@ -1,3 +1,4 @@
+use signals2::*;
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use tb_enum::api::data_structs::*;
@@ -179,5 +180,69 @@ mod tests {
         let default_value: Enum3Enum = Default::default();
         test_object.set_prop3(default_value);
         assert_eq!(test_object.prop3().clone(), default_value);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig0() {
+        let mut test_object: EnumInterface = Default::default();
+
+        test_object._get_signal_handler().sig0.connect(move |param0| {
+            let default_value_param0: Enum0Enum = Default::default();
+            assert_eq!(param0, default_value_param0);
+        });
+
+        let default_value_param0: Enum0Enum = Default::default();
+        test_object._get_signal_handler().sig0.emit(
+            default_value_param0.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig1() {
+        let mut test_object: EnumInterface = Default::default();
+
+        test_object._get_signal_handler().sig1.connect(move |param1| {
+            let default_value_param1: Enum1Enum = Default::default();
+            assert_eq!(param1, default_value_param1);
+        });
+
+        let default_value_param1: Enum1Enum = Default::default();
+        test_object._get_signal_handler().sig1.emit(
+            default_value_param1.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig2() {
+        let mut test_object: EnumInterface = Default::default();
+
+        test_object._get_signal_handler().sig2.connect(move |param2| {
+            let default_value_param2: Enum2Enum = Default::default();
+            assert_eq!(param2, default_value_param2);
+        });
+
+        let default_value_param2: Enum2Enum = Default::default();
+        test_object._get_signal_handler().sig2.emit(
+            default_value_param2.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig3() {
+        let mut test_object: EnumInterface = Default::default();
+
+        test_object._get_signal_handler().sig3.connect(move |param3| {
+            let default_value_param3: Enum3Enum = Default::default();
+            assert_eq!(param3, default_value_param3);
+        });
+
+        let default_value_param3: Enum3Enum = Default::default();
+        test_object._get_signal_handler().sig3.emit(
+            default_value_param3.clone(),
+        );
     }
 }

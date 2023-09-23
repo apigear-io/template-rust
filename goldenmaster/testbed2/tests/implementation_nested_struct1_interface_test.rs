@@ -1,3 +1,4 @@
+use signals2::*;
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
@@ -105,5 +106,21 @@ mod tests {
         let default_value: NestedStruct1 = Default::default();
         test_object.set_prop1(&default_value);
         assert_eq!(test_object.prop1().clone(), default_value);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig1() {
+        let mut test_object: NestedStruct1Interface = Default::default();
+
+        test_object._get_signal_handler().sig1.connect(move |param1| {
+            let default_value_param1: NestedStruct1 = Default::default();
+            assert_eq!(param1, default_value_param1);
+        });
+
+        let default_value_param1: NestedStruct1 = Default::default();
+        test_object._get_signal_handler().sig1.emit(
+            default_value_param1.clone(),
+        );
     }
 }

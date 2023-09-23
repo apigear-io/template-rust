@@ -1,4 +1,12 @@
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct NoSignalsInterfaceSignalHandler {
+    pub prop_bool_changed: Signal<(bool,)>,
+
+    pub prop_int_changed: Signal<(i32,)>,
+}
 
 #[async_trait]
 pub trait NoSignalsInterfaceTrait {
@@ -33,4 +41,6 @@ pub trait NoSignalsInterfaceTrait {
         &mut self,
         prop_int: i32,
     );
+
+    fn _get_signal_handler(&mut self) -> &NoSignalsInterfaceSignalHandler;
 }

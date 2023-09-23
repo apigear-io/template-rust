@@ -4,12 +4,15 @@ use crate::api::nested_struct3_interface::NestedStruct3InterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::nested_struct3_interface::NestedStruct3InterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct NestedStruct3Interface {
     prop1: NestedStruct1,
     prop2: NestedStruct2,
     prop3: NestedStruct3,
+    _signal_handler: NestedStruct3InterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -82,6 +85,7 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
         }
 
         self.prop1 = prop1.clone();
+        self._signal_handler.prop1_changed.emit(self.prop1.clone());
     }
 
     /// Gets the value of the prop2 property.
@@ -98,6 +102,7 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
         }
 
         self.prop2 = prop2.clone();
+        self._signal_handler.prop2_changed.emit(self.prop2.clone());
     }
 
     /// Gets the value of the prop3 property.
@@ -114,5 +119,10 @@ impl NestedStruct3InterfaceTrait for NestedStruct3Interface {
         }
 
         self.prop3 = prop3.clone();
+        self._signal_handler.prop3_changed.emit(self.prop3.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &NestedStruct3InterfaceSignalHandler {
+        &self._signal_handler
     }
 }

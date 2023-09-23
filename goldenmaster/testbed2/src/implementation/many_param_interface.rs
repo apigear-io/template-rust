@@ -4,6 +4,8 @@ use crate::api::many_param_interface::ManyParamInterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::many_param_interface::ManyParamInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct ManyParamInterface {
@@ -11,6 +13,7 @@ pub struct ManyParamInterface {
     prop2: i32,
     prop3: i32,
     prop4: i32,
+    _signal_handler: ManyParamInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -105,6 +108,7 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
         }
 
         self.prop1 = prop1;
+        self._signal_handler.prop1_changed.emit(self.prop1);
     }
 
     /// Gets the value of the prop2 property.
@@ -121,6 +125,7 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
         }
 
         self.prop2 = prop2;
+        self._signal_handler.prop2_changed.emit(self.prop2);
     }
 
     /// Gets the value of the prop3 property.
@@ -137,6 +142,7 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
         }
 
         self.prop3 = prop3;
+        self._signal_handler.prop3_changed.emit(self.prop3);
     }
 
     /// Gets the value of the prop4 property.
@@ -153,5 +159,10 @@ impl ManyParamInterfaceTrait for ManyParamInterface {
         }
 
         self.prop4 = prop4;
+        self._signal_handler.prop4_changed.emit(self.prop4);
+    }
+
+    fn _get_signal_handler(&mut self) -> &ManyParamInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

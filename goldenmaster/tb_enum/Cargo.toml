@@ -9,3 +9,4 @@ edition = "2021"
 async-trait = "0.1.73"
 serde = { version = "1.0.187", features = ["derive"] }
 serde_json = "1.0"
+signals2 = "0.3.3"

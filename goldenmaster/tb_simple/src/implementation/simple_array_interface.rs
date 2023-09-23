@@ -1,5 +1,7 @@
 use crate::api::simple_array_interface::SimpleArrayInterfaceTrait;
 use async_trait::async_trait;
+use crate::api::simple_array_interface::SimpleArrayInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct SimpleArrayInterface {
@@ -11,6 +13,7 @@ pub struct SimpleArrayInterface {
     prop_float32: Vec<f32>,
     prop_float64: Vec<f64>,
     prop_string: Vec<String>,
+    _signal_handler: SimpleArrayInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -157,6 +160,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_bool = prop_bool.to_vec();
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
     }
 
     /// Gets the value of the propInt property.
@@ -173,6 +177,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_int = prop_int.to_vec();
+        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
     }
 
     /// Gets the value of the propInt32 property.
@@ -189,6 +194,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_int32 = prop_int32.to_vec();
+        self._signal_handler.prop_int32_changed.emit(self.prop_int32.clone());
     }
 
     /// Gets the value of the propInt64 property.
@@ -205,6 +211,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_int64 = prop_int64.to_vec();
+        self._signal_handler.prop_int64_changed.emit(self.prop_int64.clone());
     }
 
     /// Gets the value of the propFloat property.
@@ -221,6 +228,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_float = prop_float.to_vec();
+        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
     }
 
     /// Gets the value of the propFloat32 property.
@@ -237,6 +245,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_float32 = prop_float32.to_vec();
+        self._signal_handler.prop_float32_changed.emit(self.prop_float32.clone());
     }
 
     /// Gets the value of the propFloat64 property.
@@ -253,6 +262,7 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_float64 = prop_float64.to_vec();
+        self._signal_handler.prop_float64_changed.emit(self.prop_float64.clone());
     }
 
     /// Gets the value of the propString property.
@@ -269,5 +279,10 @@ impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
         }
 
         self.prop_string = prop_string.to_vec();
+        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &SimpleArrayInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

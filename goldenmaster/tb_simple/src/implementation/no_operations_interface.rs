@@ -1,9 +1,12 @@
 use crate::api::no_operations_interface::NoOperationsInterfaceTrait;
+use crate::api::no_operations_interface::NoOperationsInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct NoOperationsInterface {
     prop_bool: bool,
     prop_int: i32,
+    _signal_handler: NoOperationsInterfaceSignalHandler,
 }
 
 impl NoOperationsInterfaceTrait for NoOperationsInterface {
@@ -21,6 +24,7 @@ impl NoOperationsInterfaceTrait for NoOperationsInterface {
         }
 
         self.prop_bool = prop_bool;
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool);
     }
 
     /// Gets the value of the propInt property.
@@ -37,5 +41,10 @@ impl NoOperationsInterfaceTrait for NoOperationsInterface {
         }
 
         self.prop_int = prop_int;
+        self._signal_handler.prop_int_changed.emit(self.prop_int);
+    }
+
+    fn _get_signal_handler(&mut self) -> &NoOperationsInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

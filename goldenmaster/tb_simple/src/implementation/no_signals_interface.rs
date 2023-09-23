@@ -1,10 +1,13 @@
 use crate::api::no_signals_interface::NoSignalsInterfaceTrait;
 use async_trait::async_trait;
+use crate::api::no_signals_interface::NoSignalsInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct NoSignalsInterface {
     prop_bool: bool,
     prop_int: i32,
+    _signal_handler: NoSignalsInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -49,6 +52,7 @@ impl NoSignalsInterfaceTrait for NoSignalsInterface {
         }
 
         self.prop_bool = prop_bool;
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool);
     }
 
     /// Gets the value of the propInt property.
@@ -65,5 +69,10 @@ impl NoSignalsInterfaceTrait for NoSignalsInterface {
         }
 
         self.prop_int = prop_int;
+        self._signal_handler.prop_int_changed.emit(self.prop_int);
+    }
+
+    fn _get_signal_handler(&mut self) -> &NoSignalsInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

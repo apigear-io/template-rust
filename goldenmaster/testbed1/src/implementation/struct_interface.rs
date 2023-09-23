@@ -4,6 +4,8 @@ use crate::api::struct_interface::StructInterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::struct_interface::StructInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct StructInterface {
@@ -11,6 +13,7 @@ pub struct StructInterface {
     prop_int: StructInt,
     prop_float: StructFloat,
     prop_string: StructString,
+    _signal_handler: StructInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -93,6 +96,7 @@ impl StructInterfaceTrait for StructInterface {
         }
 
         self.prop_bool = prop_bool.clone();
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
     }
 
     /// Gets the value of the propInt property.
@@ -109,6 +113,7 @@ impl StructInterfaceTrait for StructInterface {
         }
 
         self.prop_int = prop_int.clone();
+        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
     }
 
     /// Gets the value of the propFloat property.
@@ -125,6 +130,7 @@ impl StructInterfaceTrait for StructInterface {
         }
 
         self.prop_float = prop_float.clone();
+        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
     }
 
     /// Gets the value of the propString property.
@@ -141,5 +147,10 @@ impl StructInterfaceTrait for StructInterface {
         }
 
         self.prop_string = prop_string.clone();
+        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &StructInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

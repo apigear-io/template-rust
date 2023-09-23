@@ -4,10 +4,13 @@ use crate::api::nested_struct1_interface::NestedStruct1InterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::nested_struct1_interface::NestedStruct1InterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct NestedStruct1Interface {
     prop1: NestedStruct1,
+    _signal_handler: NestedStruct1InterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -42,5 +45,10 @@ impl NestedStruct1InterfaceTrait for NestedStruct1Interface {
         }
 
         self.prop1 = prop1.clone();
+        self._signal_handler.prop1_changed.emit(self.prop1.clone());
+    }
+
+    fn _get_signal_handler(&mut self) -> &NestedStruct1InterfaceSignalHandler {
+        &self._signal_handler
     }
 }

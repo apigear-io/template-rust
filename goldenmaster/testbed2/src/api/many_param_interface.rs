@@ -2,6 +2,26 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct ManyParamInterfaceSignalHandler {
+    pub prop1_changed: Signal<(i32,)>,
+
+    pub prop2_changed: Signal<(i32,)>,
+
+    pub prop3_changed: Signal<(i32,)>,
+
+    pub prop4_changed: Signal<(i32,)>,
+
+    pub sig1: Signal<(i32,)>,
+
+    pub sig2: Signal<(i32, i32)>,
+
+    pub sig3: Signal<(i32, i32, i32)>,
+
+    pub sig4: Signal<(i32, i32, i32, i32)>,
+}
 
 #[async_trait]
 pub trait ManyParamInterfaceTrait {
@@ -92,4 +112,6 @@ pub trait ManyParamInterfaceTrait {
         &mut self,
         prop4: i32,
     );
+
+    fn _get_signal_handler(&mut self) -> &ManyParamInterfaceSignalHandler;
 }

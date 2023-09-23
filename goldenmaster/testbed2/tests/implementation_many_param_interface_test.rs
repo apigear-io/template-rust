@@ -1,3 +1,4 @@
+use signals2::*;
 // we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
@@ -165,5 +166,93 @@ mod tests {
         let default_value: i32 = Default::default();
         test_object.set_prop4(default_value);
         assert_eq!(test_object.prop4().clone(), default_value);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig1() {
+        let mut test_object: ManyParamInterface = Default::default();
+
+        test_object._get_signal_handler().sig1.connect(move |param1| {
+            let default_value_param1: i32 = Default::default();
+            assert_eq!(param1, default_value_param1);
+        });
+
+        let default_value_param1: i32 = Default::default();
+        test_object._get_signal_handler().sig1.emit(
+            default_value_param1.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig2() {
+        let mut test_object: ManyParamInterface = Default::default();
+
+        test_object._get_signal_handler().sig2.connect(move |param1, param2| {
+            let default_value_param1: i32 = Default::default();
+            assert_eq!(param1, default_value_param1);
+            let default_value_param2: i32 = Default::default();
+            assert_eq!(param2, default_value_param2);
+        });
+
+        let default_value_param1: i32 = Default::default();
+        let default_value_param2: i32 = Default::default();
+        test_object._get_signal_handler().sig2.emit(
+            default_value_param1.clone(),
+            default_value_param2.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig3() {
+        let mut test_object: ManyParamInterface = Default::default();
+
+        test_object._get_signal_handler().sig3.connect(move |param1, param2, param3| {
+            let default_value_param1: i32 = Default::default();
+            assert_eq!(param1, default_value_param1);
+            let default_value_param2: i32 = Default::default();
+            assert_eq!(param2, default_value_param2);
+            let default_value_param3: i32 = Default::default();
+            assert_eq!(param3, default_value_param3);
+        });
+
+        let default_value_param1: i32 = Default::default();
+        let default_value_param2: i32 = Default::default();
+        let default_value_param3: i32 = Default::default();
+        test_object._get_signal_handler().sig3.emit(
+            default_value_param1.clone(),
+            default_value_param2.clone(),
+            default_value_param3.clone(),
+        );
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn test_sig4() {
+        let mut test_object: ManyParamInterface = Default::default();
+
+        test_object._get_signal_handler().sig4.connect(move |param1, param2, param3, param4| {
+            let default_value_param1: i32 = Default::default();
+            assert_eq!(param1, default_value_param1);
+            let default_value_param2: i32 = Default::default();
+            assert_eq!(param2, default_value_param2);
+            let default_value_param3: i32 = Default::default();
+            assert_eq!(param3, default_value_param3);
+            let default_value_param4: i32 = Default::default();
+            assert_eq!(param4, default_value_param4);
+        });
+
+        let default_value_param1: i32 = Default::default();
+        let default_value_param2: i32 = Default::default();
+        let default_value_param3: i32 = Default::default();
+        let default_value_param4: i32 = Default::default();
+        test_object._get_signal_handler().sig4.emit(
+            default_value_param1.clone(),
+            default_value_param2.clone(),
+            default_value_param3.clone(),
+            default_value_param4.clone(),
+        );
     }
 }

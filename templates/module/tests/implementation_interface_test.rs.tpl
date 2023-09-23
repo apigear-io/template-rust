@@ -1,5 +1,8 @@
 {{- $data_structs := false }}
 {{- $ops := false -}}
+{{- if len .Interface.Signals -}}
+use signals2::*;{{nl}}
+{{- end }}
 
 {{- if or .Module.Structs .Module.Enums -}}
 {{- $data_structs = true -}}
@@ -99,4 +102,33 @@ mod tests {
         assert_eq!(test_object.{{snake $property.Name }}().clone(), default_value);
     }
 {{- end }}    {{- /* end range properties */}}
+
+{{- if len .Interface.Signals }}{{- nl }}{{ end }}
+
+{{- range $i, $e := .Interface.Signals }}
+{{- if $i }}{{nl}}{{ end }}
+{{- $signal := . }}
+    #[rustfmt::skip]
+    #[test]
+    fn test_{{snake $signal.Name }}() {
+        let mut test_object: {{Camel $.Interface.Name}} = Default::default();
+
+        test_object._get_signal_handler().{{snake $signal.Name }}.connect(move |
+        {{- rsVars "" $signal.Params}}| {
+        {{- range $signal.Params}}
+            let default_value_{{ rsVar "" .}}: {{rsType "" .}} = Default::default();
+            assert_eq!({{ rsVar "" .}}, default_value_{{ rsVar "" .}});
+        {{- end }}
+        });{{nl}}
+
+        {{- range $signal.Params}}
+        let default_value_{{ rsVar "" .}}: {{rsType "" .}} = Default::default();
+        {{- end }}
+        test_object._get_signal_handler().{{snake $signal.Name }}.emit(
+        {{- range $signal.Params}}
+            default_value_{{ rsVar "" .}}.clone(),
+        {{- end }}
+        );
+    }
+{{- end }}    {{- /* end range signals */}}
 }

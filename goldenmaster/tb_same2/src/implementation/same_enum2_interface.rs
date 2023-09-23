@@ -4,11 +4,14 @@ use crate::api::same_enum2_interface::SameEnum2InterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::same_enum2_interface::SameEnum2InterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct SameEnum2Interface {
     prop1: Enum1Enum,
     prop2: Enum2Enum,
+    _signal_handler: SameEnum2InterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -61,6 +64,7 @@ impl SameEnum2InterfaceTrait for SameEnum2Interface {
         }
 
         self.prop1 = prop1;
+        self._signal_handler.prop1_changed.emit(self.prop1);
     }
 
     /// Gets the value of the prop2 property.
@@ -77,5 +81,10 @@ impl SameEnum2InterfaceTrait for SameEnum2Interface {
         }
 
         self.prop2 = prop2;
+        self._signal_handler.prop2_changed.emit(self.prop2);
+    }
+
+    fn _get_signal_handler(&mut self) -> &SameEnum2InterfaceSignalHandler {
+        &self._signal_handler
     }
 }

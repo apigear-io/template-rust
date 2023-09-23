@@ -2,6 +2,26 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct StructInterfaceSignalHandler {
+    pub prop_bool_changed: Signal<(StructBool,)>,
+
+    pub prop_int_changed: Signal<(StructInt,)>,
+
+    pub prop_float_changed: Signal<(StructFloat,)>,
+
+    pub prop_string_changed: Signal<(StructString,)>,
+
+    pub sig_bool: Signal<(StructBool,)>,
+
+    pub sig_int: Signal<(StructInt,)>,
+
+    pub sig_float: Signal<(StructFloat,)>,
+
+    pub sig_string: Signal<(StructString,)>,
+}
 
 #[async_trait]
 pub trait StructInterfaceTrait {
@@ -80,4 +100,6 @@ pub trait StructInterfaceTrait {
         &mut self,
         prop_string: &StructString,
     );
+
+    fn _get_signal_handler(&mut self) -> &StructInterfaceSignalHandler;
 }

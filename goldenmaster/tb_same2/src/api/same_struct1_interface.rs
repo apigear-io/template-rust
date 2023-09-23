@@ -2,6 +2,14 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct SameStruct1InterfaceSignalHandler {
+    pub prop1_changed: Signal<(Struct1,)>,
+
+    pub sig1: Signal<(Struct1,)>,
+}
 
 #[async_trait]
 pub trait SameStruct1InterfaceTrait {
@@ -23,4 +31,6 @@ pub trait SameStruct1InterfaceTrait {
         &mut self,
         prop1: &Struct1,
     );
+
+    fn _get_signal_handler(&mut self) -> &SameStruct1InterfaceSignalHandler;
 }

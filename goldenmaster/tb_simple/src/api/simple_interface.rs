@@ -1,4 +1,40 @@
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct SimpleInterfaceSignalHandler {
+    pub prop_bool_changed: Signal<(bool,)>,
+
+    pub prop_int_changed: Signal<(i32,)>,
+
+    pub prop_int32_changed: Signal<(i32,)>,
+
+    pub prop_int64_changed: Signal<(i64,)>,
+
+    pub prop_float_changed: Signal<(f32,)>,
+
+    pub prop_float32_changed: Signal<(f32,)>,
+
+    pub prop_float64_changed: Signal<(f64,)>,
+
+    pub prop_string_changed: Signal<(String,)>,
+
+    pub sig_bool: Signal<(bool,)>,
+
+    pub sig_int: Signal<(i32,)>,
+
+    pub sig_int32: Signal<(i32,)>,
+
+    pub sig_int64: Signal<(i64,)>,
+
+    pub sig_float: Signal<(f32,)>,
+
+    pub sig_float32: Signal<(f32,)>,
+
+    pub sig_float64: Signal<(f64,)>,
+
+    pub sig_string: Signal<(String,)>,
+}
 
 #[async_trait]
 pub trait SimpleInterfaceTrait {
@@ -153,4 +189,6 @@ pub trait SimpleInterfaceTrait {
         &mut self,
         prop_string: &str,
     );
+
+    fn _get_signal_handler(&mut self) -> &SimpleInterfaceSignalHandler;
 }

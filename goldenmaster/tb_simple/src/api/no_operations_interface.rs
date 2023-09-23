@@ -1,3 +1,15 @@
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct NoOperationsInterfaceSignalHandler {
+    pub prop_bool_changed: Signal<(bool,)>,
+
+    pub prop_int_changed: Signal<(i32,)>,
+
+    pub sig_void: Signal<()>,
+
+    pub sig_bool: Signal<(bool,)>,
+}
 pub trait NoOperationsInterfaceTrait {
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool;
@@ -14,4 +26,6 @@ pub trait NoOperationsInterfaceTrait {
         &mut self,
         prop_int: i32,
     );
+
+    fn _get_signal_handler(&mut self) -> &NoOperationsInterfaceSignalHandler;
 }

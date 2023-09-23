@@ -10,10 +10,37 @@ use crate::api::data_structs::*;{{ nl }}
 
 {{- if len .Interface.Operations -}}
 {{- $ops = true -}}
-use async_trait::async_trait;
+use async_trait::async_trait;{{ nl }}
 {{- end }}
 
-{{- if len .Interface.Operations }}{{nl}}
+{{- if or (len .Interface.Signals) (len .Interface.Properties) -}}
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct {{Camel .Interface.Name}}SignalHandler {
+{{- range $i, $e := .Interface.Properties }}
+{{- if $i }}{{nl}}{{ end }}
+{{- if .Description }}
+    /// {{ .Description }}
+{{- end }}
+    pub {{snake .Name}}_changed: Signal<({{ rsType "" .}},)>,
+{{- end }}
+{{- if and (len .Interface.Signals) (len .Interface.Properties) }}{{nl}}{{end}}
+{{- range $i, $e := .Interface.Signals }}
+{{- if $i }}{{nl}}{{ end }}
+{{- if .Description }}
+    /// {{ .Description }}
+{{- end }}
+{{- $lenParams := len .Params }}
+    pub {{snake .Name}}: Signal<(
+        {{- range $i, $e := .Params }}
+        {{- if $i }}, {{ end }}{{ rsType "" .}}{{ end }}{{- if eq 1 $lenParams }},{{ end -}}
+        )>,
+{{- end }}
+}{{ nl }}
+{{- end }}
+
+{{- if len .Interface.Operations }}
 #[async_trait]{{ nl }}
 {{- end -}}
 pub trait {{Camel .Interface.Name}}Trait {
@@ -80,4 +107,9 @@ pub trait {{Camel .Interface.Name}}Trait {
     );
     {{- end }}
 {{- end }}    {{- /* end range properties */}}
+
+{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
+
+    fn _get_signal_handler(&mut self) -> &{{Camel .Interface.Name}}SignalHandler;
+{{- end }}
 }

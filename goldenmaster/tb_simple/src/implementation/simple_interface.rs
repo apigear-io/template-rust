@@ -1,5 +1,7 @@
 use crate::api::simple_interface::SimpleInterfaceTrait;
 use async_trait::async_trait;
+use crate::api::simple_interface::SimpleInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct SimpleInterface {
@@ -11,6 +13,7 @@ pub struct SimpleInterface {
     prop_float32: f32,
     prop_float64: f64,
     prop_string: String,
+    _signal_handler: SimpleInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -157,6 +160,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_bool = prop_bool;
+        self._signal_handler.prop_bool_changed.emit(self.prop_bool);
     }
 
     /// Gets the value of the propInt property.
@@ -173,6 +177,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_int = prop_int;
+        self._signal_handler.prop_int_changed.emit(self.prop_int);
     }
 
     /// Gets the value of the propInt32 property.
@@ -189,6 +194,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_int32 = prop_int32;
+        self._signal_handler.prop_int32_changed.emit(self.prop_int32);
     }
 
     /// Gets the value of the propInt64 property.
@@ -205,6 +211,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_int64 = prop_int64;
+        self._signal_handler.prop_int64_changed.emit(self.prop_int64);
     }
 
     /// Gets the value of the propFloat property.
@@ -221,6 +228,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_float = prop_float;
+        self._signal_handler.prop_float_changed.emit(self.prop_float);
     }
 
     /// Gets the value of the propFloat32 property.
@@ -237,6 +245,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_float32 = prop_float32;
+        self._signal_handler.prop_float32_changed.emit(self.prop_float32);
     }
 
     /// Gets the value of the propFloat64 property.
@@ -253,6 +262,7 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_float64 = prop_float64;
+        self._signal_handler.prop_float64_changed.emit(self.prop_float64);
     }
 
     /// Gets the value of the propString property.
@@ -269,5 +279,10 @@ impl SimpleInterfaceTrait for SimpleInterface {
         }
 
         self.prop_string = prop_string.to_string();
+        self._signal_handler.prop_string_changed.emit(self.prop_string.to_string());
+    }
+
+    fn _get_signal_handler(&mut self) -> &SimpleInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

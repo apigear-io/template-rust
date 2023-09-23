@@ -1,8 +1,13 @@
 use crate::api::no_properties_interface::NoPropertiesInterfaceTrait;
 use async_trait::async_trait;
+use crate::api::no_properties_interface::NoPropertiesInterfaceSignalHandler;
+#[allow(unused_imports)]
+use signals2::*;
 
 #[derive(Default, Clone)]
-pub struct NoPropertiesInterface {}
+pub struct NoPropertiesInterface {
+    _signal_handler: NoPropertiesInterfaceSignalHandler,
+}
 
 #[async_trait]
 impl NoPropertiesInterfaceTrait for NoPropertiesInterface {
@@ -30,5 +35,9 @@ impl NoPropertiesInterfaceTrait for NoPropertiesInterface {
     ) -> Result<bool, ()> {
         #[allow(clippy::unit_arg)]
         Ok(self.func_bool(param_bool))
+    }
+
+    fn _get_signal_handler(&mut self) -> &NoPropertiesInterfaceSignalHandler {
+        &self._signal_handler
     }
 }

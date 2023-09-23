@@ -1,4 +1,40 @@
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct SimpleArrayInterfaceSignalHandler {
+    pub prop_bool_changed: Signal<(Vec<bool>,)>,
+
+    pub prop_int_changed: Signal<(Vec<i32>,)>,
+
+    pub prop_int32_changed: Signal<(Vec<i32>,)>,
+
+    pub prop_int64_changed: Signal<(Vec<i64>,)>,
+
+    pub prop_float_changed: Signal<(Vec<f32>,)>,
+
+    pub prop_float32_changed: Signal<(Vec<f32>,)>,
+
+    pub prop_float64_changed: Signal<(Vec<f64>,)>,
+
+    pub prop_string_changed: Signal<(Vec<String>,)>,
+
+    pub sig_bool: Signal<(Vec<bool>,)>,
+
+    pub sig_int: Signal<(Vec<i32>,)>,
+
+    pub sig_int32: Signal<(Vec<i32>,)>,
+
+    pub sig_int64: Signal<(Vec<i64>,)>,
+
+    pub sig_float: Signal<(Vec<f32>,)>,
+
+    pub sig_float32: Signal<(Vec<f32>,)>,
+
+    pub sig_float64: Signal<(Vec<f64>,)>,
+
+    pub sig_string: Signal<(Vec<String>,)>,
+}
 
 #[async_trait]
 pub trait SimpleArrayInterfaceTrait {
@@ -153,4 +189,6 @@ pub trait SimpleArrayInterfaceTrait {
         &mut self,
         prop_string: &[String],
     );
+
+    fn _get_signal_handler(&mut self) -> &SimpleArrayInterfaceSignalHandler;
 }

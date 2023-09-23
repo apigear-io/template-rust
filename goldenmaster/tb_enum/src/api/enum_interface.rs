@@ -2,6 +2,26 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct EnumInterfaceSignalHandler {
+    pub prop0_changed: Signal<(Enum0Enum,)>,
+
+    pub prop1_changed: Signal<(Enum1Enum,)>,
+
+    pub prop2_changed: Signal<(Enum2Enum,)>,
+
+    pub prop3_changed: Signal<(Enum3Enum,)>,
+
+    pub sig0: Signal<(Enum0Enum,)>,
+
+    pub sig1: Signal<(Enum1Enum,)>,
+
+    pub sig2: Signal<(Enum2Enum,)>,
+
+    pub sig3: Signal<(Enum3Enum,)>,
+}
 
 #[async_trait]
 pub trait EnumInterfaceTrait {
@@ -80,4 +100,6 @@ pub trait EnumInterfaceTrait {
         &mut self,
         prop3: Enum3Enum,
     );
+
+    fn _get_signal_handler(&mut self) -> &EnumInterfaceSignalHandler;
 }

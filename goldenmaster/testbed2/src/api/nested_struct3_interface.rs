@@ -2,6 +2,22 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
 use async_trait::async_trait;
+use signals2::*;
+
+#[derive(Clone, Default)]
+pub struct NestedStruct3InterfaceSignalHandler {
+    pub prop1_changed: Signal<(NestedStruct1,)>,
+
+    pub prop2_changed: Signal<(NestedStruct2,)>,
+
+    pub prop3_changed: Signal<(NestedStruct3,)>,
+
+    pub sig1: Signal<(NestedStruct1,)>,
+
+    pub sig2: Signal<(NestedStruct1, NestedStruct2)>,
+
+    pub sig3: Signal<(NestedStruct1, NestedStruct2, NestedStruct3)>,
+}
 
 #[async_trait]
 pub trait NestedStruct3InterfaceTrait {
@@ -67,4 +83,6 @@ pub trait NestedStruct3InterfaceTrait {
         &mut self,
         prop3: &NestedStruct3,
     );
+
+    fn _get_signal_handler(&mut self) -> &NestedStruct3InterfaceSignalHandler;
 }

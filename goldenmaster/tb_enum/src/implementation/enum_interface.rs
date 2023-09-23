@@ -4,6 +4,8 @@ use crate::api::enum_interface::EnumInterfaceTrait;
 use crate::api::data_structs::*;
 
 use async_trait::async_trait;
+use crate::api::enum_interface::EnumInterfaceSignalHandler;
+use signals2::*;
 
 #[derive(Default, Clone)]
 pub struct EnumInterface {
@@ -11,6 +13,7 @@ pub struct EnumInterface {
     prop1: Enum1Enum,
     prop2: Enum2Enum,
     prop3: Enum3Enum,
+    _signal_handler: EnumInterfaceSignalHandler,
 }
 
 #[async_trait]
@@ -93,6 +96,7 @@ impl EnumInterfaceTrait for EnumInterface {
         }
 
         self.prop0 = prop0;
+        self._signal_handler.prop0_changed.emit(self.prop0);
     }
 
     /// Gets the value of the prop1 property.
@@ -109,6 +113,7 @@ impl EnumInterfaceTrait for EnumInterface {
         }
 
         self.prop1 = prop1;
+        self._signal_handler.prop1_changed.emit(self.prop1);
     }
 
     /// Gets the value of the prop2 property.
@@ -125,6 +130,7 @@ impl EnumInterfaceTrait for EnumInterface {
         }
 
         self.prop2 = prop2;
+        self._signal_handler.prop2_changed.emit(self.prop2);
     }
 
     /// Gets the value of the prop3 property.
@@ -141,5 +147,10 @@ impl EnumInterfaceTrait for EnumInterface {
         }
 
         self.prop3 = prop3;
+        self._signal_handler.prop3_changed.emit(self.prop3);
+    }
+
+    fn _get_signal_handler(&mut self) -> &EnumInterfaceSignalHandler {
+        &self._signal_handler
     }
 }
