@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 {{- range .System.Modules }}
-{{ snake .Name }} = { path = "../{{ snake .Name }}" }
+{{ snake .Name }} = { path = "../../{{ snake .Name }}" }
 {{- end }}

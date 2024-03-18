@@ -5,5 +5,7 @@ members = [
 {{- $module_id := snake .Name}}
     "{{$module_id}}",
 {{- end }}
-    "examples",
+{{- if .Features.examples }}
+    "examples/app",
+{{- end }}
 ]

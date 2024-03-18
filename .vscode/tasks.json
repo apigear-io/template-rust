@@ -1,0 +1,75 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cargo",
+			"command": "build",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo build",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml"]
+		},
+		{
+			"type": "cargo",
+			"command": "clean",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo clean",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml"]
+		},
+		{
+			"type": "cargo",
+			"command": "check",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo check",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml"]
+		},
+		{
+			"type": "cargo",
+			"command": "clippy",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo clippy",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml"]
+		},
+		{
+			"type": "cargo",
+			"command": "fmt",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo fmt",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml","--all", "--", "--check"]
+		},
+		{
+			"type": "cargo",
+			"command": "doc",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo doc",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml"]
+		},
+		{
+			"type": "cargo",
+			"command": "doc",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: cargo doc open",
+			"args": ["--manifest-path", "goldenmaster/Cargo.toml", "--open"]
+		}
+	]
+}

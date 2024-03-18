@@ -1,0 +1,4 @@
+{
+    "rust-analyzer.check.invocationLocation": "root",
+    "rust-analyzer.cargo.buildScripts.invocationLocation": "root"
+}

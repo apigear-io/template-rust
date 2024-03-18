@@ -1,3 +1,5 @@
+engines:
+  cli: ">= v0.37.0"
 features:
   - name: api
     scopes:
@@ -24,10 +26,6 @@ features:
         - source: "rustfmt.toml"
           target: "rustfmt.toml"
           raw: true
-        - source: "examples/Cargo.toml.tpl"
-          target: "examples/Cargo.toml"
-        - source: "examples/src/main.rs.tpl"
-          target: "examples/src/main.rs"
     - match: module
       prefix: "{{snake .Module.Name}}/"
       documents:
@@ -44,3 +42,13 @@ features:
           target: "src/implementation/{{snake .Interface.Name}}.rs"
         - source: "module/tests/implementation_interface_test.rs.tpl"
           target: "tests/implementation_{{snake .Interface.Name}}_test.rs"
+  - name: examples
+    requires:
+      - stubs
+    scopes:
+      - match: system
+        documents:
+        - source: "examples/app/Cargo.toml.tpl"
+          target: "examples/app/Cargo.toml"
+        - source: "examples/app/src/main.rs.tpl"
+          target: "examples/app/src/main.rs"
