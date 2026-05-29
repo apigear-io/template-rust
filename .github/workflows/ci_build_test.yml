@@ -3,6 +3,7 @@
 name: Technology Template Build Test
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'goldenmaster/**'
