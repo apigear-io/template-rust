@@ -23,15 +23,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+      # Pin the toolchain so the lint/doc gate is deterministic. With `stable` the gate
+      # drifts: the unchanged goldenmaster passed CI in April but fails on a later stable
+      # (new rustdoc/clippy strictness — broken_intra_doc_links on `()`, a
+      # let_underscore_future false positive). dtolnay/rust-toolchain pins reliably
+      # (the archived actions-rs/toolchain did not honor the pin on the runner image).
+      # Bump this version deliberately.
       - name: Install pinned Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@1.94.1
         with:
-            # Pin the toolchain so the lint/doc gate is deterministic. With `stable` the
-            # gate drifts: the unchanged goldenmaster passed CI in April but fails on a
-            # later stable (new clippy/rustdoc strictness — e.g. broken_intra_doc_links on
-            # `()`, and a let_underscore_future false positive). Bump this version deliberately.
-            toolchain: 1.94.1
-            override: true
             components: rustfmt, clippy
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
@@ -63,4 +63,7 @@ jobs:
             RUSTDOCFLAGS: "-D warnings"
         with:
           command: doc
-          args: --manifest-path goldenmaster/Cargo.toml
+          # --no-deps: gate the generated goldenmaster's own docs, not third-party
+          # dependencies' docs (e.g. objectlink-core's `<dyn ...>` doc comments, which
+          # belong to that crate's own CI, not this template's gate).
+          args: --manifest-path goldenmaster/Cargo.toml --no-deps
