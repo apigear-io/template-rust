@@ -22,7 +22,7 @@ impl SameStruct1InterfaceTrait for SameStruct1Interface {
         Default::default()
     }
     /// Asynchronous version of [func1](SameStruct1Interface::func1)
-    /// returns future of type [`Struct1`] which is set once the function has completed
+    /// returns future of type `Struct1` which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &Struct1,

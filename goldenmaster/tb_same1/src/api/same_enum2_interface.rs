@@ -22,7 +22,7 @@ pub trait SameEnum2InterfaceTrait {
         param1: Enum1Enum,
     ) -> Enum1Enum;
     /// Asynchronous version of [func1](SameEnum2InterfaceTrait::func1)
-    /// returns future of type [`Enum1Enum`] which is set once the function has completed
+    /// returns future of type `Enum1Enum` which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: Enum1Enum,
@@ -34,7 +34,7 @@ pub trait SameEnum2InterfaceTrait {
         param2: Enum2Enum,
     ) -> Enum1Enum;
     /// Asynchronous version of [func2](SameEnum2InterfaceTrait::func2)
-    /// returns future of type [`Enum1Enum`] which is set once the function has completed
+    /// returns future of type `Enum1Enum` which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: Enum1Enum,

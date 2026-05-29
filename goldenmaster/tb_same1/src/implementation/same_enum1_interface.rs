@@ -22,7 +22,7 @@ impl SameEnum1InterfaceTrait for SameEnum1Interface {
         Default::default()
     }
     /// Asynchronous version of [func1](SameEnum1Interface::func1)
-    /// returns future of type [`Enum1Enum`] which is set once the function has completed
+    /// returns future of type `Enum1Enum` which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: Enum1Enum,

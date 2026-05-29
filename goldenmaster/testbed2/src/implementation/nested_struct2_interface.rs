@@ -23,7 +23,7 @@ impl NestedStruct2InterfaceTrait for NestedStruct2Interface {
         Default::default()
     }
     /// Asynchronous version of [func1](NestedStruct2Interface::func1)
-    /// returns future of type [`NestedStruct1`] which is set once the function has completed
+    /// returns future of type `NestedStruct1` which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &NestedStruct1,
@@ -40,7 +40,7 @@ impl NestedStruct2InterfaceTrait for NestedStruct2Interface {
         Default::default()
     }
     /// Asynchronous version of [func2](NestedStruct2Interface::func2)
-    /// returns future of type [`NestedStruct1`] which is set once the function has completed
+    /// returns future of type `NestedStruct1` which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: &NestedStruct1,
