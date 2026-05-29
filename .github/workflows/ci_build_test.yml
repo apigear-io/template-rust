@@ -31,7 +31,10 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --manifest-path goldenmaster/Cargo.toml
+          # Fail the build on actionable lint groups so generated-code smells block merges.
+          # Style/complexity (e.g. clone_on_copy on Copy types) stay non-blocking warnings to
+          # avoid noise from intentionally-uniform generated code.
+          args: --manifest-path goldenmaster/Cargo.toml --all-targets -- -D clippy::correctness -D clippy::perf -D clippy::suspicious
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
