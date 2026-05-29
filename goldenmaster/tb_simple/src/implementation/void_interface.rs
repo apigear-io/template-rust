@@ -15,7 +15,7 @@ impl VoidInterfaceTrait for VoidInterface {
         Default::default()
     }
     /// Asynchronous version of [func_void](VoidInterface::func_void)
-    /// returns future of type [`()`] which is set once the function has completed
+    /// returns future of type `()` which is set once the function has completed
     async fn func_void_async(&mut self) -> Result<(), ()> {
         #[allow(clippy::unit_arg)]
         Ok(self.func_void())

@@ -23,7 +23,7 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
         Default::default()
     }
     /// Asynchronous version of [func1](SameStruct2Interface::func1)
-    /// returns future of type [`Struct1`] which is set once the function has completed
+    /// returns future of type `Struct1` which is set once the function has completed
     async fn func1_async(
         &mut self,
         param1: &Struct1,
@@ -40,7 +40,7 @@ impl SameStruct2InterfaceTrait for SameStruct2Interface {
         Default::default()
     }
     /// Asynchronous version of [func2](SameStruct2Interface::func2)
-    /// returns future of type [`Struct1`] which is set once the function has completed
+    /// returns future of type `Struct1` which is set once the function has completed
     async fn func2_async(
         &mut self,
         param1: &Struct1,

@@ -25,7 +25,7 @@ impl StructInterfaceTrait for StructInterface {
         Default::default()
     }
     /// Asynchronous version of [func_bool](StructInterface::func_bool)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: &StructBool,
@@ -41,7 +41,7 @@ impl StructInterfaceTrait for StructInterface {
         Default::default()
     }
     /// Asynchronous version of [func_int](StructInterface::func_int)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: &StructInt,
@@ -57,7 +57,7 @@ impl StructInterfaceTrait for StructInterface {
         Default::default()
     }
     /// Asynchronous version of [func_float](StructInterface::func_float)
-    /// returns future of type [`StructFloat`] which is set once the function has completed
+    /// returns future of type `StructFloat` which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: &StructFloat,
@@ -73,7 +73,7 @@ impl StructInterfaceTrait for StructInterface {
         Default::default()
     }
     /// Asynchronous version of [func_string](StructInterface::func_string)
-    /// returns future of type [`StructString`] which is set once the function has completed
+    /// returns future of type `StructString` which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &StructString,

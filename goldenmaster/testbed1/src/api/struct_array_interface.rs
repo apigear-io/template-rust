@@ -30,7 +30,7 @@ pub trait StructArrayInterfaceTrait {
         param_bool: &[StructBool],
     ) -> StructBool;
     /// Asynchronous version of [func_bool](StructArrayInterfaceTrait::func_bool)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_bool_async(
         &mut self,
         param_bool: &[StructBool],
@@ -41,7 +41,7 @@ pub trait StructArrayInterfaceTrait {
         param_int: &[StructInt],
     ) -> StructBool;
     /// Asynchronous version of [func_int](StructArrayInterfaceTrait::func_int)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_int_async(
         &mut self,
         param_int: &[StructInt],
@@ -52,7 +52,7 @@ pub trait StructArrayInterfaceTrait {
         param_float: &[StructFloat],
     ) -> StructBool;
     /// Asynchronous version of [func_float](StructArrayInterfaceTrait::func_float)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_float_async(
         &mut self,
         param_float: &[StructFloat],
@@ -63,7 +63,7 @@ pub trait StructArrayInterfaceTrait {
         param_string: &[StructString],
     ) -> StructBool;
     /// Asynchronous version of [func_string](StructArrayInterfaceTrait::func_string)
-    /// returns future of type [`StructBool`] which is set once the function has completed
+    /// returns future of type `StructBool` which is set once the function has completed
     async fn func_string_async(
         &mut self,
         param_string: &[StructString],

@@ -74,7 +74,7 @@ impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
     /// `{{$param}}` {{$param.Description}}
 {{- end }}   {{- /* end if description */}}
 {{- end }}   {{- /* end range operation params */}}
-    /// returns future of type [`{{rsReturn "" $operation.Return}}`] which is set once the function has completed
+    /// returns future of type `{{rsReturn "" $operation.Return}}` which is set once the function has completed
 {{- if len $operation.Params }}
     async fn {{snake $operation.Name }}_async(
         &mut self,
