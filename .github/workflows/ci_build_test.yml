@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - 'goldenmaster/**'
+      - '.github/workflows/ci_build_test.yml'
     branches: [main]
 
 jobs:
