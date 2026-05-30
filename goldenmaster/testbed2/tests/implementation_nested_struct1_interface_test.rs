@@ -1,5 +1,3 @@
-use signals2::*;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
 use testbed2::api::nested_struct1_interface::NestedStruct1InterfaceTrait;
@@ -88,39 +86,42 @@ mod tests {
         assert_eq!(result, Err(()));
     }
 
-    #[test]
-    fn test_func1() {
-        let mut test_object: NestedStruct1Interface = Default::default();
-        test_object.func1(&Default::default());
+    #[tokio::test]
+    async fn test_func_no_return_value() {
+        let test_object = NestedStruct1Interface::default();
+        let result = test_object.func_no_return_value(&Default::default()).await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func1_async() {
-        let mut test_object: NestedStruct1Interface = Default::default();
-        let _ = test_object.func1_async(&Default::default());
+    #[tokio::test]
+    async fn test_func_no_params() {
+        let test_object = NestedStruct1Interface::default();
+        let result = test_object.func_no_params().await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_func1() {
+        let test_object = NestedStruct1Interface::default();
+        let result = test_object.func1(&Default::default()).await;
+        assert!(result.is_ok());
     }
 
     #[test]
     fn test_prop1() {
-        let mut test_object: NestedStruct1Interface = Default::default();
+        let test_object = NestedStruct1Interface::default();
         let default_value: NestedStruct1 = Default::default();
-        test_object.set_prop1(&default_value);
-        assert_eq!(test_object.prop1().clone(), default_value);
+        test_object.set_prop1(&default_value.clone());
+        assert_eq!(test_object.prop1(), default_value);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig1() {
-        let mut test_object: NestedStruct1Interface = Default::default();
-
-        test_object._get_signal_handler().sig1.connect(move |param1| {
-            let default_value_param1: NestedStruct1 = Default::default();
-            assert_eq!(param1, default_value_param1);
-        });
-
+        let test_object = NestedStruct1Interface::default();
+        let mut rx = test_object.publisher().sig1.subscribe();
         let default_value_param1: NestedStruct1 = Default::default();
-        test_object._get_signal_handler().sig1.emit(
-            default_value_param1.clone(),
-        );
+        let _ = test_object.publisher().sig1.send((default_value_param1.clone(),));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
     }
 }

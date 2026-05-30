@@ -1,156 +1,118 @@
 use crate::api::struct_interface::StructInterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::struct_interface::StructInterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::struct_interface::StructInterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct StructInterface {
-    prop_bool: StructBool,
-    prop_int: StructInt,
-    prop_float: StructFloat,
-    prop_string: StructString,
-    _signal_handler: StructInterfaceSignalHandler,
+    prop_bool: RwLock<StructBool>,
+    prop_int: RwLock<StructInt>,
+    prop_float: RwLock<StructFloat>,
+    prop_string: RwLock<StructString>,
+    publisher: StructInterfacePublisher,
 }
 
-#[async_trait]
+impl Default for StructInterface {
+    fn default() -> Self {
+        Self { prop_bool: RwLock::new(Default::default()), prop_int: RwLock::new(Default::default()), prop_float: RwLock::new(Default::default()), prop_string: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl StructInterfaceTrait for StructInterface {
     fn func_bool(
-        &mut self,
+        &self,
         _param_bool: &StructBool,
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_bool](StructInterface::func_bool)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: &StructBool,
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_bool(param_bool))
+    ) -> ApiFuture<'_, Result<StructBool, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int(
-        &mut self,
+        &self,
         _param_int: &StructInt,
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int](StructInterface::func_int)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: &StructInt,
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int(param_int))
+    ) -> ApiFuture<'_, Result<StructInt, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float(
-        &mut self,
+        &self,
         _param_float: &StructFloat,
-    ) -> StructFloat {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float](StructInterface::func_float)
-    /// returns future of type `StructFloat` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: &StructFloat,
-    ) -> Result<StructFloat, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float(param_float))
+    ) -> ApiFuture<'_, Result<StructFloat, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_string(
-        &mut self,
+        &self,
         _param_string: &StructString,
-    ) -> StructString {
-        Default::default()
-    }
-    /// Asynchronous version of [func_string](StructInterface::func_string)
-    /// returns future of type `StructString` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &StructString,
-    ) -> Result<StructString, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_string(param_string))
+    ) -> ApiFuture<'_, Result<StructString, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the propBool property.
-    fn prop_bool(&self) -> &StructBool {
-        &self.prop_bool
+    fn prop_bool(&self) -> StructBool {
+        self.prop_bool.read().clone()
     }
-    /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: &StructBool,
     ) {
-        if self.prop_bool == prop_bool.clone() {
+        let new_val = prop_bool.clone();
+        let mut value = self.prop_bool.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_bool = prop_bool.clone();
-        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_bool_changed.send(new_val);
     }
 
-    /// Gets the value of the propInt property.
-    fn prop_int(&self) -> &StructInt {
-        &self.prop_int
+    fn prop_int(&self) -> StructInt {
+        self.prop_int.read().clone()
     }
-    /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: &StructInt,
     ) {
-        if self.prop_int == prop_int.clone() {
+        let new_val = prop_int.clone();
+        let mut value = self.prop_int.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_int = prop_int.clone();
-        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_int_changed.send(new_val);
     }
 
-    /// Gets the value of the propFloat property.
-    fn prop_float(&self) -> &StructFloat {
-        &self.prop_float
+    fn prop_float(&self) -> StructFloat {
+        self.prop_float.read().clone()
     }
-    /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: &StructFloat,
     ) {
-        if self.prop_float == prop_float.clone() {
+        let new_val = prop_float.clone();
+        let mut value = self.prop_float.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_float = prop_float.clone();
-        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_float_changed.send(new_val);
     }
 
-    /// Gets the value of the propString property.
-    fn prop_string(&self) -> &StructString {
-        &self.prop_string
+    fn prop_string(&self) -> StructString {
+        self.prop_string.read().clone()
     }
-    /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &StructString,
     ) {
-        if self.prop_string == prop_string.clone() {
+        let new_val = prop_string.clone();
+        let mut value = self.prop_string.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_string = prop_string.clone();
-        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_string_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &StructInterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &StructInterfacePublisher {
+        &self.publisher
     }
 }

@@ -1,90 +1,69 @@
 use crate::api::same_enum2_interface::SameEnum2InterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::same_enum2_interface::SameEnum2InterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::same_enum2_interface::SameEnum2InterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct SameEnum2Interface {
-    prop1: Enum1Enum,
-    prop2: Enum2Enum,
-    _signal_handler: SameEnum2InterfaceSignalHandler,
+    prop1: RwLock<Enum1Enum>,
+    prop2: RwLock<Enum2Enum>,
+    publisher: SameEnum2InterfacePublisher,
 }
 
-#[async_trait]
+impl Default for SameEnum2Interface {
+    fn default() -> Self {
+        Self { prop1: RwLock::new(Default::default()), prop2: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl SameEnum2InterfaceTrait for SameEnum2Interface {
     fn func1(
-        &mut self,
+        &self,
         _param1: Enum1Enum,
-    ) -> Enum1Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func1](SameEnum2Interface::func1)
-    /// returns future of type `Enum1Enum` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: Enum1Enum,
-    ) -> Result<Enum1Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func1(param1))
+    ) -> ApiFuture<'_, Result<Enum1Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func2(
-        &mut self,
+        &self,
         _param1: Enum1Enum,
         _param2: Enum2Enum,
-    ) -> Enum1Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func2](SameEnum2Interface::func2)
-    /// returns future of type `Enum1Enum` which is set once the function has completed
-    async fn func2_async(
-        &mut self,
-        param1: Enum1Enum,
-        param2: Enum2Enum,
-    ) -> Result<Enum1Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func2(param1, param2))
+    ) -> ApiFuture<'_, Result<Enum1Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the prop1 property.
     fn prop1(&self) -> Enum1Enum {
-        self.prop1
+        *self.prop1.read()
     }
-    /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: Enum1Enum,
     ) {
-        if self.prop1 == prop1 {
+        let mut value = self.prop1.write();
+        if *value == prop1 {
             return;
         }
-
-        self.prop1 = prop1;
-        self._signal_handler.prop1_changed.emit(self.prop1);
+        *value = prop1;
+        let _ = self.publisher.prop1_changed.send(prop1);
     }
 
-    /// Gets the value of the prop2 property.
     fn prop2(&self) -> Enum2Enum {
-        self.prop2
+        *self.prop2.read()
     }
-    /// Sets the value of the prop2 property.
     fn set_prop2(
-        &mut self,
+        &self,
         prop2: Enum2Enum,
     ) {
-        if self.prop2 == prop2 {
+        let mut value = self.prop2.write();
+        if *value == prop2 {
             return;
         }
-
-        self.prop2 = prop2;
-        self._signal_handler.prop2_changed.emit(self.prop2);
+        *value = prop2;
+        let _ = self.publisher.prop2_changed.send(prop2);
     }
 
-    fn _get_signal_handler(&mut self) -> &SameEnum2InterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &SameEnum2InterfacePublisher {
+        &self.publisher
     }
 }

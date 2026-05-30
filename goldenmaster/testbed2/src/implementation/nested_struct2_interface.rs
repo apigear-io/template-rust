@@ -1,90 +1,71 @@
 use crate::api::nested_struct2_interface::NestedStruct2InterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::nested_struct2_interface::NestedStruct2InterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::nested_struct2_interface::NestedStruct2InterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct NestedStruct2Interface {
-    prop1: NestedStruct1,
-    prop2: NestedStruct2,
-    _signal_handler: NestedStruct2InterfaceSignalHandler,
+    prop1: RwLock<NestedStruct1>,
+    prop2: RwLock<NestedStruct2>,
+    publisher: NestedStruct2InterfacePublisher,
 }
 
-#[async_trait]
+impl Default for NestedStruct2Interface {
+    fn default() -> Self {
+        Self { prop1: RwLock::new(Default::default()), prop2: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl NestedStruct2InterfaceTrait for NestedStruct2Interface {
     fn func1(
-        &mut self,
+        &self,
         _param1: &NestedStruct1,
-    ) -> NestedStruct1 {
-        Default::default()
-    }
-    /// Asynchronous version of [func1](NestedStruct2Interface::func1)
-    /// returns future of type `NestedStruct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &NestedStruct1,
-    ) -> Result<NestedStruct1, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func1(param1))
+    ) -> ApiFuture<'_, Result<NestedStruct1, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func2(
-        &mut self,
+        &self,
         _param1: &NestedStruct1,
         _param2: &NestedStruct2,
-    ) -> NestedStruct1 {
-        Default::default()
-    }
-    /// Asynchronous version of [func2](NestedStruct2Interface::func2)
-    /// returns future of type `NestedStruct1` which is set once the function has completed
-    async fn func2_async(
-        &mut self,
-        param1: &NestedStruct1,
-        param2: &NestedStruct2,
-    ) -> Result<NestedStruct1, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func2(param1, param2))
+    ) -> ApiFuture<'_, Result<NestedStruct1, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &NestedStruct1 {
-        &self.prop1
+    fn prop1(&self) -> NestedStruct1 {
+        self.prop1.read().clone()
     }
-    /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &NestedStruct1,
     ) {
-        if self.prop1 == prop1.clone() {
+        let new_val = prop1.clone();
+        let mut value = self.prop1.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop1 = prop1.clone();
-        self._signal_handler.prop1_changed.emit(self.prop1.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop1_changed.send(new_val);
     }
 
-    /// Gets the value of the prop2 property.
-    fn prop2(&self) -> &NestedStruct2 {
-        &self.prop2
+    fn prop2(&self) -> NestedStruct2 {
+        self.prop2.read().clone()
     }
-    /// Sets the value of the prop2 property.
     fn set_prop2(
-        &mut self,
+        &self,
         prop2: &NestedStruct2,
     ) {
-        if self.prop2 == prop2.clone() {
+        let new_val = prop2.clone();
+        let mut value = self.prop2.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop2 = prop2.clone();
-        self._signal_handler.prop2_changed.emit(self.prop2.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop2_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &NestedStruct2InterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &NestedStruct2InterfacePublisher {
+        &self.publisher
     }
 }

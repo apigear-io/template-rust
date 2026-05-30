@@ -1,21 +1,24 @@
-use signals2::*;
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct NoOperationsInterfaceSignalHandler {
-    pub prop_bool_changed: Signal<(bool,)>,
-
-    pub prop_int_changed: Signal<(i32,)>,
-
-    pub sig_void: Signal<()>,
-
-    pub sig_bool: Signal<(bool,)>,
+pub struct NoOperationsInterfacePublisher {
+    pub prop_bool_changed: watch::Sender<bool>,
+    pub prop_int_changed: watch::Sender<i32>,
+    pub sig_void: broadcast::Sender<()>,
+    pub sig_bool: broadcast::Sender<(bool,)>,
 }
-pub trait NoOperationsInterfaceTrait {
+
+impl Default for NoOperationsInterfacePublisher {
+    fn default() -> Self {
+        Self { prop_bool_changed: watch::channel(Default::default()).0, prop_int_changed: watch::channel(Default::default()).0, sig_void: broadcast::Sender::new(16), sig_bool: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait NoOperationsInterfaceTrait: Send + Sync {
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool;
     /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: bool,
     );
 
@@ -23,9 +26,9 @@ pub trait NoOperationsInterfaceTrait {
     fn prop_int(&self) -> i32;
     /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: i32,
     );
 
-    fn _get_signal_handler(&mut self) -> &NoOperationsInterfaceSignalHandler;
+    fn publisher(&self) -> &NoOperationsInterfacePublisher;
 }

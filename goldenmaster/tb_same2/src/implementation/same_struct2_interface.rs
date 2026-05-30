@@ -1,90 +1,71 @@
 use crate::api::same_struct2_interface::SameStruct2InterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::same_struct2_interface::SameStruct2InterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::same_struct2_interface::SameStruct2InterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct SameStruct2Interface {
-    prop1: Struct2,
-    prop2: Struct2,
-    _signal_handler: SameStruct2InterfaceSignalHandler,
+    prop1: RwLock<Struct2>,
+    prop2: RwLock<Struct2>,
+    publisher: SameStruct2InterfacePublisher,
 }
 
-#[async_trait]
+impl Default for SameStruct2Interface {
+    fn default() -> Self {
+        Self { prop1: RwLock::new(Default::default()), prop2: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl SameStruct2InterfaceTrait for SameStruct2Interface {
     fn func1(
-        &mut self,
+        &self,
         _param1: &Struct1,
-    ) -> Struct1 {
-        Default::default()
-    }
-    /// Asynchronous version of [func1](SameStruct2Interface::func1)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &Struct1,
-    ) -> Result<Struct1, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func1(param1))
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func2(
-        &mut self,
+        &self,
         _param1: &Struct1,
         _param2: &Struct2,
-    ) -> Struct1 {
-        Default::default()
-    }
-    /// Asynchronous version of [func2](SameStruct2Interface::func2)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func2_async(
-        &mut self,
-        param1: &Struct1,
-        param2: &Struct2,
-    ) -> Result<Struct1, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func2(param1, param2))
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &Struct2 {
-        &self.prop1
+    fn prop1(&self) -> Struct2 {
+        self.prop1.read().clone()
     }
-    /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &Struct2,
     ) {
-        if self.prop1 == prop1.clone() {
+        let new_val = prop1.clone();
+        let mut value = self.prop1.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop1 = prop1.clone();
-        self._signal_handler.prop1_changed.emit(self.prop1.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop1_changed.send(new_val);
     }
 
-    /// Gets the value of the prop2 property.
-    fn prop2(&self) -> &Struct2 {
-        &self.prop2
+    fn prop2(&self) -> Struct2 {
+        self.prop2.read().clone()
     }
-    /// Sets the value of the prop2 property.
     fn set_prop2(
-        &mut self,
+        &self,
         prop2: &Struct2,
     ) {
-        if self.prop2 == prop2.clone() {
+        let new_val = prop2.clone();
+        let mut value = self.prop2.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop2 = prop2.clone();
-        self._signal_handler.prop2_changed.emit(self.prop2.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop2_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &SameStruct2InterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &SameStruct2InterfacePublisher {
+        &self.publisher
     }
 }

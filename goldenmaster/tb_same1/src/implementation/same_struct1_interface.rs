@@ -1,54 +1,46 @@
 use crate::api::same_struct1_interface::SameStruct1InterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::same_struct1_interface::SameStruct1InterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::same_struct1_interface::SameStruct1InterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct SameStruct1Interface {
-    prop1: Struct1,
-    _signal_handler: SameStruct1InterfaceSignalHandler,
+    prop1: RwLock<Struct1>,
+    publisher: SameStruct1InterfacePublisher,
 }
 
-#[async_trait]
+impl Default for SameStruct1Interface {
+    fn default() -> Self {
+        Self { prop1: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl SameStruct1InterfaceTrait for SameStruct1Interface {
     fn func1(
-        &mut self,
+        &self,
         _param1: &Struct1,
-    ) -> Struct1 {
-        Default::default()
-    }
-    /// Asynchronous version of [func1](SameStruct1Interface::func1)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &Struct1,
-    ) -> Result<Struct1, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func1(param1))
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &Struct1 {
-        &self.prop1
+    fn prop1(&self) -> Struct1 {
+        self.prop1.read().clone()
     }
-    /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &Struct1,
     ) {
-        if self.prop1 == prop1.clone() {
+        let new_val = prop1.clone();
+        let mut value = self.prop1.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop1 = prop1.clone();
-        self._signal_handler.prop1_changed.emit(self.prop1.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop1_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &SameStruct1InterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &SameStruct1InterfacePublisher {
+        &self.publisher
     }
 }
