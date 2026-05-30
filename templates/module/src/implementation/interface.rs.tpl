@@ -1,155 +1,123 @@
-{{- $data_structs := false }}
-{{- $ops := false -}}
-
+{{- $hasOps := len .Interface.Operations }}
+{{- $hasProps := len .Interface.Properties }}
+{{- $hasSignals := len .Interface.Signals }}
+{{- $hasPubSub := or $hasSignals $hasProps }}
+{{- $isEmpty := and (not $hasOps) (not $hasPubSub) -}}
 use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Trait;
 {{- if or .Module.Structs .Module.Enums }}
-{{- $data_structs = true }}
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
-use crate::api::data_structs::*;{{ nl }}
+use crate::api::data_structs::*;
+{{- end }}
+{{- if $hasOps }}
+use apigear::{ApiError, ApiFuture};
+{{- end }}
+{{- if $hasPubSub }}
+use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Publisher;
+{{- end }}
+{{- if $hasProps }}
+use parking_lot::RwLock;
 {{- end }}
 
-{{- if len .Interface.Operations -}}
-{{- $ops = true }}
-use async_trait::async_trait;
-{{- end }}
-{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
-use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}SignalHandler;
-{{- if not (len .Interface.Properties) }}
-#[allow(unused_imports)]
-{{- end}}
-use signals2::*;
-{{- end }}
-{{- if or (len .Interface.Properties) $ops }}{{ nl }}{{ end }}
-#[derive(Default, Clone)]
-{{- if or (len .Interface.Properties) (len .Interface.Signals) }}
-pub struct {{Camel .Interface.Name}} {
+{{ if not $hasProps -}}
+#[derive(Default)]
+{{ end -}}
+pub struct {{Camel .Interface.Name}} {{ if not $hasPubSub }}{}{{ else }}{
 {{- range .Interface.Properties }}
-{{- $property:= . }}
-    {{snake $property.Name}}: {{rsType "" $property}},
+    {{snake .Name}}: RwLock<{{rsType "" .}}>,
 {{- end }}
-{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
-    _signal_handler: {{Camel .Interface.Name}}SignalHandler,
+{{- if $hasPubSub }}
+    publisher: {{Camel .Interface.Name}}Publisher,
 {{- end }}
-}{{nl}}
-{{- else }}
-pub struct {{Camel .Interface.Name}} {}{{nl}}
+}{{ end }}
+{{- if $hasProps }}
+
+impl Default for {{Camel .Interface.Name}} {
+    fn default() -> Self {
+        Self {{`{`}}
+{{- range $i, $e := .Interface.Properties }}
+{{-   if $i }},{{ end }} {{snake .Name}}: RwLock::new(Default::default())
 {{- end }}
-{{- if len .Interface.Operations }}
-#[async_trait]
+{{- if $hasPubSub }}, publisher: Default::default(){{ end }} }
+    }
+}
 {{- end }}
-impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {
-{{- $interface := .Interface }}
+
+impl {{Camel .Interface.Name}}Trait for {{Camel .Interface.Name}} {{ if $isEmpty }}{}{{ else }}{
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
-{{- if $operation.Description }}
-    /// {{ $operation.Description }}
-{{- range $operation.Params }}
-{{- $param := . }}
-{{- if $param.Description }}
-    /// `{{$param}}` {{$param.Description}}
-{{- end }}   {{- /* end if param description */}}
-{{- end }}   {{- /* end range operation param*/}}  
-{{- end }}   {{- /* end if operations description */}}
 {{- if len $operation.Params }}
     fn {{snake $operation.Name }}(
-        &mut self,
+        &self,
         {{rsParams "_" "" ",\n        " $operation.Params}},
-    ){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }} {
-        Default::default()
+    ) -> ApiFuture<'_, Result<{{ rsReturn "" $operation.Return}}, ApiError>> {
+        Box::pin(async move { Ok({{ if .Return.IsVoid }}(){{ else }}Default::default(){{ end }}) })
     }
 {{- else }}
-    fn {{snake $operation.Name }}(&mut self){{- if not .Return.IsVoid }} -> {{ rsReturn "" $operation.Return}}{{- end }} {
-        Default::default()
+    fn {{snake $operation.Name }}(&self) -> ApiFuture<'_, Result<{{ rsReturn "" $operation.Return}}, ApiError>> {
+        Box::pin(async move { Ok({{ if .Return.IsVoid }}(){{ else }}Default::default(){{ end }}) })
     }
 {{- end }}
-    /// Asynchronous version of [{{ snake $operation.Name}}]({{Camel $interface.Name}}::{{ snake $operation.Name}})
-{{- if $operation.Description }}
-    * {{$operation.Description}}
-{{- end }}   {{- /* end if description */}}
-{{- range $operation.Params }}
-{{- $param := . }}
-{{- if $param.Description }}
-    /// `{{$param}}` {{$param.Description}}
-{{- end }}   {{- /* end if description */}}
-{{- end }}   {{- /* end range operation params */}}
-    /// returns future of type `{{rsReturn "" $operation.Return}}` which is set once the function has completed
-{{- if len $operation.Params }}
-    async fn {{snake $operation.Name }}_async(
-        &mut self,
-        {{rsParams "" "" ",\n        " $operation.Params}},
-    ) -> Result<{{rsReturn "" $operation.Return}}, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.{{snake $operation.Name }}(
-        {{- range $i, $e := $operation.Params }}
-        {{- $param := . }}
-        {{- if $i }}, {{ end }}
-        {{- rsVar "" .}}{{ end -}}
-        ))
-    }
-{{- else }}
-    async fn {{snake $operation.Name }}_async(&mut self) -> Result<{{rsReturn "" $operation.Return}}, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.{{snake $operation.Name }}())
-    }
 {{- end }}
-{{- end }}   {{- /* end range operations */}}
 
-{{- if len .Interface.Operations }}{{- if len .Interface.Properties }}{{- nl }}{{ end }}{{ end }}
+{{- if $hasOps }}{{- if $hasProps }}{{- nl }}{{ end }}{{ end }}
 
 {{- range $i, $e := .Interface.Properties }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $property := . }}
 {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
-    /// Gets the value of the {{$property.Name}} property.
-    {{- if $property.Description }}
-    /// {{$property.Description}}
-    {{- end }}    {{- /* end if property.Description */}}
-    fn {{snake $property.Name }}(&self) -> {{rsTypeRef "" $property}} {
-        {{ if $isComplex }}&{{end}}self.{{ snake $property.Name }}
+    fn {{snake $property.Name }}(&self) -> {{rsType "" $property}} {
+        {{- if $isComplex }}
+        self.{{ snake $property.Name }}.read().clone()
+        {{- else }}
+        *self.{{ snake $property.Name }}.read()
+        {{- end }}
     }
     {{- if not .IsReadOnly }}
-    /// Sets the value of the {{$property.Name}} property.
-    {{- if $property.Description }}
-    /// {{$property.Name}} {{$property.Description}}
-    {{- end }}    {{- /* end if property.Description */}}
     fn set_{{snake $property.Name}}(
-        &mut self,
+        &self,
         {{ rsParam "" "" $property }},
     ) {
         {{- if and ( eq "string" $property.Type ) ( eq false $property.IsArray )}}
-        if self.{{ snake $property.Name }} == {{ snake $property.Name }} {
+        let new_val = {{ snake $property.Name }}.to_string();
+        let mut value = self.{{ snake $property.Name }}.write();
+        if *value == new_val {
             return;
         }
-
-        self.{{ snake $property.Name }} = {{ snake $property.Name }}.to_string();
-        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}.to_string());
+        *value = new_val.clone();
+        let _ = self.publisher.{{ snake $property.Name }}_changed.send(new_val);
+        {{- else if $property.IsArray }}
+        let new_val = {{ snake $property.Name }}.to_vec();
+        let mut value = self.{{ snake $property.Name }}.write();
+        if *value == new_val {
+            return;
+        }
+        *value = new_val.clone();
+        let _ = self.publisher.{{ snake $property.Name }}_changed.send(new_val);
+        {{- else if $isComplex }}
+        let new_val = {{ snake $property.Name }}.clone();
+        let mut value = self.{{ snake $property.Name }}.write();
+        if *value == new_val {
+            return;
+        }
+        *value = new_val.clone();
+        let _ = self.publisher.{{ snake $property.Name }}_changed.send(new_val);
         {{- else }}
-        {{- if eq false $property.IsArray }}
-        if self.{{ snake $property.Name }} == {{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }} {
+        let mut value = self.{{ snake $property.Name }}.write();
+        if *value == {{ snake $property.Name }} {
             return;
         }
-
-        self.{{ snake $property.Name }} = {{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }};
-        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}{{ if $isComplex }}.clone(){{ end }});
-        {{- else }}
-        if self.{{ snake $property.Name }} == {{ snake $property.Name }}{{ if $isComplex }}.to_vec(){{ end }} {
-            return;
-        }
-
-        self.{{ snake $property.Name }} = {{ snake $property.Name }}{{ if $isComplex }}.to_vec(){{ end }};
-        self._signal_handler.{{ snake $property.Name }}_changed.emit(self.{{ snake $property.Name }}.clone());
-        {{- end }}
+        *value = {{ snake $property.Name }};
+        let _ = self.publisher.{{ snake $property.Name }}_changed.send({{ snake $property.Name }});
         {{- end }}
     }
     {{- end }}
-{{- end }}    {{- /* end range properties */}}
+{{- end }}
 
-{{- if or (len .Interface.Signals) (len .Interface.Properties) }}
+{{- if $hasPubSub }}
 
-    fn _get_signal_handler(&mut self) -> &{{Camel .Interface.Name}}SignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &{{Camel .Interface.Name}}Publisher {
+        &self.publisher
     }
 {{- end }}
-}
+}{{ end }}
