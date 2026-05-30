@@ -1,78 +1,63 @@
 use crate::api::no_signals_interface::NoSignalsInterfaceTrait;
-use async_trait::async_trait;
-use crate::api::no_signals_interface::NoSignalsInterfaceSignalHandler;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::no_signals_interface::NoSignalsInterfacePublisher;
+use parking_lot::RwLock;
 
-#[derive(Default, Clone)]
 pub struct NoSignalsInterface {
-    prop_bool: bool,
-    prop_int: i32,
-    _signal_handler: NoSignalsInterfaceSignalHandler,
+    prop_bool: RwLock<bool>,
+    prop_int: RwLock<i32>,
+    publisher: NoSignalsInterfacePublisher,
 }
 
-#[async_trait]
-impl NoSignalsInterfaceTrait for NoSignalsInterface {
-    fn func_void(&mut self) {
-        Default::default()
+impl Default for NoSignalsInterface {
+    fn default() -> Self {
+        Self { prop_bool: RwLock::new(Default::default()), prop_int: RwLock::new(Default::default()), publisher: Default::default() }
     }
-    /// Asynchronous version of [func_void](NoSignalsInterface::func_void)
-    /// returns future of type `()` which is set once the function has completed
-    async fn func_void_async(&mut self) -> Result<(), ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_void())
+}
+
+impl NoSignalsInterfaceTrait for NoSignalsInterface {
+    fn func_void(&self) -> ApiFuture<'_, Result<(), ApiError>> {
+        Box::pin(async move { Ok(()) })
     }
 
     fn func_bool(
-        &mut self,
+        &self,
         _param_bool: bool,
-    ) -> bool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_bool](NoSignalsInterface::func_bool)
-    /// returns future of type `bool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: bool,
-    ) -> Result<bool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_bool(param_bool))
+    ) -> ApiFuture<'_, Result<bool, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool {
-        self.prop_bool
+        *self.prop_bool.read()
     }
-    /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: bool,
     ) {
-        if self.prop_bool == prop_bool {
+        let mut value = self.prop_bool.write();
+        if *value == prop_bool {
             return;
         }
-
-        self.prop_bool = prop_bool;
-        self._signal_handler.prop_bool_changed.emit(self.prop_bool);
+        *value = prop_bool;
+        let _ = self.publisher.prop_bool_changed.send(prop_bool);
     }
 
-    /// Gets the value of the propInt property.
     fn prop_int(&self) -> i32 {
-        self.prop_int
+        *self.prop_int.read()
     }
-    /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: i32,
     ) {
-        if self.prop_int == prop_int {
+        let mut value = self.prop_int.write();
+        if *value == prop_int {
             return;
         }
-
-        self.prop_int = prop_int;
-        self._signal_handler.prop_int_changed.emit(self.prop_int);
+        *value = prop_int;
+        let _ = self.publisher.prop_int_changed.send(prop_int);
     }
 
-    fn _get_signal_handler(&mut self) -> &NoSignalsInterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &NoSignalsInterfacePublisher {
+        &self.publisher
     }
 }

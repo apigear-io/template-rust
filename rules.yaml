@@ -1,5 +1,17 @@
 features:
+  - name: apigear
+    scopes:
+    - match: system
+      documents:
+        - source: "apigear/Cargo.toml"
+          target: "apigear/Cargo.toml"
+          raw: true
+        - source: "apigear/src/lib.rs"
+          target: "apigear/src/lib.rs"
+          raw: true
   - name: api
+    requires:
+      - apigear
     scopes:
     - match: interface
       prefix: "{{snake .Module.Name}}/src/api/"
@@ -13,9 +25,108 @@ features:
           target: "mod.rs"
         - source: "module/src/api/data_structs.rs.tpl"
           target: "data_structs.rs"
+  - name: core
+    requires:
+      - api
+    scopes:
+    - match: module
+      prefix: "{{snake .Module.Name}}/src/core_types/"
+      documents:
+        - source: "module/src/core_types/mod.rs.tpl"
+          target: "mod.rs"
+        - source: "module/src/core_types/test_helpers.rs.tpl"
+          target: "test_helpers.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/core_types/"
+      documents:
+        - source: "module/src/core_types/interface_data.rs.tpl"
+          target: "{{snake .Interface.Name}}_data.rs"
+        - source: "module/src/core_types/interface_shared.rs.tpl"
+          target: "{{snake .Interface.Name}}_shared.rs"
+  - name: monitor
+    requires:
+      - api
+      - core
+      - apigear
+    scopes:
+    - match: module
+      prefix: "{{snake .Module.Name}}/src/monitor/"
+      documents:
+        - source: "module/src/monitor/mod.rs.tpl"
+          target: "mod.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/monitor/"
+      documents:
+        - source: "module/src/monitor/interface_traced.rs.tpl"
+          target: "{{snake .Interface.Name}}_traced.rs"
+  - name: olink
+    requires:
+      - api
+      - core
+      - apigear
+    scopes:
+    - match: module
+      prefix: "{{snake .Module.Name}}/src/olink/"
+      documents:
+        - source: "module/src/olink/mod.rs.tpl"
+          target: "mod.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/olink/"
+      documents:
+        - source: "module/src/olink/interface_client.rs.tpl"
+          target: "{{snake .Interface.Name}}_client.rs"
+        - source: "module/src/olink/interface_service.rs.tpl"
+          target: "{{snake .Interface.Name}}_service.rs"
+    - match: module
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/olink_common.rs.tpl"
+          target: "tests/olink_common.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/olink_interface_test.rs.tpl"
+          target: "tests/olink_{{snake .Interface.Name}}_test.rs"
+  - name: mqtt
+    requires:
+      - api
+      - core
+      - apigear
+    scopes:
+    - match: module
+      prefix: "{{snake .Module.Name}}/src/mqtt/"
+      documents:
+        - source: "module/src/mqtt/mod.rs.tpl"
+          target: "mod.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/mqtt/"
+      documents:
+        - source: "module/src/mqtt/interface_client.rs.tpl"
+          target: "{{snake .Interface.Name}}_client.rs"
+        - source: "module/src/mqtt/interface_service.rs.tpl"
+          target: "{{snake .Interface.Name}}_service.rs"
+  - name: nats
+    requires:
+      - api
+      - core
+      - apigear
+    scopes:
+    - match: module
+      prefix: "{{snake .Module.Name}}/src/nats/"
+      documents:
+        - source: "module/src/nats/mod.rs.tpl"
+          target: "mod.rs"
+    - match: interface
+      prefix: "{{snake .Module.Name}}/src/nats/"
+      documents:
+        - source: "module/src/nats/interface_client.rs.tpl"
+          target: "{{snake .Interface.Name}}_client.rs"
+        - source: "module/src/nats/interface_service.rs.tpl"
+          target: "{{snake .Interface.Name}}_service.rs"
   - name: stubs
     requires:
       - api
+      - core
     scopes:
     - match: system
       documents:

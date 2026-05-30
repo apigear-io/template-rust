@@ -1,288 +1,217 @@
 use crate::api::simple_array_interface::SimpleArrayInterfaceTrait;
-use async_trait::async_trait;
-use crate::api::simple_array_interface::SimpleArrayInterfaceSignalHandler;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::simple_array_interface::SimpleArrayInterfacePublisher;
+use parking_lot::RwLock;
 
-#[derive(Default, Clone)]
 pub struct SimpleArrayInterface {
-    prop_bool: Vec<bool>,
-    prop_int: Vec<i32>,
-    prop_int32: Vec<i32>,
-    prop_int64: Vec<i64>,
-    prop_float: Vec<f32>,
-    prop_float32: Vec<f32>,
-    prop_float64: Vec<f64>,
-    prop_string: Vec<String>,
-    _signal_handler: SimpleArrayInterfaceSignalHandler,
+    prop_bool: RwLock<Vec<bool>>,
+    prop_int: RwLock<Vec<i32>>,
+    prop_int32: RwLock<Vec<i32>>,
+    prop_int64: RwLock<Vec<i64>>,
+    prop_float: RwLock<Vec<f32>>,
+    prop_float32: RwLock<Vec<f32>>,
+    prop_float64: RwLock<Vec<f64>>,
+    prop_string: RwLock<Vec<String>>,
+    prop_read_only_string: RwLock<String>,
+    publisher: SimpleArrayInterfacePublisher,
 }
 
-#[async_trait]
+impl Default for SimpleArrayInterface {
+    fn default() -> Self {
+        Self { prop_bool: RwLock::new(Default::default()), prop_int: RwLock::new(Default::default()), prop_int32: RwLock::new(Default::default()), prop_int64: RwLock::new(Default::default()), prop_float: RwLock::new(Default::default()), prop_float32: RwLock::new(Default::default()), prop_float64: RwLock::new(Default::default()), prop_string: RwLock::new(Default::default()), prop_read_only_string: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl SimpleArrayInterfaceTrait for SimpleArrayInterface {
     fn func_bool(
-        &mut self,
+        &self,
         _param_bool: &[bool],
-    ) -> Vec<bool> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_bool](SimpleArrayInterface::func_bool)
-    /// returns future of type `Vec<bool>` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: &[bool],
-    ) -> Result<Vec<bool>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_bool(param_bool))
+    ) -> ApiFuture<'_, Result<Vec<bool>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int(
-        &mut self,
+        &self,
         _param_int: &[i32],
-    ) -> Vec<i32> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int](SimpleArrayInterface::func_int)
-    /// returns future of type `Vec<i32>` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: &[i32],
-    ) -> Result<Vec<i32>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int(param_int))
+    ) -> ApiFuture<'_, Result<Vec<i32>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int32(
-        &mut self,
+        &self,
         _param_int32: &[i32],
-    ) -> Vec<i32> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int32](SimpleArrayInterface::func_int32)
-    /// returns future of type `Vec<i32>` which is set once the function has completed
-    async fn func_int32_async(
-        &mut self,
-        param_int32: &[i32],
-    ) -> Result<Vec<i32>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int32(param_int32))
+    ) -> ApiFuture<'_, Result<Vec<i32>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int64(
-        &mut self,
+        &self,
         _param_int64: &[i64],
-    ) -> Vec<i64> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int64](SimpleArrayInterface::func_int64)
-    /// returns future of type `Vec<i64>` which is set once the function has completed
-    async fn func_int64_async(
-        &mut self,
-        param_int64: &[i64],
-    ) -> Result<Vec<i64>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int64(param_int64))
+    ) -> ApiFuture<'_, Result<Vec<i64>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float(
-        &mut self,
+        &self,
         _param_float: &[f32],
-    ) -> Vec<f32> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float](SimpleArrayInterface::func_float)
-    /// returns future of type `Vec<f32>` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: &[f32],
-    ) -> Result<Vec<f32>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float(param_float))
+    ) -> ApiFuture<'_, Result<Vec<f32>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float32(
-        &mut self,
+        &self,
         _param_float32: &[f32],
-    ) -> Vec<f32> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float32](SimpleArrayInterface::func_float32)
-    /// returns future of type `Vec<f32>` which is set once the function has completed
-    async fn func_float32_async(
-        &mut self,
-        param_float32: &[f32],
-    ) -> Result<Vec<f32>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float32(param_float32))
+    ) -> ApiFuture<'_, Result<Vec<f32>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float64(
-        &mut self,
+        &self,
         _param_float: &[f64],
-    ) -> Vec<f64> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float64](SimpleArrayInterface::func_float64)
-    /// returns future of type `Vec<f64>` which is set once the function has completed
-    async fn func_float64_async(
-        &mut self,
-        param_float: &[f64],
-    ) -> Result<Vec<f64>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float64(param_float))
+    ) -> ApiFuture<'_, Result<Vec<f64>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_string(
-        &mut self,
+        &self,
         _param_string: &[String],
-    ) -> Vec<String> {
-        Default::default()
-    }
-    /// Asynchronous version of [func_string](SimpleArrayInterface::func_string)
-    /// returns future of type `Vec<String>` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &[String],
-    ) -> Result<Vec<String>, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_string(param_string))
+    ) -> ApiFuture<'_, Result<Vec<String>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the propBool property.
-    fn prop_bool(&self) -> &Vec<bool> {
-        &self.prop_bool
+    fn prop_bool(&self) -> Vec<bool> {
+        self.prop_bool.read().clone()
     }
-    /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: &[bool],
     ) {
-        if self.prop_bool == prop_bool.to_vec() {
+        let new_val = prop_bool.to_vec();
+        let mut value = self.prop_bool.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_bool = prop_bool.to_vec();
-        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_bool_changed.send(new_val);
     }
 
-    /// Gets the value of the propInt property.
-    fn prop_int(&self) -> &Vec<i32> {
-        &self.prop_int
+    fn prop_int(&self) -> Vec<i32> {
+        self.prop_int.read().clone()
     }
-    /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: &[i32],
     ) {
-        if self.prop_int == prop_int.to_vec() {
+        let new_val = prop_int.to_vec();
+        let mut value = self.prop_int.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_int = prop_int.to_vec();
-        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_int_changed.send(new_val);
     }
 
-    /// Gets the value of the propInt32 property.
-    fn prop_int32(&self) -> &Vec<i32> {
-        &self.prop_int32
+    fn prop_int32(&self) -> Vec<i32> {
+        self.prop_int32.read().clone()
     }
-    /// Sets the value of the propInt32 property.
     fn set_prop_int32(
-        &mut self,
+        &self,
         prop_int32: &[i32],
     ) {
-        if self.prop_int32 == prop_int32.to_vec() {
+        let new_val = prop_int32.to_vec();
+        let mut value = self.prop_int32.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_int32 = prop_int32.to_vec();
-        self._signal_handler.prop_int32_changed.emit(self.prop_int32.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_int32_changed.send(new_val);
     }
 
-    /// Gets the value of the propInt64 property.
-    fn prop_int64(&self) -> &Vec<i64> {
-        &self.prop_int64
+    fn prop_int64(&self) -> Vec<i64> {
+        self.prop_int64.read().clone()
     }
-    /// Sets the value of the propInt64 property.
     fn set_prop_int64(
-        &mut self,
+        &self,
         prop_int64: &[i64],
     ) {
-        if self.prop_int64 == prop_int64.to_vec() {
+        let new_val = prop_int64.to_vec();
+        let mut value = self.prop_int64.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_int64 = prop_int64.to_vec();
-        self._signal_handler.prop_int64_changed.emit(self.prop_int64.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_int64_changed.send(new_val);
     }
 
-    /// Gets the value of the propFloat property.
-    fn prop_float(&self) -> &Vec<f32> {
-        &self.prop_float
+    fn prop_float(&self) -> Vec<f32> {
+        self.prop_float.read().clone()
     }
-    /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: &[f32],
     ) {
-        if self.prop_float == prop_float.to_vec() {
+        let new_val = prop_float.to_vec();
+        let mut value = self.prop_float.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_float = prop_float.to_vec();
-        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_float_changed.send(new_val);
     }
 
-    /// Gets the value of the propFloat32 property.
-    fn prop_float32(&self) -> &Vec<f32> {
-        &self.prop_float32
+    fn prop_float32(&self) -> Vec<f32> {
+        self.prop_float32.read().clone()
     }
-    /// Sets the value of the propFloat32 property.
     fn set_prop_float32(
-        &mut self,
+        &self,
         prop_float32: &[f32],
     ) {
-        if self.prop_float32 == prop_float32.to_vec() {
+        let new_val = prop_float32.to_vec();
+        let mut value = self.prop_float32.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_float32 = prop_float32.to_vec();
-        self._signal_handler.prop_float32_changed.emit(self.prop_float32.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_float32_changed.send(new_val);
     }
 
-    /// Gets the value of the propFloat64 property.
-    fn prop_float64(&self) -> &Vec<f64> {
-        &self.prop_float64
+    fn prop_float64(&self) -> Vec<f64> {
+        self.prop_float64.read().clone()
     }
-    /// Sets the value of the propFloat64 property.
     fn set_prop_float64(
-        &mut self,
+        &self,
         prop_float64: &[f64],
     ) {
-        if self.prop_float64 == prop_float64.to_vec() {
+        let new_val = prop_float64.to_vec();
+        let mut value = self.prop_float64.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_float64 = prop_float64.to_vec();
-        self._signal_handler.prop_float64_changed.emit(self.prop_float64.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_float64_changed.send(new_val);
     }
 
-    /// Gets the value of the propString property.
-    fn prop_string(&self) -> &Vec<String> {
-        &self.prop_string
+    fn prop_string(&self) -> Vec<String> {
+        self.prop_string.read().clone()
     }
-    /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &[String],
     ) {
-        if self.prop_string == prop_string.to_vec() {
+        let new_val = prop_string.to_vec();
+        let mut value = self.prop_string.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_string = prop_string.to_vec();
-        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_string_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &SimpleArrayInterfaceSignalHandler {
-        &self._signal_handler
+    fn prop_read_only_string(&self) -> String {
+        self.prop_read_only_string.read().clone()
+    }
+
+    fn publisher(&self) -> &SimpleArrayInterfacePublisher {
+        &self.publisher
     }
 }

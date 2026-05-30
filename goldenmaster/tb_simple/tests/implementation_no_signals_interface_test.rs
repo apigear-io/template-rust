@@ -6,43 +6,33 @@ use tb_simple::implementation::no_signals_interface::NoSignalsInterface;
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_func_void() {
-        let mut test_object: NoSignalsInterface = Default::default();
-        test_object.func_void();
+    #[tokio::test]
+    async fn test_func_void() {
+        let test_object = NoSignalsInterface::default();
+        let result = test_object.func_void().await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func_void_async() {
-        let mut test_object: NoSignalsInterface = Default::default();
-        let _ = test_object.func_void_async();
-    }
-
-    #[test]
-    fn test_func_bool() {
-        let mut test_object: NoSignalsInterface = Default::default();
-        test_object.func_bool(Default::default());
-    }
-
-    #[test]
-    fn test_func_bool_async() {
-        let mut test_object: NoSignalsInterface = Default::default();
-        let _ = test_object.func_bool_async(Default::default());
+    #[tokio::test]
+    async fn test_func_bool() {
+        let test_object = NoSignalsInterface::default();
+        let result = test_object.func_bool(Default::default()).await;
+        assert!(result.is_ok());
     }
 
     #[test]
     fn test_prop_bool() {
-        let mut test_object: NoSignalsInterface = Default::default();
+        let test_object = NoSignalsInterface::default();
         let default_value: bool = Default::default();
         test_object.set_prop_bool(default_value);
-        assert_eq!(test_object.prop_bool().clone(), default_value);
+        assert_eq!(test_object.prop_bool(), default_value);
     }
 
     #[test]
     fn test_prop_int() {
-        let mut test_object: NoSignalsInterface = Default::default();
+        let test_object = NoSignalsInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop_int(default_value);
-        assert_eq!(test_object.prop_int().clone(), default_value);
+        assert_eq!(test_object.prop_int(), default_value);
     }
 }

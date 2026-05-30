@@ -1,194 +1,139 @@
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct SimpleArrayInterfaceSignalHandler {
-    pub prop_bool_changed: Signal<(Vec<bool>,)>,
-
-    pub prop_int_changed: Signal<(Vec<i32>,)>,
-
-    pub prop_int32_changed: Signal<(Vec<i32>,)>,
-
-    pub prop_int64_changed: Signal<(Vec<i64>,)>,
-
-    pub prop_float_changed: Signal<(Vec<f32>,)>,
-
-    pub prop_float32_changed: Signal<(Vec<f32>,)>,
-
-    pub prop_float64_changed: Signal<(Vec<f64>,)>,
-
-    pub prop_string_changed: Signal<(Vec<String>,)>,
-
-    pub sig_bool: Signal<(Vec<bool>,)>,
-
-    pub sig_int: Signal<(Vec<i32>,)>,
-
-    pub sig_int32: Signal<(Vec<i32>,)>,
-
-    pub sig_int64: Signal<(Vec<i64>,)>,
-
-    pub sig_float: Signal<(Vec<f32>,)>,
-
-    pub sig_float32: Signal<(Vec<f32>,)>,
-
-    pub sig_float64: Signal<(Vec<f64>,)>,
-
-    pub sig_string: Signal<(Vec<String>,)>,
+pub struct SimpleArrayInterfacePublisher {
+    pub prop_bool_changed: watch::Sender<Vec<bool>>,
+    pub prop_int_changed: watch::Sender<Vec<i32>>,
+    pub prop_int32_changed: watch::Sender<Vec<i32>>,
+    pub prop_int64_changed: watch::Sender<Vec<i64>>,
+    pub prop_float_changed: watch::Sender<Vec<f32>>,
+    pub prop_float32_changed: watch::Sender<Vec<f32>>,
+    pub prop_float64_changed: watch::Sender<Vec<f64>>,
+    pub prop_string_changed: watch::Sender<Vec<String>>,
+    pub prop_read_only_string_changed: watch::Sender<String>,
+    pub sig_bool: broadcast::Sender<(Vec<bool>,)>,
+    pub sig_int: broadcast::Sender<(Vec<i32>,)>,
+    pub sig_int32: broadcast::Sender<(Vec<i32>,)>,
+    pub sig_int64: broadcast::Sender<(Vec<i64>,)>,
+    pub sig_float: broadcast::Sender<(Vec<f32>,)>,
+    pub sig_float32: broadcast::Sender<(Vec<f32>,)>,
+    pub sig_float64: broadcast::Sender<(Vec<f64>,)>,
+    pub sig_string: broadcast::Sender<(Vec<String>,)>,
 }
 
-#[async_trait]
-pub trait SimpleArrayInterfaceTrait {
+impl Default for SimpleArrayInterfacePublisher {
+    fn default() -> Self {
+        Self { prop_bool_changed: watch::channel(Default::default()).0, prop_int_changed: watch::channel(Default::default()).0, prop_int32_changed: watch::channel(Default::default()).0, prop_int64_changed: watch::channel(Default::default()).0, prop_float_changed: watch::channel(Default::default()).0, prop_float32_changed: watch::channel(Default::default()).0, prop_float64_changed: watch::channel(Default::default()).0, prop_string_changed: watch::channel(Default::default()).0, prop_read_only_string_changed: watch::channel(Default::default()).0, sig_bool: broadcast::Sender::new(16), sig_int: broadcast::Sender::new(16), sig_int32: broadcast::Sender::new(16), sig_int64: broadcast::Sender::new(16), sig_float: broadcast::Sender::new(16), sig_float32: broadcast::Sender::new(16), sig_float64: broadcast::Sender::new(16), sig_string: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait SimpleArrayInterfaceTrait: Send + Sync {
     fn func_bool(
-        &mut self,
+        &self,
         param_bool: &[bool],
-    ) -> Vec<bool>;
-    /// Asynchronous version of [func_bool](SimpleArrayInterfaceTrait::func_bool)
-    /// returns future of type `Vec<bool>` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: &[bool],
-    ) -> Result<Vec<bool>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<bool>, ApiError>>;
 
     fn func_int(
-        &mut self,
+        &self,
         param_int: &[i32],
-    ) -> Vec<i32>;
-    /// Asynchronous version of [func_int](SimpleArrayInterfaceTrait::func_int)
-    /// returns future of type `Vec<i32>` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: &[i32],
-    ) -> Result<Vec<i32>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<i32>, ApiError>>;
 
     fn func_int32(
-        &mut self,
+        &self,
         param_int32: &[i32],
-    ) -> Vec<i32>;
-    /// Asynchronous version of [func_int32](SimpleArrayInterfaceTrait::func_int32)
-    /// returns future of type `Vec<i32>` which is set once the function has completed
-    async fn func_int32_async(
-        &mut self,
-        param_int32: &[i32],
-    ) -> Result<Vec<i32>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<i32>, ApiError>>;
 
     fn func_int64(
-        &mut self,
+        &self,
         param_int64: &[i64],
-    ) -> Vec<i64>;
-    /// Asynchronous version of [func_int64](SimpleArrayInterfaceTrait::func_int64)
-    /// returns future of type `Vec<i64>` which is set once the function has completed
-    async fn func_int64_async(
-        &mut self,
-        param_int64: &[i64],
-    ) -> Result<Vec<i64>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<i64>, ApiError>>;
 
     fn func_float(
-        &mut self,
+        &self,
         param_float: &[f32],
-    ) -> Vec<f32>;
-    /// Asynchronous version of [func_float](SimpleArrayInterfaceTrait::func_float)
-    /// returns future of type `Vec<f32>` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: &[f32],
-    ) -> Result<Vec<f32>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<f32>, ApiError>>;
 
     fn func_float32(
-        &mut self,
+        &self,
         param_float32: &[f32],
-    ) -> Vec<f32>;
-    /// Asynchronous version of [func_float32](SimpleArrayInterfaceTrait::func_float32)
-    /// returns future of type `Vec<f32>` which is set once the function has completed
-    async fn func_float32_async(
-        &mut self,
-        param_float32: &[f32],
-    ) -> Result<Vec<f32>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<f32>, ApiError>>;
 
     fn func_float64(
-        &mut self,
+        &self,
         param_float: &[f64],
-    ) -> Vec<f64>;
-    /// Asynchronous version of [func_float64](SimpleArrayInterfaceTrait::func_float64)
-    /// returns future of type `Vec<f64>` which is set once the function has completed
-    async fn func_float64_async(
-        &mut self,
-        param_float: &[f64],
-    ) -> Result<Vec<f64>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<f64>, ApiError>>;
 
     fn func_string(
-        &mut self,
+        &self,
         param_string: &[String],
-    ) -> Vec<String>;
-    /// Asynchronous version of [func_string](SimpleArrayInterfaceTrait::func_string)
-    /// returns future of type `Vec<String>` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &[String],
-    ) -> Result<Vec<String>, ()>;
+    ) -> ApiFuture<'_, Result<Vec<String>, ApiError>>;
 
     /// Gets the value of the propBool property.
-    fn prop_bool(&self) -> &Vec<bool>;
+    fn prop_bool(&self) -> Vec<bool>;
     /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: &[bool],
     );
 
     /// Gets the value of the propInt property.
-    fn prop_int(&self) -> &Vec<i32>;
+    fn prop_int(&self) -> Vec<i32>;
     /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: &[i32],
     );
 
     /// Gets the value of the propInt32 property.
-    fn prop_int32(&self) -> &Vec<i32>;
+    fn prop_int32(&self) -> Vec<i32>;
     /// Sets the value of the propInt32 property.
     fn set_prop_int32(
-        &mut self,
+        &self,
         prop_int32: &[i32],
     );
 
     /// Gets the value of the propInt64 property.
-    fn prop_int64(&self) -> &Vec<i64>;
+    fn prop_int64(&self) -> Vec<i64>;
     /// Sets the value of the propInt64 property.
     fn set_prop_int64(
-        &mut self,
+        &self,
         prop_int64: &[i64],
     );
 
     /// Gets the value of the propFloat property.
-    fn prop_float(&self) -> &Vec<f32>;
+    fn prop_float(&self) -> Vec<f32>;
     /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: &[f32],
     );
 
     /// Gets the value of the propFloat32 property.
-    fn prop_float32(&self) -> &Vec<f32>;
+    fn prop_float32(&self) -> Vec<f32>;
     /// Sets the value of the propFloat32 property.
     fn set_prop_float32(
-        &mut self,
+        &self,
         prop_float32: &[f32],
     );
 
     /// Gets the value of the propFloat64 property.
-    fn prop_float64(&self) -> &Vec<f64>;
+    fn prop_float64(&self) -> Vec<f64>;
     /// Sets the value of the propFloat64 property.
     fn set_prop_float64(
-        &mut self,
+        &self,
         prop_float64: &[f64],
     );
 
     /// Gets the value of the propString property.
-    fn prop_string(&self) -> &Vec<String>;
+    fn prop_string(&self) -> Vec<String>;
     /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &[String],
     );
 
-    fn _get_signal_handler(&mut self) -> &SimpleArrayInterfaceSignalHandler;
+    /// Gets the value of the propReadOnlyString property.
+    fn prop_read_only_string(&self) -> String;
+
+    fn publisher(&self) -> &SimpleArrayInterfacePublisher;
 }

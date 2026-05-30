@@ -1,61 +1,48 @@
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct SameStruct2InterfaceSignalHandler {
-    pub prop1_changed: Signal<(Struct2,)>,
-
-    pub prop2_changed: Signal<(Struct2,)>,
-
-    pub sig1: Signal<(Struct1,)>,
-
-    pub sig2: Signal<(Struct1, Struct2)>,
+pub struct SameStruct2InterfacePublisher {
+    pub prop1_changed: watch::Sender<Struct2>,
+    pub prop2_changed: watch::Sender<Struct2>,
+    pub sig1: broadcast::Sender<(Struct1,)>,
+    pub sig2: broadcast::Sender<(Struct1, Struct2)>,
 }
 
-#[async_trait]
-pub trait SameStruct2InterfaceTrait {
+impl Default for SameStruct2InterfacePublisher {
+    fn default() -> Self {
+        Self { prop1_changed: watch::channel(Default::default()).0, prop2_changed: watch::channel(Default::default()).0, sig1: broadcast::Sender::new(16), sig2: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait SameStruct2InterfaceTrait: Send + Sync {
     fn func1(
-        &mut self,
+        &self,
         param1: &Struct1,
-    ) -> Struct1;
-    /// Asynchronous version of [func1](SameStruct2InterfaceTrait::func1)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &Struct1,
-    ) -> Result<Struct1, ()>;
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>>;
 
     fn func2(
-        &mut self,
+        &self,
         param1: &Struct1,
         param2: &Struct2,
-    ) -> Struct1;
-    /// Asynchronous version of [func2](SameStruct2InterfaceTrait::func2)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func2_async(
-        &mut self,
-        param1: &Struct1,
-        param2: &Struct2,
-    ) -> Result<Struct1, ()>;
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>>;
 
     /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &Struct2;
+    fn prop1(&self) -> Struct2;
     /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &Struct2,
     );
 
     /// Gets the value of the prop2 property.
-    fn prop2(&self) -> &Struct2;
+    fn prop2(&self) -> Struct2;
     /// Sets the value of the prop2 property.
     fn set_prop2(
-        &mut self,
+        &self,
         prop2: &Struct2,
     );
 
-    fn _get_signal_handler(&mut self) -> &SameStruct2InterfaceSignalHandler;
+    fn publisher(&self) -> &SameStruct2InterfacePublisher;
 }

@@ -1,5 +1,3 @@
-use signals2::*;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use tb_same1::api::data_structs::*;
 use tb_same1::api::same_enum2_interface::SameEnum2InterfaceTrait;
@@ -50,79 +48,55 @@ mod tests {
         assert_eq!(result, Err(()));
     }
 
-    #[test]
-    fn test_func1() {
-        let mut test_object: SameEnum2Interface = Default::default();
-        test_object.func1(Default::default());
+    #[tokio::test]
+    async fn test_func1() {
+        let test_object = SameEnum2Interface::default();
+        let result = test_object.func1(Default::default()).await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func1_async() {
-        let mut test_object: SameEnum2Interface = Default::default();
-        let _ = test_object.func1_async(Default::default());
-    }
-
-    #[test]
-    fn test_func2() {
-        let mut test_object: SameEnum2Interface = Default::default();
-        test_object.func2(Default::default(), Default::default());
-    }
-
-    #[test]
-    fn test_func2_async() {
-        let mut test_object: SameEnum2Interface = Default::default();
-        let _ = test_object.func2_async(Default::default(), Default::default());
+    #[tokio::test]
+    async fn test_func2() {
+        let test_object = SameEnum2Interface::default();
+        let result = test_object.func2(Default::default(), Default::default()).await;
+        assert!(result.is_ok());
     }
 
     #[test]
     fn test_prop1() {
-        let mut test_object: SameEnum2Interface = Default::default();
+        let test_object = SameEnum2Interface::default();
         let default_value: Enum1Enum = Default::default();
         test_object.set_prop1(default_value);
-        assert_eq!(test_object.prop1().clone(), default_value);
+        assert_eq!(test_object.prop1(), default_value);
     }
 
     #[test]
     fn test_prop2() {
-        let mut test_object: SameEnum2Interface = Default::default();
+        let test_object = SameEnum2Interface::default();
         let default_value: Enum2Enum = Default::default();
         test_object.set_prop2(default_value);
-        assert_eq!(test_object.prop2().clone(), default_value);
+        assert_eq!(test_object.prop2(), default_value);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig1() {
-        let mut test_object: SameEnum2Interface = Default::default();
-
-        test_object._get_signal_handler().sig1.connect(move |param1| {
-            let default_value_param1: Enum1Enum = Default::default();
-            assert_eq!(param1, default_value_param1);
-        });
-
+        let test_object = SameEnum2Interface::default();
+        let mut rx = test_object.publisher().sig1.subscribe();
         let default_value_param1: Enum1Enum = Default::default();
-        test_object._get_signal_handler().sig1.emit(
-            default_value_param1.clone(),
-        );
+        let _ = test_object.publisher().sig1.send((default_value_param1.clone(),));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig2() {
-        let mut test_object: SameEnum2Interface = Default::default();
-
-        test_object._get_signal_handler().sig2.connect(move |param1, param2| {
-            let default_value_param1: Enum1Enum = Default::default();
-            assert_eq!(param1, default_value_param1);
-            let default_value_param2: Enum2Enum = Default::default();
-            assert_eq!(param2, default_value_param2);
-        });
-
+        let test_object = SameEnum2Interface::default();
+        let mut rx = test_object.publisher().sig2.subscribe();
         let default_value_param1: Enum1Enum = Default::default();
         let default_value_param2: Enum2Enum = Default::default();
-        test_object._get_signal_handler().sig2.emit(
-            default_value_param1.clone(),
-            default_value_param2.clone(),
-        );
+        let _ = test_object.publisher().sig2.send((default_value_param1.clone(), default_value_param2.clone()));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
+        assert_eq!(received.1, default_value_param2);
     }
 }

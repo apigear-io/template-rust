@@ -1,136 +1,84 @@
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct SimpleInterfaceSignalHandler {
-    pub prop_bool_changed: Signal<(bool,)>,
-
-    pub prop_int_changed: Signal<(i32,)>,
-
-    pub prop_int32_changed: Signal<(i32,)>,
-
-    pub prop_int64_changed: Signal<(i64,)>,
-
-    pub prop_float_changed: Signal<(f32,)>,
-
-    pub prop_float32_changed: Signal<(f32,)>,
-
-    pub prop_float64_changed: Signal<(f64,)>,
-
-    pub prop_string_changed: Signal<(String,)>,
-
-    pub sig_bool: Signal<(bool,)>,
-
-    pub sig_int: Signal<(i32,)>,
-
-    pub sig_int32: Signal<(i32,)>,
-
-    pub sig_int64: Signal<(i64,)>,
-
-    pub sig_float: Signal<(f32,)>,
-
-    pub sig_float32: Signal<(f32,)>,
-
-    pub sig_float64: Signal<(f64,)>,
-
-    pub sig_string: Signal<(String,)>,
+pub struct SimpleInterfacePublisher {
+    pub prop_bool_changed: watch::Sender<bool>,
+    pub prop_int_changed: watch::Sender<i32>,
+    pub prop_int32_changed: watch::Sender<i32>,
+    pub prop_int64_changed: watch::Sender<i64>,
+    pub prop_float_changed: watch::Sender<f32>,
+    pub prop_float32_changed: watch::Sender<f32>,
+    pub prop_float64_changed: watch::Sender<f64>,
+    pub prop_string_changed: watch::Sender<String>,
+    pub sig_bool: broadcast::Sender<(bool,)>,
+    pub sig_int: broadcast::Sender<(i32,)>,
+    pub sig_int32: broadcast::Sender<(i32,)>,
+    pub sig_int64: broadcast::Sender<(i64,)>,
+    pub sig_float: broadcast::Sender<(f32,)>,
+    pub sig_float32: broadcast::Sender<(f32,)>,
+    pub sig_float64: broadcast::Sender<(f64,)>,
+    pub sig_string: broadcast::Sender<(String,)>,
 }
 
-#[async_trait]
-pub trait SimpleInterfaceTrait {
+impl Default for SimpleInterfacePublisher {
+    fn default() -> Self {
+        Self { prop_bool_changed: watch::channel(Default::default()).0, prop_int_changed: watch::channel(Default::default()).0, prop_int32_changed: watch::channel(Default::default()).0, prop_int64_changed: watch::channel(Default::default()).0, prop_float_changed: watch::channel(Default::default()).0, prop_float32_changed: watch::channel(Default::default()).0, prop_float64_changed: watch::channel(Default::default()).0, prop_string_changed: watch::channel(Default::default()).0, sig_bool: broadcast::Sender::new(16), sig_int: broadcast::Sender::new(16), sig_int32: broadcast::Sender::new(16), sig_int64: broadcast::Sender::new(16), sig_float: broadcast::Sender::new(16), sig_float32: broadcast::Sender::new(16), sig_float64: broadcast::Sender::new(16), sig_string: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait SimpleInterfaceTrait: Send + Sync {
+    fn func_no_return_value(
+        &self,
+        param_bool: bool,
+    ) -> ApiFuture<'_, Result<(), ApiError>>;
+
+    fn func_no_params(&self) -> ApiFuture<'_, Result<bool, ApiError>>;
+
     fn func_bool(
-        &mut self,
+        &self,
         param_bool: bool,
-    ) -> bool;
-    /// Asynchronous version of [func_bool](SimpleInterfaceTrait::func_bool)
-    /// returns future of type `bool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: bool,
-    ) -> Result<bool, ()>;
+    ) -> ApiFuture<'_, Result<bool, ApiError>>;
 
     fn func_int(
-        &mut self,
+        &self,
         param_int: i32,
-    ) -> i32;
-    /// Asynchronous version of [func_int](SimpleInterfaceTrait::func_int)
-    /// returns future of type `i32` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: i32,
-    ) -> Result<i32, ()>;
+    ) -> ApiFuture<'_, Result<i32, ApiError>>;
 
     fn func_int32(
-        &mut self,
+        &self,
         param_int32: i32,
-    ) -> i32;
-    /// Asynchronous version of [func_int32](SimpleInterfaceTrait::func_int32)
-    /// returns future of type `i32` which is set once the function has completed
-    async fn func_int32_async(
-        &mut self,
-        param_int32: i32,
-    ) -> Result<i32, ()>;
+    ) -> ApiFuture<'_, Result<i32, ApiError>>;
 
     fn func_int64(
-        &mut self,
+        &self,
         param_int64: i64,
-    ) -> i64;
-    /// Asynchronous version of [func_int64](SimpleInterfaceTrait::func_int64)
-    /// returns future of type `i64` which is set once the function has completed
-    async fn func_int64_async(
-        &mut self,
-        param_int64: i64,
-    ) -> Result<i64, ()>;
+    ) -> ApiFuture<'_, Result<i64, ApiError>>;
 
     fn func_float(
-        &mut self,
+        &self,
         param_float: f32,
-    ) -> f32;
-    /// Asynchronous version of [func_float](SimpleInterfaceTrait::func_float)
-    /// returns future of type `f32` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: f32,
-    ) -> Result<f32, ()>;
+    ) -> ApiFuture<'_, Result<f32, ApiError>>;
 
     fn func_float32(
-        &mut self,
+        &self,
         param_float32: f32,
-    ) -> f32;
-    /// Asynchronous version of [func_float32](SimpleInterfaceTrait::func_float32)
-    /// returns future of type `f32` which is set once the function has completed
-    async fn func_float32_async(
-        &mut self,
-        param_float32: f32,
-    ) -> Result<f32, ()>;
+    ) -> ApiFuture<'_, Result<f32, ApiError>>;
 
     fn func_float64(
-        &mut self,
+        &self,
         param_float: f64,
-    ) -> f64;
-    /// Asynchronous version of [func_float64](SimpleInterfaceTrait::func_float64)
-    /// returns future of type `f64` which is set once the function has completed
-    async fn func_float64_async(
-        &mut self,
-        param_float: f64,
-    ) -> Result<f64, ()>;
+    ) -> ApiFuture<'_, Result<f64, ApiError>>;
 
     fn func_string(
-        &mut self,
+        &self,
         param_string: &str,
-    ) -> String;
-    /// Asynchronous version of [func_string](SimpleInterfaceTrait::func_string)
-    /// returns future of type `String` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &str,
-    ) -> Result<String, ()>;
+    ) -> ApiFuture<'_, Result<String, ApiError>>;
 
     /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool;
     /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: bool,
     );
 
@@ -138,7 +86,7 @@ pub trait SimpleInterfaceTrait {
     fn prop_int(&self) -> i32;
     /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: i32,
     );
 
@@ -146,7 +94,7 @@ pub trait SimpleInterfaceTrait {
     fn prop_int32(&self) -> i32;
     /// Sets the value of the propInt32 property.
     fn set_prop_int32(
-        &mut self,
+        &self,
         prop_int32: i32,
     );
 
@@ -154,7 +102,7 @@ pub trait SimpleInterfaceTrait {
     fn prop_int64(&self) -> i64;
     /// Sets the value of the propInt64 property.
     fn set_prop_int64(
-        &mut self,
+        &self,
         prop_int64: i64,
     );
 
@@ -162,7 +110,7 @@ pub trait SimpleInterfaceTrait {
     fn prop_float(&self) -> f32;
     /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: f32,
     );
 
@@ -170,7 +118,7 @@ pub trait SimpleInterfaceTrait {
     fn prop_float32(&self) -> f32;
     /// Sets the value of the propFloat32 property.
     fn set_prop_float32(
-        &mut self,
+        &self,
         prop_float32: f32,
     );
 
@@ -178,17 +126,17 @@ pub trait SimpleInterfaceTrait {
     fn prop_float64(&self) -> f64;
     /// Sets the value of the propFloat64 property.
     fn set_prop_float64(
-        &mut self,
+        &self,
         prop_float64: f64,
     );
 
     /// Gets the value of the propString property.
-    fn prop_string(&self) -> &String;
+    fn prop_string(&self) -> String;
     /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &str,
     );
 
-    fn _get_signal_handler(&mut self) -> &SimpleInterfaceSignalHandler;
+    fn publisher(&self) -> &SimpleInterfacePublisher;
 }

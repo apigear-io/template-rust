@@ -1,36 +1,32 @@
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct SameStruct1InterfaceSignalHandler {
-    pub prop1_changed: Signal<(Struct1,)>,
-
-    pub sig1: Signal<(Struct1,)>,
+pub struct SameStruct1InterfacePublisher {
+    pub prop1_changed: watch::Sender<Struct1>,
+    pub sig1: broadcast::Sender<(Struct1,)>,
 }
 
-#[async_trait]
-pub trait SameStruct1InterfaceTrait {
+impl Default for SameStruct1InterfacePublisher {
+    fn default() -> Self {
+        Self { prop1_changed: watch::channel(Default::default()).0, sig1: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait SameStruct1InterfaceTrait: Send + Sync {
     fn func1(
-        &mut self,
+        &self,
         param1: &Struct1,
-    ) -> Struct1;
-    /// Asynchronous version of [func1](SameStruct1InterfaceTrait::func1)
-    /// returns future of type `Struct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &Struct1,
-    ) -> Result<Struct1, ()>;
+    ) -> ApiFuture<'_, Result<Struct1, ApiError>>;
 
     /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &Struct1;
+    fn prop1(&self) -> Struct1;
     /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &Struct1,
     );
 
-    fn _get_signal_handler(&mut self) -> &SameStruct1InterfaceSignalHandler;
+    fn publisher(&self) -> &SameStruct1InterfacePublisher;
 }
