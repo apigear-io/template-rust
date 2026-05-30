@@ -20,3 +20,6 @@ tmp2/
 # Rust specific
 **/Cargo.lock
 **/target/
+
+# Worktrees
+.worktrees/
