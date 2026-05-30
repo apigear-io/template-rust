@@ -28,9 +28,13 @@ policies:
         scopes:
           - "apigear"
           - "api"
+          - "core"
           - "olink"
           - "stubs"
           - "monitor"
+          - "nats"
+          - "mqtt"
+          - "examples"
           - "docs"
           - "cli"
           - "deps"
