@@ -1,0 +1,22 @@
+[package]
+name = "tb_names"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.80"
+description = "Generated API SDK for tb.names"
+license = "MIT"
+
+[dependencies]
+apigear = { workspace = true }
+async-nats = { workspace = true }
+futures = { workspace = true }
+parking_lot = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+objectlink-core = { workspace = true }
+rumqttc = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "time"] }

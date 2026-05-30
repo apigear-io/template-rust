@@ -1,4 +1,3 @@
-use signals2::*;
 use tb_simple::api::no_operations_interface::NoOperationsInterfaceTrait;
 use tb_simple::implementation::no_operations_interface::NoOperationsInterface;
 
@@ -9,45 +8,35 @@ mod tests {
 
     #[test]
     fn test_prop_bool() {
-        let mut test_object: NoOperationsInterface = Default::default();
+        let test_object = NoOperationsInterface::default();
         let default_value: bool = Default::default();
         test_object.set_prop_bool(default_value);
-        assert_eq!(test_object.prop_bool().clone(), default_value);
+        assert_eq!(test_object.prop_bool(), default_value);
     }
 
     #[test]
     fn test_prop_int() {
-        let mut test_object: NoOperationsInterface = Default::default();
+        let test_object = NoOperationsInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop_int(default_value);
-        assert_eq!(test_object.prop_int().clone(), default_value);
+        assert_eq!(test_object.prop_int(), default_value);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig_void() {
-        let mut test_object: NoOperationsInterface = Default::default();
-
-        test_object._get_signal_handler().sig_void.connect(move || {
-        });
-
-        test_object._get_signal_handler().sig_void.emit(
-        );
+        let test_object = NoOperationsInterface::default();
+        let mut rx = test_object.publisher().sig_void.subscribe();
+        let _ = test_object.publisher().sig_void.send(());
+        assert!(rx.try_recv().is_ok());
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig_bool() {
-        let mut test_object: NoOperationsInterface = Default::default();
-
-        test_object._get_signal_handler().sig_bool.connect(move |param_bool| {
-            let default_value_param_bool: bool = Default::default();
-            assert_eq!(param_bool, default_value_param_bool);
-        });
-
+        let test_object = NoOperationsInterface::default();
+        let mut rx = test_object.publisher().sig_bool.subscribe();
         let default_value_param_bool: bool = Default::default();
-        test_object._get_signal_handler().sig_bool.emit(
-            default_value_param_bool.clone(),
-        );
+        let _ = test_object.publisher().sig_bool.send((default_value_param_bool.clone(),));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param_bool);
     }
 }

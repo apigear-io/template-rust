@@ -1,5 +1,3 @@
-use signals2::*;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
 use testbed2::api::many_param_interface::ManyParamInterfaceTrait;
@@ -88,171 +86,115 @@ mod tests {
         assert_eq!(result, Err(()));
     }
 
-    #[test]
-    fn test_func1() {
-        let mut test_object: ManyParamInterface = Default::default();
-        test_object.func1(Default::default());
+    #[tokio::test]
+    async fn test_func1() {
+        let test_object = ManyParamInterface::default();
+        let result = test_object.func1(Default::default()).await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func1_async() {
-        let mut test_object: ManyParamInterface = Default::default();
-        let _ = test_object.func1_async(Default::default());
+    #[tokio::test]
+    async fn test_func2() {
+        let test_object = ManyParamInterface::default();
+        let result = test_object.func2(Default::default(), Default::default()).await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func2() {
-        let mut test_object: ManyParamInterface = Default::default();
-        test_object.func2(Default::default(), Default::default());
+    #[tokio::test]
+    async fn test_func3() {
+        let test_object = ManyParamInterface::default();
+        let result = test_object.func3(Default::default(), Default::default(), Default::default()).await;
+        assert!(result.is_ok());
     }
 
-    #[test]
-    fn test_func2_async() {
-        let mut test_object: ManyParamInterface = Default::default();
-        let _ = test_object.func2_async(Default::default(), Default::default());
-    }
-
-    #[test]
-    fn test_func3() {
-        let mut test_object: ManyParamInterface = Default::default();
-        test_object.func3(Default::default(), Default::default(), Default::default());
-    }
-
-    #[test]
-    fn test_func3_async() {
-        let mut test_object: ManyParamInterface = Default::default();
-        let _ = test_object.func3_async(Default::default(), Default::default(), Default::default());
-    }
-
-    #[test]
-    fn test_func4() {
-        let mut test_object: ManyParamInterface = Default::default();
-        test_object.func4(Default::default(), Default::default(), Default::default(), Default::default());
-    }
-
-    #[test]
-    fn test_func4_async() {
-        let mut test_object: ManyParamInterface = Default::default();
-        let _ = test_object.func4_async(Default::default(), Default::default(), Default::default(), Default::default());
+    #[tokio::test]
+    async fn test_func4() {
+        let test_object = ManyParamInterface::default();
+        let result = test_object.func4(Default::default(), Default::default(), Default::default(), Default::default()).await;
+        assert!(result.is_ok());
     }
 
     #[test]
     fn test_prop1() {
-        let mut test_object: ManyParamInterface = Default::default();
+        let test_object = ManyParamInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop1(default_value);
-        assert_eq!(test_object.prop1().clone(), default_value);
+        assert_eq!(test_object.prop1(), default_value);
     }
 
     #[test]
     fn test_prop2() {
-        let mut test_object: ManyParamInterface = Default::default();
+        let test_object = ManyParamInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop2(default_value);
-        assert_eq!(test_object.prop2().clone(), default_value);
+        assert_eq!(test_object.prop2(), default_value);
     }
 
     #[test]
     fn test_prop3() {
-        let mut test_object: ManyParamInterface = Default::default();
+        let test_object = ManyParamInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop3(default_value);
-        assert_eq!(test_object.prop3().clone(), default_value);
+        assert_eq!(test_object.prop3(), default_value);
     }
 
     #[test]
     fn test_prop4() {
-        let mut test_object: ManyParamInterface = Default::default();
+        let test_object = ManyParamInterface::default();
         let default_value: i32 = Default::default();
         test_object.set_prop4(default_value);
-        assert_eq!(test_object.prop4().clone(), default_value);
+        assert_eq!(test_object.prop4(), default_value);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig1() {
-        let mut test_object: ManyParamInterface = Default::default();
-
-        test_object._get_signal_handler().sig1.connect(move |param1| {
-            let default_value_param1: i32 = Default::default();
-            assert_eq!(param1, default_value_param1);
-        });
-
+        let test_object = ManyParamInterface::default();
+        let mut rx = test_object.publisher().sig1.subscribe();
         let default_value_param1: i32 = Default::default();
-        test_object._get_signal_handler().sig1.emit(
-            default_value_param1.clone(),
-        );
+        let _ = test_object.publisher().sig1.send((default_value_param1.clone(),));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig2() {
-        let mut test_object: ManyParamInterface = Default::default();
-
-        test_object._get_signal_handler().sig2.connect(move |param1, param2| {
-            let default_value_param1: i32 = Default::default();
-            assert_eq!(param1, default_value_param1);
-            let default_value_param2: i32 = Default::default();
-            assert_eq!(param2, default_value_param2);
-        });
-
+        let test_object = ManyParamInterface::default();
+        let mut rx = test_object.publisher().sig2.subscribe();
         let default_value_param1: i32 = Default::default();
         let default_value_param2: i32 = Default::default();
-        test_object._get_signal_handler().sig2.emit(
-            default_value_param1.clone(),
-            default_value_param2.clone(),
-        );
+        let _ = test_object.publisher().sig2.send((default_value_param1.clone(), default_value_param2.clone()));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
+        assert_eq!(received.1, default_value_param2);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig3() {
-        let mut test_object: ManyParamInterface = Default::default();
-
-        test_object._get_signal_handler().sig3.connect(move |param1, param2, param3| {
-            let default_value_param1: i32 = Default::default();
-            assert_eq!(param1, default_value_param1);
-            let default_value_param2: i32 = Default::default();
-            assert_eq!(param2, default_value_param2);
-            let default_value_param3: i32 = Default::default();
-            assert_eq!(param3, default_value_param3);
-        });
-
+        let test_object = ManyParamInterface::default();
+        let mut rx = test_object.publisher().sig3.subscribe();
         let default_value_param1: i32 = Default::default();
         let default_value_param2: i32 = Default::default();
         let default_value_param3: i32 = Default::default();
-        test_object._get_signal_handler().sig3.emit(
-            default_value_param1.clone(),
-            default_value_param2.clone(),
-            default_value_param3.clone(),
-        );
+        let _ = test_object.publisher().sig3.send((default_value_param1.clone(), default_value_param2.clone(), default_value_param3.clone()));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
+        assert_eq!(received.1, default_value_param2);
+        assert_eq!(received.2, default_value_param3);
     }
 
-    #[rustfmt::skip]
     #[test]
     fn test_sig4() {
-        let mut test_object: ManyParamInterface = Default::default();
-
-        test_object._get_signal_handler().sig4.connect(move |param1, param2, param3, param4| {
-            let default_value_param1: i32 = Default::default();
-            assert_eq!(param1, default_value_param1);
-            let default_value_param2: i32 = Default::default();
-            assert_eq!(param2, default_value_param2);
-            let default_value_param3: i32 = Default::default();
-            assert_eq!(param3, default_value_param3);
-            let default_value_param4: i32 = Default::default();
-            assert_eq!(param4, default_value_param4);
-        });
-
+        let test_object = ManyParamInterface::default();
+        let mut rx = test_object.publisher().sig4.subscribe();
         let default_value_param1: i32 = Default::default();
         let default_value_param2: i32 = Default::default();
         let default_value_param3: i32 = Default::default();
         let default_value_param4: i32 = Default::default();
-        test_object._get_signal_handler().sig4.emit(
-            default_value_param1.clone(),
-            default_value_param2.clone(),
-            default_value_param3.clone(),
-            default_value_param4.clone(),
-        );
+        let _ = test_object.publisher().sig4.send((default_value_param1.clone(), default_value_param2.clone(), default_value_param3.clone(), default_value_param4.clone()));
+        let received = rx.try_recv().unwrap();
+        assert_eq!(received.0, default_value_param1);
+        assert_eq!(received.1, default_value_param2);
+        assert_eq!(received.2, default_value_param3);
+        assert_eq!(received.3, default_value_param4);
     }
 }

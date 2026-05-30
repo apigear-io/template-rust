@@ -1,288 +1,216 @@
 use crate::api::simple_interface::SimpleInterfaceTrait;
-use async_trait::async_trait;
-use crate::api::simple_interface::SimpleInterfaceSignalHandler;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::simple_interface::SimpleInterfacePublisher;
+use parking_lot::RwLock;
 
-#[derive(Default, Clone)]
 pub struct SimpleInterface {
-    prop_bool: bool,
-    prop_int: i32,
-    prop_int32: i32,
-    prop_int64: i64,
-    prop_float: f32,
-    prop_float32: f32,
-    prop_float64: f64,
-    prop_string: String,
-    _signal_handler: SimpleInterfaceSignalHandler,
+    prop_bool: RwLock<bool>,
+    prop_int: RwLock<i32>,
+    prop_int32: RwLock<i32>,
+    prop_int64: RwLock<i64>,
+    prop_float: RwLock<f32>,
+    prop_float32: RwLock<f32>,
+    prop_float64: RwLock<f64>,
+    prop_string: RwLock<String>,
+    publisher: SimpleInterfacePublisher,
 }
 
-#[async_trait]
-impl SimpleInterfaceTrait for SimpleInterface {
-    fn func_bool(
-        &mut self,
-        _param_bool: bool,
-    ) -> bool {
-        Default::default()
+impl Default for SimpleInterface {
+    fn default() -> Self {
+        Self { prop_bool: RwLock::new(Default::default()), prop_int: RwLock::new(Default::default()), prop_int32: RwLock::new(Default::default()), prop_int64: RwLock::new(Default::default()), prop_float: RwLock::new(Default::default()), prop_float32: RwLock::new(Default::default()), prop_float64: RwLock::new(Default::default()), prop_string: RwLock::new(Default::default()), publisher: Default::default() }
     }
-    /// Asynchronous version of [func_bool](SimpleInterface::func_bool)
-    /// returns future of type `bool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: bool,
-    ) -> Result<bool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_bool(param_bool))
+}
+
+impl SimpleInterfaceTrait for SimpleInterface {
+    fn func_no_return_value(
+        &self,
+        _param_bool: bool,
+    ) -> ApiFuture<'_, Result<(), ApiError>> {
+        Box::pin(async move { Ok(()) })
+    }
+
+    fn func_no_params(&self) -> ApiFuture<'_, Result<bool, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
+    }
+
+    fn func_bool(
+        &self,
+        _param_bool: bool,
+    ) -> ApiFuture<'_, Result<bool, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int(
-        &mut self,
+        &self,
         _param_int: i32,
-    ) -> i32 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int](SimpleInterface::func_int)
-    /// returns future of type `i32` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: i32,
-    ) -> Result<i32, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int(param_int))
+    ) -> ApiFuture<'_, Result<i32, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int32(
-        &mut self,
+        &self,
         _param_int32: i32,
-    ) -> i32 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int32](SimpleInterface::func_int32)
-    /// returns future of type `i32` which is set once the function has completed
-    async fn func_int32_async(
-        &mut self,
-        param_int32: i32,
-    ) -> Result<i32, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int32(param_int32))
+    ) -> ApiFuture<'_, Result<i32, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int64(
-        &mut self,
+        &self,
         _param_int64: i64,
-    ) -> i64 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int64](SimpleInterface::func_int64)
-    /// returns future of type `i64` which is set once the function has completed
-    async fn func_int64_async(
-        &mut self,
-        param_int64: i64,
-    ) -> Result<i64, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int64(param_int64))
+    ) -> ApiFuture<'_, Result<i64, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float(
-        &mut self,
+        &self,
         _param_float: f32,
-    ) -> f32 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float](SimpleInterface::func_float)
-    /// returns future of type `f32` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: f32,
-    ) -> Result<f32, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float(param_float))
+    ) -> ApiFuture<'_, Result<f32, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float32(
-        &mut self,
+        &self,
         _param_float32: f32,
-    ) -> f32 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float32](SimpleInterface::func_float32)
-    /// returns future of type `f32` which is set once the function has completed
-    async fn func_float32_async(
-        &mut self,
-        param_float32: f32,
-    ) -> Result<f32, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float32(param_float32))
+    ) -> ApiFuture<'_, Result<f32, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float64(
-        &mut self,
+        &self,
         _param_float: f64,
-    ) -> f64 {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float64](SimpleInterface::func_float64)
-    /// returns future of type `f64` which is set once the function has completed
-    async fn func_float64_async(
-        &mut self,
-        param_float: f64,
-    ) -> Result<f64, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float64(param_float))
+    ) -> ApiFuture<'_, Result<f64, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_string(
-        &mut self,
+        &self,
         _param_string: &str,
-    ) -> String {
-        Default::default()
-    }
-    /// Asynchronous version of [func_string](SimpleInterface::func_string)
-    /// returns future of type `String` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &str,
-    ) -> Result<String, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_string(param_string))
+    ) -> ApiFuture<'_, Result<String, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the propBool property.
     fn prop_bool(&self) -> bool {
-        self.prop_bool
+        *self.prop_bool.read()
     }
-    /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: bool,
     ) {
-        if self.prop_bool == prop_bool {
+        let mut value = self.prop_bool.write();
+        if *value == prop_bool {
             return;
         }
-
-        self.prop_bool = prop_bool;
-        self._signal_handler.prop_bool_changed.emit(self.prop_bool);
+        *value = prop_bool;
+        let _ = self.publisher.prop_bool_changed.send(prop_bool);
     }
 
-    /// Gets the value of the propInt property.
     fn prop_int(&self) -> i32 {
-        self.prop_int
+        *self.prop_int.read()
     }
-    /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: i32,
     ) {
-        if self.prop_int == prop_int {
+        let mut value = self.prop_int.write();
+        if *value == prop_int {
             return;
         }
-
-        self.prop_int = prop_int;
-        self._signal_handler.prop_int_changed.emit(self.prop_int);
+        *value = prop_int;
+        let _ = self.publisher.prop_int_changed.send(prop_int);
     }
 
-    /// Gets the value of the propInt32 property.
     fn prop_int32(&self) -> i32 {
-        self.prop_int32
+        *self.prop_int32.read()
     }
-    /// Sets the value of the propInt32 property.
     fn set_prop_int32(
-        &mut self,
+        &self,
         prop_int32: i32,
     ) {
-        if self.prop_int32 == prop_int32 {
+        let mut value = self.prop_int32.write();
+        if *value == prop_int32 {
             return;
         }
-
-        self.prop_int32 = prop_int32;
-        self._signal_handler.prop_int32_changed.emit(self.prop_int32);
+        *value = prop_int32;
+        let _ = self.publisher.prop_int32_changed.send(prop_int32);
     }
 
-    /// Gets the value of the propInt64 property.
     fn prop_int64(&self) -> i64 {
-        self.prop_int64
+        *self.prop_int64.read()
     }
-    /// Sets the value of the propInt64 property.
     fn set_prop_int64(
-        &mut self,
+        &self,
         prop_int64: i64,
     ) {
-        if self.prop_int64 == prop_int64 {
+        let mut value = self.prop_int64.write();
+        if *value == prop_int64 {
             return;
         }
-
-        self.prop_int64 = prop_int64;
-        self._signal_handler.prop_int64_changed.emit(self.prop_int64);
+        *value = prop_int64;
+        let _ = self.publisher.prop_int64_changed.send(prop_int64);
     }
 
-    /// Gets the value of the propFloat property.
     fn prop_float(&self) -> f32 {
-        self.prop_float
+        *self.prop_float.read()
     }
-    /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: f32,
     ) {
-        if self.prop_float == prop_float {
+        let mut value = self.prop_float.write();
+        if *value == prop_float {
             return;
         }
-
-        self.prop_float = prop_float;
-        self._signal_handler.prop_float_changed.emit(self.prop_float);
+        *value = prop_float;
+        let _ = self.publisher.prop_float_changed.send(prop_float);
     }
 
-    /// Gets the value of the propFloat32 property.
     fn prop_float32(&self) -> f32 {
-        self.prop_float32
+        *self.prop_float32.read()
     }
-    /// Sets the value of the propFloat32 property.
     fn set_prop_float32(
-        &mut self,
+        &self,
         prop_float32: f32,
     ) {
-        if self.prop_float32 == prop_float32 {
+        let mut value = self.prop_float32.write();
+        if *value == prop_float32 {
             return;
         }
-
-        self.prop_float32 = prop_float32;
-        self._signal_handler.prop_float32_changed.emit(self.prop_float32);
+        *value = prop_float32;
+        let _ = self.publisher.prop_float32_changed.send(prop_float32);
     }
 
-    /// Gets the value of the propFloat64 property.
     fn prop_float64(&self) -> f64 {
-        self.prop_float64
+        *self.prop_float64.read()
     }
-    /// Sets the value of the propFloat64 property.
     fn set_prop_float64(
-        &mut self,
+        &self,
         prop_float64: f64,
     ) {
-        if self.prop_float64 == prop_float64 {
+        let mut value = self.prop_float64.write();
+        if *value == prop_float64 {
             return;
         }
-
-        self.prop_float64 = prop_float64;
-        self._signal_handler.prop_float64_changed.emit(self.prop_float64);
+        *value = prop_float64;
+        let _ = self.publisher.prop_float64_changed.send(prop_float64);
     }
 
-    /// Gets the value of the propString property.
-    fn prop_string(&self) -> &String {
-        &self.prop_string
+    fn prop_string(&self) -> String {
+        self.prop_string.read().clone()
     }
-    /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &str,
     ) {
-        if self.prop_string == prop_string {
+        let new_val = prop_string.to_string();
+        let mut value = self.prop_string.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_string = prop_string.to_string();
-        self._signal_handler.prop_string_changed.emit(self.prop_string.to_string());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_string_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &SimpleInterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &SimpleInterfacePublisher {
+        &self.publisher
     }
 }

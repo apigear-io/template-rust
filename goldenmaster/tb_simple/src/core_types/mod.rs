@@ -1,0 +1,15 @@
+pub mod void_interface_data;
+pub mod void_interface_shared;
+pub mod simple_interface_data;
+pub mod simple_interface_shared;
+pub mod simple_array_interface_data;
+pub mod simple_array_interface_shared;
+pub mod no_properties_interface_data;
+pub mod no_properties_interface_shared;
+pub mod no_operations_interface_data;
+pub mod no_operations_interface_shared;
+pub mod no_signals_interface_data;
+pub mod no_signals_interface_shared;
+pub mod empty_interface_data;
+pub mod empty_interface_shared;
+pub mod test_helpers;

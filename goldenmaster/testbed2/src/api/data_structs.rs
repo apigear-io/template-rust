@@ -1,3 +1,4 @@
+#![allow(non_camel_case_types)]
 use serde::{Deserialize, Serialize};
 use std::convert::TryFrom;
 // Enumerations

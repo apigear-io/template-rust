@@ -1,30 +1,24 @@
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{broadcast};
 
-#[derive(Clone, Default)]
-pub struct NoPropertiesInterfaceSignalHandler {
-    pub sig_void: Signal<()>,
-
-    pub sig_bool: Signal<(bool,)>,
+pub struct NoPropertiesInterfacePublisher {
+    pub sig_void: broadcast::Sender<()>,
+    pub sig_bool: broadcast::Sender<(bool,)>,
 }
 
-#[async_trait]
-pub trait NoPropertiesInterfaceTrait {
-    fn func_void(&mut self);
-    /// Asynchronous version of [func_void](NoPropertiesInterfaceTrait::func_void)
-    /// returns future of type `()` which is set once the function has completed
-    async fn func_void_async(&mut self) -> Result<(), ()>;
+impl Default for NoPropertiesInterfacePublisher {
+    fn default() -> Self {
+        Self { sig_void: broadcast::Sender::new(16), sig_bool: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait NoPropertiesInterfaceTrait: Send + Sync {
+    fn func_void(&self) -> ApiFuture<'_, Result<(), ApiError>>;
 
     fn func_bool(
-        &mut self,
+        &self,
         param_bool: bool,
-    ) -> bool;
-    /// Asynchronous version of [func_bool](NoPropertiesInterfaceTrait::func_bool)
-    /// returns future of type `bool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: bool,
-    ) -> Result<bool, ()>;
+    ) -> ApiFuture<'_, Result<bool, ApiError>>;
 
-    fn _get_signal_handler(&mut self) -> &NoPropertiesInterfaceSignalHandler;
+    fn publisher(&self) -> &NoPropertiesInterfacePublisher;
 }

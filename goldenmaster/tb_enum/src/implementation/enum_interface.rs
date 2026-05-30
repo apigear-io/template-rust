@@ -1,156 +1,114 @@
 use crate::api::enum_interface::EnumInterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::enum_interface::EnumInterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::enum_interface::EnumInterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct EnumInterface {
-    prop0: Enum0Enum,
-    prop1: Enum1Enum,
-    prop2: Enum2Enum,
-    prop3: Enum3Enum,
-    _signal_handler: EnumInterfaceSignalHandler,
+    prop0: RwLock<Enum0Enum>,
+    prop1: RwLock<Enum1Enum>,
+    prop2: RwLock<Enum2Enum>,
+    prop3: RwLock<Enum3Enum>,
+    publisher: EnumInterfacePublisher,
 }
 
-#[async_trait]
+impl Default for EnumInterface {
+    fn default() -> Self {
+        Self { prop0: RwLock::new(Default::default()), prop1: RwLock::new(Default::default()), prop2: RwLock::new(Default::default()), prop3: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl EnumInterfaceTrait for EnumInterface {
     fn func0(
-        &mut self,
+        &self,
         _param0: Enum0Enum,
-    ) -> Enum0Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func0](EnumInterface::func0)
-    /// returns future of type `Enum0Enum` which is set once the function has completed
-    async fn func0_async(
-        &mut self,
-        param0: Enum0Enum,
-    ) -> Result<Enum0Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func0(param0))
+    ) -> ApiFuture<'_, Result<Enum0Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func1(
-        &mut self,
+        &self,
         _param1: Enum1Enum,
-    ) -> Enum1Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func1](EnumInterface::func1)
-    /// returns future of type `Enum1Enum` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: Enum1Enum,
-    ) -> Result<Enum1Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func1(param1))
+    ) -> ApiFuture<'_, Result<Enum1Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func2(
-        &mut self,
+        &self,
         _param2: Enum2Enum,
-    ) -> Enum2Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func2](EnumInterface::func2)
-    /// returns future of type `Enum2Enum` which is set once the function has completed
-    async fn func2_async(
-        &mut self,
-        param2: Enum2Enum,
-    ) -> Result<Enum2Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func2(param2))
+    ) -> ApiFuture<'_, Result<Enum2Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func3(
-        &mut self,
+        &self,
         _param3: Enum3Enum,
-    ) -> Enum3Enum {
-        Default::default()
-    }
-    /// Asynchronous version of [func3](EnumInterface::func3)
-    /// returns future of type `Enum3Enum` which is set once the function has completed
-    async fn func3_async(
-        &mut self,
-        param3: Enum3Enum,
-    ) -> Result<Enum3Enum, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func3(param3))
+    ) -> ApiFuture<'_, Result<Enum3Enum, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the prop0 property.
     fn prop0(&self) -> Enum0Enum {
-        self.prop0
+        *self.prop0.read()
     }
-    /// Sets the value of the prop0 property.
     fn set_prop0(
-        &mut self,
+        &self,
         prop0: Enum0Enum,
     ) {
-        if self.prop0 == prop0 {
+        let mut value = self.prop0.write();
+        if *value == prop0 {
             return;
         }
-
-        self.prop0 = prop0;
-        self._signal_handler.prop0_changed.emit(self.prop0);
+        *value = prop0;
+        let _ = self.publisher.prop0_changed.send(prop0);
     }
 
-    /// Gets the value of the prop1 property.
     fn prop1(&self) -> Enum1Enum {
-        self.prop1
+        *self.prop1.read()
     }
-    /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: Enum1Enum,
     ) {
-        if self.prop1 == prop1 {
+        let mut value = self.prop1.write();
+        if *value == prop1 {
             return;
         }
-
-        self.prop1 = prop1;
-        self._signal_handler.prop1_changed.emit(self.prop1);
+        *value = prop1;
+        let _ = self.publisher.prop1_changed.send(prop1);
     }
 
-    /// Gets the value of the prop2 property.
     fn prop2(&self) -> Enum2Enum {
-        self.prop2
+        *self.prop2.read()
     }
-    /// Sets the value of the prop2 property.
     fn set_prop2(
-        &mut self,
+        &self,
         prop2: Enum2Enum,
     ) {
-        if self.prop2 == prop2 {
+        let mut value = self.prop2.write();
+        if *value == prop2 {
             return;
         }
-
-        self.prop2 = prop2;
-        self._signal_handler.prop2_changed.emit(self.prop2);
+        *value = prop2;
+        let _ = self.publisher.prop2_changed.send(prop2);
     }
 
-    /// Gets the value of the prop3 property.
     fn prop3(&self) -> Enum3Enum {
-        self.prop3
+        *self.prop3.read()
     }
-    /// Sets the value of the prop3 property.
     fn set_prop3(
-        &mut self,
+        &self,
         prop3: Enum3Enum,
     ) {
-        if self.prop3 == prop3 {
+        let mut value = self.prop3.write();
+        if *value == prop3 {
             return;
         }
-
-        self.prop3 = prop3;
-        self._signal_handler.prop3_changed.emit(self.prop3);
+        *value = prop3;
+        let _ = self.publisher.prop3_changed.send(prop3);
     }
 
-    fn _get_signal_handler(&mut self) -> &EnumInterfaceSignalHandler {
-        &self._signal_handler
+    fn publisher(&self) -> &EnumInterfacePublisher {
+        &self.publisher
     }
 }

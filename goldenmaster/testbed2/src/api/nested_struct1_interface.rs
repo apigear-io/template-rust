@@ -1,36 +1,39 @@
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct NestedStruct1InterfaceSignalHandler {
-    pub prop1_changed: Signal<(NestedStruct1,)>,
-
-    pub sig1: Signal<(NestedStruct1,)>,
+pub struct NestedStruct1InterfacePublisher {
+    pub prop1_changed: watch::Sender<NestedStruct1>,
+    pub sig1: broadcast::Sender<(NestedStruct1,)>,
 }
 
-#[async_trait]
-pub trait NestedStruct1InterfaceTrait {
+impl Default for NestedStruct1InterfacePublisher {
+    fn default() -> Self {
+        Self { prop1_changed: watch::channel(Default::default()).0, sig1: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait NestedStruct1InterfaceTrait: Send + Sync {
+    fn func_no_return_value(
+        &self,
+        param1: &NestedStruct1,
+    ) -> ApiFuture<'_, Result<(), ApiError>>;
+
+    fn func_no_params(&self) -> ApiFuture<'_, Result<NestedStruct1, ApiError>>;
+
     fn func1(
-        &mut self,
+        &self,
         param1: &NestedStruct1,
-    ) -> NestedStruct1;
-    /// Asynchronous version of [func1](NestedStruct1InterfaceTrait::func1)
-    /// returns future of type `NestedStruct1` which is set once the function has completed
-    async fn func1_async(
-        &mut self,
-        param1: &NestedStruct1,
-    ) -> Result<NestedStruct1, ()>;
+    ) -> ApiFuture<'_, Result<NestedStruct1, ApiError>>;
 
     /// Gets the value of the prop1 property.
-    fn prop1(&self) -> &NestedStruct1;
+    fn prop1(&self) -> NestedStruct1;
     /// Sets the value of the prop1 property.
     fn set_prop1(
-        &mut self,
+        &self,
         prop1: &NestedStruct1,
     );
 
-    fn _get_signal_handler(&mut self) -> &NestedStruct1InterfaceSignalHandler;
+    fn publisher(&self) -> &NestedStruct1InterfacePublisher;
 }

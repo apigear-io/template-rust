@@ -1,105 +1,92 @@
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{watch, broadcast};
 
-#[derive(Clone, Default)]
-pub struct StructArrayInterfaceSignalHandler {
-    pub prop_bool_changed: Signal<(Vec<StructBool>,)>,
-
-    pub prop_int_changed: Signal<(Vec<StructInt>,)>,
-
-    pub prop_float_changed: Signal<(Vec<StructFloat>,)>,
-
-    pub prop_string_changed: Signal<(Vec<StructString>,)>,
-
-    pub sig_bool: Signal<(Vec<StructBool>,)>,
-
-    pub sig_int: Signal<(Vec<StructInt>,)>,
-
-    pub sig_float: Signal<(Vec<StructFloat>,)>,
-
-    pub sig_string: Signal<(Vec<StructString>,)>,
+pub struct StructArrayInterfacePublisher {
+    pub prop_bool_changed: watch::Sender<Vec<StructBool>>,
+    pub prop_int_changed: watch::Sender<Vec<StructInt>>,
+    pub prop_float_changed: watch::Sender<Vec<StructFloat>>,
+    pub prop_string_changed: watch::Sender<Vec<StructString>>,
+    pub prop_enum_changed: watch::Sender<Vec<Enum0Enum>>,
+    pub sig_bool: broadcast::Sender<(Vec<StructBool>,)>,
+    pub sig_int: broadcast::Sender<(Vec<StructInt>,)>,
+    pub sig_float: broadcast::Sender<(Vec<StructFloat>,)>,
+    pub sig_string: broadcast::Sender<(Vec<StructString>,)>,
+    pub sig_enum: broadcast::Sender<(Vec<Enum0Enum>,)>,
 }
 
-#[async_trait]
-pub trait StructArrayInterfaceTrait {
+impl Default for StructArrayInterfacePublisher {
+    fn default() -> Self {
+        Self { prop_bool_changed: watch::channel(Default::default()).0, prop_int_changed: watch::channel(Default::default()).0, prop_float_changed: watch::channel(Default::default()).0, prop_string_changed: watch::channel(Default::default()).0, prop_enum_changed: watch::channel(Default::default()).0, sig_bool: broadcast::Sender::new(16), sig_int: broadcast::Sender::new(16), sig_float: broadcast::Sender::new(16), sig_string: broadcast::Sender::new(16), sig_enum: broadcast::Sender::new(16) }
+    }
+}
+
+pub trait StructArrayInterfaceTrait: Send + Sync {
     fn func_bool(
-        &mut self,
+        &self,
         param_bool: &[StructBool],
-    ) -> StructBool;
-    /// Asynchronous version of [func_bool](StructArrayInterfaceTrait::func_bool)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: &[StructBool],
-    ) -> Result<StructBool, ()>;
+    ) -> ApiFuture<'_, Result<Vec<StructBool>, ApiError>>;
 
     fn func_int(
-        &mut self,
+        &self,
         param_int: &[StructInt],
-    ) -> StructBool;
-    /// Asynchronous version of [func_int](StructArrayInterfaceTrait::func_int)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: &[StructInt],
-    ) -> Result<StructBool, ()>;
+    ) -> ApiFuture<'_, Result<Vec<StructInt>, ApiError>>;
 
     fn func_float(
-        &mut self,
+        &self,
         param_float: &[StructFloat],
-    ) -> StructBool;
-    /// Asynchronous version of [func_float](StructArrayInterfaceTrait::func_float)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: &[StructFloat],
-    ) -> Result<StructBool, ()>;
+    ) -> ApiFuture<'_, Result<Vec<StructFloat>, ApiError>>;
 
     fn func_string(
-        &mut self,
+        &self,
         param_string: &[StructString],
-    ) -> StructBool;
-    /// Asynchronous version of [func_string](StructArrayInterfaceTrait::func_string)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &[StructString],
-    ) -> Result<StructBool, ()>;
+    ) -> ApiFuture<'_, Result<Vec<StructString>, ApiError>>;
+
+    fn func_enum(
+        &self,
+        param_enum: &[Enum0Enum],
+    ) -> ApiFuture<'_, Result<Vec<Enum0Enum>, ApiError>>;
 
     /// Gets the value of the propBool property.
-    fn prop_bool(&self) -> &Vec<StructBool>;
+    fn prop_bool(&self) -> Vec<StructBool>;
     /// Sets the value of the propBool property.
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: &[StructBool],
     );
 
     /// Gets the value of the propInt property.
-    fn prop_int(&self) -> &Vec<StructInt>;
+    fn prop_int(&self) -> Vec<StructInt>;
     /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: &[StructInt],
     );
 
     /// Gets the value of the propFloat property.
-    fn prop_float(&self) -> &Vec<StructFloat>;
+    fn prop_float(&self) -> Vec<StructFloat>;
     /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: &[StructFloat],
     );
 
     /// Gets the value of the propString property.
-    fn prop_string(&self) -> &Vec<StructString>;
+    fn prop_string(&self) -> Vec<StructString>;
     /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &[StructString],
     );
 
-    fn _get_signal_handler(&mut self) -> &StructArrayInterfaceSignalHandler;
+    /// Gets the value of the propEnum property.
+    fn prop_enum(&self) -> Vec<Enum0Enum>;
+    /// Sets the value of the propEnum property.
+    fn set_prop_enum(
+        &self,
+        prop_enum: &[Enum0Enum],
+    );
+
+    fn publisher(&self) -> &StructArrayInterfacePublisher;
 }

@@ -1,0 +1,338 @@
+#[allow(unused_imports)]
+use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::struct_array_interface::StructArrayInterfacePublisher;
+use crate::api::struct_array_interface::StructArrayInterfaceTrait;
+use crate::core_types::struct_array_interface_data::StructArrayInterfaceData;
+use objectlink_core::traits::{IClientNode, ObjectSink};
+use objectlink_core::types::Name;
+use parking_lot::RwLock;
+use serde_json::{json, Value};
+use std::sync::Arc;
+
+/// OLink client adapter for StructArrayInterface.
+/// Implements the interface trait by forwarding operations over the OLink protocol
+/// and caching property values locally.
+pub struct StructArrayInterfaceOlinkClient {
+    data: RwLock<StructArrayInterfaceData>,
+    node: RwLock<Option<Arc<dyn IClientNode>>>,
+    publisher: StructArrayInterfacePublisher,
+}
+
+impl StructArrayInterfaceOlinkClient {
+    /// Set the client node used for remote communication.
+    /// Must be called before link_remote() to enable operations.
+    pub fn set_node(
+        &self,
+        node: Arc<dyn IClientNode>,
+    ) {
+        *self.node.write() = Some(node);
+    }
+}
+
+impl Default for StructArrayInterfaceOlinkClient {
+    fn default() -> Self {
+        Self { data: RwLock::new(StructArrayInterfaceData::default()), node: RwLock::new(None), publisher: StructArrayInterfacePublisher::default() }
+    }
+}
+
+impl StructArrayInterfaceTrait for StructArrayInterfaceOlinkClient {
+    fn func_bool(
+        &self,
+        param_bool: &[StructBool],
+    ) -> ApiFuture<'_, Result<Vec<StructBool>, ApiError>> {
+        let args = json!([param_bool]);
+        let node = self.node.read().clone();
+        Box::pin(async move {
+            if let Some(node) = node {
+                let (tx, rx) = std::sync::mpsc::sync_channel(1);
+                node.invoke_remote(
+                    &Name::create_member_id("testbed1.StructArrayInterface", "funcBool"),
+                    args,
+                    Some(Box::new(move |value| {
+                        let _ = tx.send(value);
+                    })),
+                );
+                match rx.recv() {
+                    Ok(value) => Ok(serde_json::from_value(value).unwrap_or_default()),
+                    Err(_) => Err(ApiError::OperationFailed("no reply".to_string())),
+                }
+            } else {
+                Err(ApiError::NotConnected)
+            }
+        })
+    }
+
+    fn func_int(
+        &self,
+        param_int: &[StructInt],
+    ) -> ApiFuture<'_, Result<Vec<StructInt>, ApiError>> {
+        let args = json!([param_int]);
+        let node = self.node.read().clone();
+        Box::pin(async move {
+            if let Some(node) = node {
+                let (tx, rx) = std::sync::mpsc::sync_channel(1);
+                node.invoke_remote(
+                    &Name::create_member_id("testbed1.StructArrayInterface", "funcInt"),
+                    args,
+                    Some(Box::new(move |value| {
+                        let _ = tx.send(value);
+                    })),
+                );
+                match rx.recv() {
+                    Ok(value) => Ok(serde_json::from_value(value).unwrap_or_default()),
+                    Err(_) => Err(ApiError::OperationFailed("no reply".to_string())),
+                }
+            } else {
+                Err(ApiError::NotConnected)
+            }
+        })
+    }
+
+    fn func_float(
+        &self,
+        param_float: &[StructFloat],
+    ) -> ApiFuture<'_, Result<Vec<StructFloat>, ApiError>> {
+        let args = json!([param_float]);
+        let node = self.node.read().clone();
+        Box::pin(async move {
+            if let Some(node) = node {
+                let (tx, rx) = std::sync::mpsc::sync_channel(1);
+                node.invoke_remote(
+                    &Name::create_member_id("testbed1.StructArrayInterface", "funcFloat"),
+                    args,
+                    Some(Box::new(move |value| {
+                        let _ = tx.send(value);
+                    })),
+                );
+                match rx.recv() {
+                    Ok(value) => Ok(serde_json::from_value(value).unwrap_or_default()),
+                    Err(_) => Err(ApiError::OperationFailed("no reply".to_string())),
+                }
+            } else {
+                Err(ApiError::NotConnected)
+            }
+        })
+    }
+
+    fn func_string(
+        &self,
+        param_string: &[StructString],
+    ) -> ApiFuture<'_, Result<Vec<StructString>, ApiError>> {
+        let args = json!([param_string]);
+        let node = self.node.read().clone();
+        Box::pin(async move {
+            if let Some(node) = node {
+                let (tx, rx) = std::sync::mpsc::sync_channel(1);
+                node.invoke_remote(
+                    &Name::create_member_id("testbed1.StructArrayInterface", "funcString"),
+                    args,
+                    Some(Box::new(move |value| {
+                        let _ = tx.send(value);
+                    })),
+                );
+                match rx.recv() {
+                    Ok(value) => Ok(serde_json::from_value(value).unwrap_or_default()),
+                    Err(_) => Err(ApiError::OperationFailed("no reply".to_string())),
+                }
+            } else {
+                Err(ApiError::NotConnected)
+            }
+        })
+    }
+
+    fn func_enum(
+        &self,
+        param_enum: &[Enum0Enum],
+    ) -> ApiFuture<'_, Result<Vec<Enum0Enum>, ApiError>> {
+        let args = json!([param_enum]);
+        let node = self.node.read().clone();
+        Box::pin(async move {
+            if let Some(node) = node {
+                let (tx, rx) = std::sync::mpsc::sync_channel(1);
+                node.invoke_remote(
+                    &Name::create_member_id("testbed1.StructArrayInterface", "funcEnum"),
+                    args,
+                    Some(Box::new(move |value| {
+                        let _ = tx.send(value);
+                    })),
+                );
+                match rx.recv() {
+                    Ok(value) => Ok(serde_json::from_value(value).unwrap_or_default()),
+                    Err(_) => Err(ApiError::OperationFailed("no reply".to_string())),
+                }
+            } else {
+                Err(ApiError::NotConnected)
+            }
+        })
+    }
+
+    fn prop_bool(&self) -> Vec<StructBool> {
+        self.data.read().prop_bool.clone()
+    }
+    fn set_prop_bool(
+        &self,
+        prop_bool: &[StructBool],
+    ) {
+        if let Some(node) = self.node.read().as_ref() {
+            node.set_remote_property(&Name::create_member_id("testbed1.StructArrayInterface", "propBool"), json!(prop_bool));
+        }
+    }
+
+    fn prop_int(&self) -> Vec<StructInt> {
+        self.data.read().prop_int.clone()
+    }
+    fn set_prop_int(
+        &self,
+        prop_int: &[StructInt],
+    ) {
+        if let Some(node) = self.node.read().as_ref() {
+            node.set_remote_property(&Name::create_member_id("testbed1.StructArrayInterface", "propInt"), json!(prop_int));
+        }
+    }
+
+    fn prop_float(&self) -> Vec<StructFloat> {
+        self.data.read().prop_float.clone()
+    }
+    fn set_prop_float(
+        &self,
+        prop_float: &[StructFloat],
+    ) {
+        if let Some(node) = self.node.read().as_ref() {
+            node.set_remote_property(&Name::create_member_id("testbed1.StructArrayInterface", "propFloat"), json!(prop_float));
+        }
+    }
+
+    fn prop_string(&self) -> Vec<StructString> {
+        self.data.read().prop_string.clone()
+    }
+    fn set_prop_string(
+        &self,
+        prop_string: &[StructString],
+    ) {
+        if let Some(node) = self.node.read().as_ref() {
+            node.set_remote_property(&Name::create_member_id("testbed1.StructArrayInterface", "propString"), json!(prop_string));
+        }
+    }
+
+    fn prop_enum(&self) -> Vec<Enum0Enum> {
+        self.data.read().prop_enum.clone()
+    }
+    fn set_prop_enum(
+        &self,
+        prop_enum: &[Enum0Enum],
+    ) {
+        if let Some(node) = self.node.read().as_ref() {
+            node.set_remote_property(&Name::create_member_id("testbed1.StructArrayInterface", "propEnum"), json!(prop_enum));
+        }
+    }
+
+    fn publisher(&self) -> &StructArrayInterfacePublisher {
+        &self.publisher
+    }
+}
+
+impl ObjectSink for StructArrayInterfaceOlinkClient {
+    fn olink_object_name(&self) -> &str {
+        "testbed1.StructArrayInterface"
+    }
+
+    fn olink_on_init(
+        &self,
+        _object_id: &str,
+        props: Value,
+        _node: &dyn IClientNode,
+    ) {
+        if let Ok(data) = serde_json::from_value::<StructArrayInterfaceData>(props) {
+            *self.data.write() = data;
+        }
+        // Store node reference - we need to upcast to Arc, but we only have &dyn IClientNode.
+        // The node is set separately via set_node() before link_remote().
+    }
+
+    fn olink_on_property_changed(
+        &self,
+        property_id: &str,
+        value: Value,
+    ) {
+        let member = Name::member_name(property_id);
+        match member {
+            "propBool" => {
+                if let Ok(v) = serde_json::from_value::<Vec<StructBool>>(value) {
+                    let _ = self.publisher.prop_bool_changed.send(v.clone());
+                    self.data.write().prop_bool = v;
+                }
+            }
+            "propInt" => {
+                if let Ok(v) = serde_json::from_value::<Vec<StructInt>>(value) {
+                    let _ = self.publisher.prop_int_changed.send(v.clone());
+                    self.data.write().prop_int = v;
+                }
+            }
+            "propFloat" => {
+                if let Ok(v) = serde_json::from_value::<Vec<StructFloat>>(value) {
+                    let _ = self.publisher.prop_float_changed.send(v.clone());
+                    self.data.write().prop_float = v;
+                }
+            }
+            "propString" => {
+                if let Ok(v) = serde_json::from_value::<Vec<StructString>>(value) {
+                    let _ = self.publisher.prop_string_changed.send(v.clone());
+                    self.data.write().prop_string = v;
+                }
+            }
+            "propEnum" => {
+                if let Ok(v) = serde_json::from_value::<Vec<Enum0Enum>>(value) {
+                    let _ = self.publisher.prop_enum_changed.send(v.clone());
+                    self.data.write().prop_enum = v;
+                }
+            }
+            _ => {
+                tracing::warn!("Unknown property: {}", property_id);
+            }
+        }
+    }
+
+    #[allow(clippy::get_first)]
+    fn olink_on_signal(
+        &self,
+        signal_id: &str,
+        args: Value,
+    ) {
+        let member = Name::member_name(signal_id);
+        match member {
+            "sigBool" => {
+                if let Some(arr) = args.as_array() {
+                    let _ = self.publisher.sig_bool.send((serde_json::from_value(arr.get(0).cloned().unwrap_or_default()).unwrap_or_default(),));
+                }
+            }
+            "sigInt" => {
+                if let Some(arr) = args.as_array() {
+                    let _ = self.publisher.sig_int.send((serde_json::from_value(arr.get(0).cloned().unwrap_or_default()).unwrap_or_default(),));
+                }
+            }
+            "sigFloat" => {
+                if let Some(arr) = args.as_array() {
+                    let _ = self.publisher.sig_float.send((serde_json::from_value(arr.get(0).cloned().unwrap_or_default()).unwrap_or_default(),));
+                }
+            }
+            "sigString" => {
+                if let Some(arr) = args.as_array() {
+                    let _ = self.publisher.sig_string.send((serde_json::from_value(arr.get(0).cloned().unwrap_or_default()).unwrap_or_default(),));
+                }
+            }
+            "sigEnum" => {
+                if let Some(arr) = args.as_array() {
+                    let _ = self.publisher.sig_enum.send((serde_json::from_value(arr.get(0).cloned().unwrap_or_default()).unwrap_or_default(),));
+                }
+            }
+            _ => {
+                tracing::warn!("Unknown signal: {}", signal_id);
+            }
+        }
+    }
+
+    fn olink_on_release(&self) {
+        *self.node.write() = None;
+    }
+}

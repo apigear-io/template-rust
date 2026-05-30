@@ -1,156 +1,142 @@
 use crate::api::struct_array_interface::StructArrayInterfaceTrait;
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
+use apigear::{ApiError, ApiFuture};
+use crate::api::struct_array_interface::StructArrayInterfacePublisher;
+use parking_lot::RwLock;
 
-use async_trait::async_trait;
-use crate::api::struct_array_interface::StructArrayInterfaceSignalHandler;
-use signals2::*;
-
-#[derive(Default, Clone)]
 pub struct StructArrayInterface {
-    prop_bool: Vec<StructBool>,
-    prop_int: Vec<StructInt>,
-    prop_float: Vec<StructFloat>,
-    prop_string: Vec<StructString>,
-    _signal_handler: StructArrayInterfaceSignalHandler,
+    prop_bool: RwLock<Vec<StructBool>>,
+    prop_int: RwLock<Vec<StructInt>>,
+    prop_float: RwLock<Vec<StructFloat>>,
+    prop_string: RwLock<Vec<StructString>>,
+    prop_enum: RwLock<Vec<Enum0Enum>>,
+    publisher: StructArrayInterfacePublisher,
 }
 
-#[async_trait]
+impl Default for StructArrayInterface {
+    fn default() -> Self {
+        Self { prop_bool: RwLock::new(Default::default()), prop_int: RwLock::new(Default::default()), prop_float: RwLock::new(Default::default()), prop_string: RwLock::new(Default::default()), prop_enum: RwLock::new(Default::default()), publisher: Default::default() }
+    }
+}
+
 impl StructArrayInterfaceTrait for StructArrayInterface {
     fn func_bool(
-        &mut self,
+        &self,
         _param_bool: &[StructBool],
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_bool](StructArrayInterface::func_bool)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_bool_async(
-        &mut self,
-        param_bool: &[StructBool],
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_bool(param_bool))
+    ) -> ApiFuture<'_, Result<Vec<StructBool>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_int(
-        &mut self,
+        &self,
         _param_int: &[StructInt],
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_int](StructArrayInterface::func_int)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_int_async(
-        &mut self,
-        param_int: &[StructInt],
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_int(param_int))
+    ) -> ApiFuture<'_, Result<Vec<StructInt>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_float(
-        &mut self,
+        &self,
         _param_float: &[StructFloat],
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_float](StructArrayInterface::func_float)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_float_async(
-        &mut self,
-        param_float: &[StructFloat],
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_float(param_float))
+    ) -> ApiFuture<'_, Result<Vec<StructFloat>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
     fn func_string(
-        &mut self,
+        &self,
         _param_string: &[StructString],
-    ) -> StructBool {
-        Default::default()
-    }
-    /// Asynchronous version of [func_string](StructArrayInterface::func_string)
-    /// returns future of type `StructBool` which is set once the function has completed
-    async fn func_string_async(
-        &mut self,
-        param_string: &[StructString],
-    ) -> Result<StructBool, ()> {
-        #[allow(clippy::unit_arg)]
-        Ok(self.func_string(param_string))
+    ) -> ApiFuture<'_, Result<Vec<StructString>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
 
-    /// Gets the value of the propBool property.
-    fn prop_bool(&self) -> &Vec<StructBool> {
-        &self.prop_bool
+    fn func_enum(
+        &self,
+        _param_enum: &[Enum0Enum],
+    ) -> ApiFuture<'_, Result<Vec<Enum0Enum>, ApiError>> {
+        Box::pin(async move { Ok(Default::default()) })
     }
-    /// Sets the value of the propBool property.
+
+    fn prop_bool(&self) -> Vec<StructBool> {
+        self.prop_bool.read().clone()
+    }
     fn set_prop_bool(
-        &mut self,
+        &self,
         prop_bool: &[StructBool],
     ) {
-        if self.prop_bool == prop_bool.to_vec() {
+        let new_val = prop_bool.to_vec();
+        let mut value = self.prop_bool.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_bool = prop_bool.to_vec();
-        self._signal_handler.prop_bool_changed.emit(self.prop_bool.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_bool_changed.send(new_val);
     }
 
-    /// Gets the value of the propInt property.
-    fn prop_int(&self) -> &Vec<StructInt> {
-        &self.prop_int
+    fn prop_int(&self) -> Vec<StructInt> {
+        self.prop_int.read().clone()
     }
-    /// Sets the value of the propInt property.
     fn set_prop_int(
-        &mut self,
+        &self,
         prop_int: &[StructInt],
     ) {
-        if self.prop_int == prop_int.to_vec() {
+        let new_val = prop_int.to_vec();
+        let mut value = self.prop_int.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_int = prop_int.to_vec();
-        self._signal_handler.prop_int_changed.emit(self.prop_int.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_int_changed.send(new_val);
     }
 
-    /// Gets the value of the propFloat property.
-    fn prop_float(&self) -> &Vec<StructFloat> {
-        &self.prop_float
+    fn prop_float(&self) -> Vec<StructFloat> {
+        self.prop_float.read().clone()
     }
-    /// Sets the value of the propFloat property.
     fn set_prop_float(
-        &mut self,
+        &self,
         prop_float: &[StructFloat],
     ) {
-        if self.prop_float == prop_float.to_vec() {
+        let new_val = prop_float.to_vec();
+        let mut value = self.prop_float.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_float = prop_float.to_vec();
-        self._signal_handler.prop_float_changed.emit(self.prop_float.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_float_changed.send(new_val);
     }
 
-    /// Gets the value of the propString property.
-    fn prop_string(&self) -> &Vec<StructString> {
-        &self.prop_string
+    fn prop_string(&self) -> Vec<StructString> {
+        self.prop_string.read().clone()
     }
-    /// Sets the value of the propString property.
     fn set_prop_string(
-        &mut self,
+        &self,
         prop_string: &[StructString],
     ) {
-        if self.prop_string == prop_string.to_vec() {
+        let new_val = prop_string.to_vec();
+        let mut value = self.prop_string.write();
+        if *value == new_val {
             return;
         }
-
-        self.prop_string = prop_string.to_vec();
-        self._signal_handler.prop_string_changed.emit(self.prop_string.clone());
+        *value = new_val.clone();
+        let _ = self.publisher.prop_string_changed.send(new_val);
     }
 
-    fn _get_signal_handler(&mut self) -> &StructArrayInterfaceSignalHandler {
-        &self._signal_handler
+    fn prop_enum(&self) -> Vec<Enum0Enum> {
+        self.prop_enum.read().clone()
+    }
+    fn set_prop_enum(
+        &self,
+        prop_enum: &[Enum0Enum],
+    ) {
+        let new_val = prop_enum.to_vec();
+        let mut value = self.prop_enum.write();
+        if *value == new_val {
+            return;
+        }
+        *value = new_val.clone();
+        let _ = self.publisher.prop_enum_changed.send(new_val);
+    }
+
+    fn publisher(&self) -> &StructArrayInterfacePublisher {
+        &self.publisher
     }
 }

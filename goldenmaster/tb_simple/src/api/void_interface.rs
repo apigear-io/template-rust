@@ -1,17 +1,18 @@
-use async_trait::async_trait;
-use signals2::*;
+use apigear::{ApiError, ApiFuture};
+use tokio::sync::{broadcast};
 
-#[derive(Clone, Default)]
-pub struct VoidInterfaceSignalHandler {
-    pub sig_void: Signal<()>,
+pub struct VoidInterfacePublisher {
+    pub sig_void: broadcast::Sender<()>,
 }
 
-#[async_trait]
-pub trait VoidInterfaceTrait {
-    fn func_void(&mut self);
-    /// Asynchronous version of [func_void](VoidInterfaceTrait::func_void)
-    /// returns future of type `()` which is set once the function has completed
-    async fn func_void_async(&mut self) -> Result<(), ()>;
+impl Default for VoidInterfacePublisher {
+    fn default() -> Self {
+        Self { sig_void: broadcast::Sender::new(16) }
+    }
+}
 
-    fn _get_signal_handler(&mut self) -> &VoidInterfaceSignalHandler;
+pub trait VoidInterfaceTrait: Send + Sync {
+    fn func_void(&self) -> ApiFuture<'_, Result<(), ApiError>>;
+
+    fn publisher(&self) -> &VoidInterfacePublisher;
 }
