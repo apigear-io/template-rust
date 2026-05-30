@@ -1,0 +1,6 @@
+[submodule "deps/objectlink-core-rs"]
+	path = deps/objectlink-core-rs
+	url = https://github.com/apigear-io/objectlink-core-rs
+[submodule "apigear/test-apis"]
+	path = apigear/test-apis
+	url = https://github.com/apigear-io/test-apis
