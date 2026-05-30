@@ -1,4 +1,11 @@
-max_width = 200
+# rustfmt has no option to disable line wrapping, so we approximate it: a very
+# high max_width plus use_small_heuristics = "Max" pins every width sub-limit
+# (struct_lit_width, chain_width, fn_call_width, ...) to max_width. The result
+# is deterministic, width-independent formatting — rustfmt keeps expressions on
+# one line and never reflows based on width. Generated code and templates should
+# still aim to keep lines under 120 characters by convention.
+max_width = 1000
+use_small_heuristics = "Max"
 reorder_imports = false
 reorder_modules = false
 fn_params_layout = "Vertical"

@@ -1,24 +1,22 @@
-{{- $data_structs := false }}
-{{- $ops := false -}}
-{{- if len .Interface.Signals -}}
-use signals2::*;{{nl}}
-{{- end }}
+{{- $hasOps := len .Interface.Operations }}
+{{- $hasProps := len .Interface.Properties }}
+{{- $hasSignals := len .Interface.Signals }}
+{{- $hasPubSub := or $hasSignals $hasProps }}
+{{- $noTests := and (not (len .Module.Enums)) (not $hasOps) (not $hasProps) (not $hasSignals) }}
 
 {{- if or .Module.Structs .Module.Enums -}}
-{{- $data_structs = true -}}
-// we have no simple way to detect whether a struct/enum is used
 #[allow(unused_imports)]
 use {{snake .Module.Name}}::api::data_structs::*;{{ nl }}
 {{- end -}}
-{{- if or (len .Interface.Operations) (len .Interface.Properties) -}}
+{{- if or $hasOps $hasPubSub -}}
 use {{snake .Module.Name}}::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Trait;
-{{- end }}
+{{ end -}}
 use {{snake .Module.Name}}::implementation::{{snake .Interface.Name}}::{{Camel .Interface.Name}};
 
 /// tests for {{Camel .Interface.Name}}
 #[cfg(test)]
 mod tests {
-    use super::*;{{nl}}
+    use super::*;{{ if not $noTests }}{{nl}}{{ end }}
 
 {{- range $i, $e := .Module.Enums }}
 {{- $enum := . }}
@@ -59,34 +57,22 @@ mod tests {
 {{- range $i, $e := .Interface.Operations }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $operation := . }}
-    #[test]
-    fn test_{{ snake $operation.Name }}() {
-        let mut test_object: {{Camel $.Interface.Name}} = Default::default();
-        test_object.{{snake $operation.Name }}(
-        {{- range $i, $e := $operation.Params }}
-        {{- if $i }}, {{ end }}
-        {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
-        {{- $param := . }}
-        {{- if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default()
-        {{- end }}   {{- /* end range operation params */ -}}
-        );
-    }
-
-    #[test]
-    fn test_{{snake $operation.Name }}_async() {
-        let mut test_object: {{Camel $.Interface.Name}} = Default::default();
-        let _ = test_object.{{snake $operation.Name }}_async(
-        {{- range $i, $e := $operation.Params }}
-        {{- if $i }}, {{ end }}
-        {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
-        {{- $param := . }}
-        {{- if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end}}Default::default()
-        {{- end }}   {{- /* end range operation params */ -}}
-        );
+    #[tokio::test]
+    async fn test_{{ snake $operation.Name }}() {
+        let test_object = {{Camel $.Interface.Name}}::default();
+        let result = test_object.{{snake $operation.Name }}(
+{{- range $i, $e := $operation.Params }}
+{{-     if $i }}, {{ end -}}
+{{-     $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type) -}}
+{{      if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end -}}
+Default::default()
+{{- end -}}
+).await;
+        assert!(result.is_ok());
     }
 {{- end }}
 
-{{- if len .Interface.Operations }}{{- if len .Interface.Properties }}{{- nl }}{{ end }}{{ end }}
+{{- if $hasOps }}{{- if $hasProps }}{{- nl }}{{ end }}{{ end }}
 
 {{- range $i, $e := .Interface.Properties }}
 {{- if $i }}{{nl}}{{ end }}
@@ -94,41 +80,43 @@ mod tests {
 {{- $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type)}}
     #[test]
     fn test_{{snake $property.Name }}() {
-        let mut test_object: {{Camel $.Interface.Name}} = Default::default();
+        let test_object = {{Camel $.Interface.Name}}::default();
         let default_value: {{rsType "" $property}} = Default::default();
         {{- if not .IsReadOnly }}
-        test_object.set_{{snake $property.Name }}({{ if $isComplex }}&{{end}}default_value);
+        test_object.set_{{snake $property.Name }}({{ if and $isComplex (not .IsArray) (ne "string" .Type) }}&{{end}}default_value{{ if and $isComplex (not .IsArray) (ne "string" .Type) }}.clone(){{ end }}{{ if .IsArray }}.as_slice(){{ end }}{{ if and (eq "string" .Type) (not .IsArray) }}.as_str(){{ end }});
         {{- end }}
-        assert_eq!(test_object.{{snake $property.Name }}().clone(), default_value);
+        assert_eq!(test_object.{{snake $property.Name }}(), default_value);
     }
-{{- end }}    {{- /* end range properties */}}
+{{- end }}
 
-{{- if len .Interface.Signals }}{{- nl }}{{ end }}
+{{- if $hasSignals }}{{- nl }}{{ end }}
 
 {{- range $i, $e := .Interface.Signals }}
 {{- if $i }}{{nl}}{{ end }}
 {{- $signal := . }}
-    #[rustfmt::skip]
+{{- $lenParams := len .Params }}
     #[test]
     fn test_{{snake $signal.Name }}() {
-        let mut test_object: {{Camel $.Interface.Name}} = Default::default();
-
-        test_object._get_signal_handler().{{snake $signal.Name }}.connect(move |
-        {{- rsVars "" $signal.Params}}| {
-        {{- range $signal.Params}}
-            let default_value_{{ rsVar "" .}}: {{rsType "" .}} = Default::default();
-            assert_eq!({{ rsVar "" .}}, default_value_{{ rsVar "" .}});
-        {{- end }}
-        });{{nl}}
-
+        let test_object = {{Camel $.Interface.Name}}::default();
+        let mut rx = test_object.publisher().{{snake $signal.Name }}.subscribe();
         {{- range $signal.Params}}
         let default_value_{{ rsVar "" .}}: {{rsType "" .}} = Default::default();
         {{- end }}
-        test_object._get_signal_handler().{{snake $signal.Name }}.emit(
-        {{- range $signal.Params}}
-            default_value_{{ rsVar "" .}}.clone(),
+        let _ = test_object.publisher().{{snake $signal.Name }}.send((
+{{- range $i, $e := $signal.Params}}
+{{-     if $i }}, {{ end -}}
+default_value_{{ rsVar "" .}}.clone()
+{{- end }}
+{{- if eq 1 $lenParams }},{{ end -}}
+));
+        {{- if gt $lenParams 0 }}
+        let received = rx.try_recv().unwrap();
+        {{- range $i, $e := $signal.Params}}
+        assert_eq!(received.{{ $i }}, default_value_{{ rsVar "" .}});
         {{- end }}
-        );
+        {{- else }}
+        assert!(rx.try_recv().is_ok());
+        {{- end }}
     }
-{{- end }}    {{- /* end range signals */}}
+{{- end }}
 }

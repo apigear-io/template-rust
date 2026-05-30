@@ -1,32 +1,40 @@
-#![allow(unused_imports)]{{nl}}
-{{- range .System.Modules -}}
-{{- $module := . -}}
-extern crate {{snake $module.Name}};{{nl}}
+#![allow(unused_imports, unused_variables)]
+{{- range .System.Modules }}
+{{- $module := . }}
+extern crate {{snake $module.Name}};
 {{- end }}
-// importing traits and allowing unused_imports for easy use below
+
+{{- range .System.Modules }}
+{{- $module := . }}
+{{- range $module.Interfaces }}
+{{- $interface := . }}
+use {{snake $module.Name}}::api::{{ snake $interface.Name }}::{{ Camel $interface.Name }}Trait as {{snake $module.Name}}_{{ Camel $interface.Name }}Trait;
+use {{snake $module.Name}}::implementation::{{ snake $interface.Name }}::{{ Camel $interface.Name }} as {{snake $module.Name}}_{{ Camel $interface.Name }};
+use {{snake $module.Name}}::core_types::{{ snake $interface.Name }}_shared::new_shared_{{ snake $interface.Name }} as new_shared_{{snake $module.Name}}_{{ snake $interface.Name }};
+{{- end }}
+{{- end }}
+
+fn main() {
+    println!("ApiGear Rust SDK Examples");
+    println!("========================");
+
+    // Create default implementations
 {{- range .System.Modules }}
 {{- $module := . }}
 {{- range $module.Interfaces }}
 {{- $interface := . }}
-use {{snake $module.Name}}::api::{{ snake $interface.Name }}::{{ Camel $interface.Name }}Trait as {{snake $module.Name}}{{ Camel $interface.Name }}Trait;
-use {{snake $module.Name}}::implementation::{{ snake $interface.Name }}::{{ Camel $interface.Name }} as {{snake $module.Name}}{{ Camel $interface.Name }};
+    let _{{snake $module.Name}}_{{ snake $interface.Name }} = {{snake $module.Name}}_{{ Camel $interface.Name }}::default();
 {{- end }}
 {{- end }}
-use std::io;
 
-fn main() {
+    // Create shared (Arc<dyn Trait>) implementations
 {{- range .System.Modules }}
 {{- $module := . }}
 {{- range $module.Interfaces }}
 {{- $interface := . }}
-    let mut _test_{{snake $module.Name}}_{{ snake $interface.Name }} = {{snake $module.Name}}{{ Camel $interface.Name }}::default();
+    let _shared_{{snake $module.Name}}_{{ snake $interface.Name }} = new_shared_{{snake $module.Name}}_{{ snake $interface.Name }}();
 {{- end }}
 {{- end }}
 
-    let mut cmd = String::new();
-    println!("Enter command, or q to exit:");
-    while cmd.trim() != "q" {
-        cmd.clear();
-        io::stdin().read_line(&mut cmd).unwrap();
-    }
+    println!("All interfaces instantiated successfully.");
 }
