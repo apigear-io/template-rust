@@ -1,17 +1,5 @@
 features:
-  - name: apigear
-    scopes:
-    - match: system
-      documents:
-        - source: "apigear/Cargo.toml"
-          target: "apigear/Cargo.toml"
-          raw: true
-        - source: "apigear/src/lib.rs"
-          target: "apigear/src/lib.rs"
-          raw: true
   - name: api
-    requires:
-      - apigear
     scopes:
     - match: interface
       prefix: "{{snake .Module.Name}}/src/api/"
@@ -25,6 +13,9 @@ features:
           target: "mod.rs"
         - source: "module/src/api/data_structs.rs.tpl"
           target: "data_structs.rs"
+        - source: "module/src/api/api_common.rs"
+          target: "api_common.rs"
+          raw: true
   - name: core
     requires:
       - api
@@ -47,7 +38,6 @@ features:
     requires:
       - api
       - core
-      - apigear
     scopes:
     - match: module
       prefix: "{{snake .Module.Name}}/src/monitor/"
@@ -63,7 +53,6 @@ features:
     requires:
       - api
       - core
-      - apigear
     scopes:
     - match: module
       prefix: "{{snake .Module.Name}}/src/olink/"
@@ -91,7 +80,6 @@ features:
     requires:
       - api
       - core
-      - apigear
     scopes:
     - match: module
       prefix: "{{snake .Module.Name}}/src/mqtt/"
@@ -109,7 +97,6 @@ features:
     requires:
       - api
       - core
-      - apigear
     scopes:
     - match: module
       prefix: "{{snake .Module.Name}}/src/nats/"
