@@ -93,6 +93,17 @@ features:
           target: "{{snake .Interface.Name}}_client.rs"
         - source: "module/src/mqtt/interface_service.rs.tpl"
           target: "{{snake .Interface.Name}}_service.rs"
+    - match: module
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/mqtt_common.rs"
+          target: "tests/mqtt_common.rs"
+          raw: true
+    - match: interface
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/mqtt_interface_test.rs.tpl"
+          target: "tests/mqtt_{{snake .Interface.Name}}_test.rs"
   - name: nats
     requires:
       - api
@@ -110,6 +121,17 @@ features:
           target: "{{snake .Interface.Name}}_client.rs"
         - source: "module/src/nats/interface_service.rs.tpl"
           target: "{{snake .Interface.Name}}_service.rs"
+    - match: module
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/nats_common.rs"
+          target: "tests/nats_common.rs"
+          raw: true
+    - match: interface
+      prefix: "{{snake .Module.Name}}/"
+      documents:
+        - source: "module/tests/nats_interface_test.rs.tpl"
+          target: "tests/nats_{{snake .Interface.Name}}_test.rs"
   - name: stubs
     requires:
       - api
