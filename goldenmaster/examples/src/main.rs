@@ -1,139 +1,515 @@
+//! Local example: use the generated default implementations directly, in-process.
+//! Each interface is instantiated and exercised (operations, properties, signals)
+//! without any IPC. See `src/bin/{olink,mqtt,nats}_{server,client}.rs` for the IPC
+//! examples.
 #![allow(unused_imports, unused_variables)]
-extern crate testbed2;
-extern crate tb_enum;
-extern crate tb_same1;
-extern crate tb_same2;
-extern crate tb_simple;
-extern crate testbed1;
-extern crate tb_names;
-use testbed2::api::many_param_interface::ManyParamInterfaceTrait as testbed2_ManyParamInterfaceTrait;
-use testbed2::implementation::many_param_interface::ManyParamInterface as testbed2_ManyParamInterface;
-use testbed2::core_types::many_param_interface_shared::new_shared_many_param_interface as new_shared_testbed2_many_param_interface;
-use testbed2::api::nested_struct1_interface::NestedStruct1InterfaceTrait as testbed2_NestedStruct1InterfaceTrait;
-use testbed2::implementation::nested_struct1_interface::NestedStruct1Interface as testbed2_NestedStruct1Interface;
-use testbed2::core_types::nested_struct1_interface_shared::new_shared_nested_struct1_interface as new_shared_testbed2_nested_struct1_interface;
-use testbed2::api::nested_struct2_interface::NestedStruct2InterfaceTrait as testbed2_NestedStruct2InterfaceTrait;
-use testbed2::implementation::nested_struct2_interface::NestedStruct2Interface as testbed2_NestedStruct2Interface;
-use testbed2::core_types::nested_struct2_interface_shared::new_shared_nested_struct2_interface as new_shared_testbed2_nested_struct2_interface;
-use testbed2::api::nested_struct3_interface::NestedStruct3InterfaceTrait as testbed2_NestedStruct3InterfaceTrait;
-use testbed2::implementation::nested_struct3_interface::NestedStruct3Interface as testbed2_NestedStruct3Interface;
-use testbed2::core_types::nested_struct3_interface_shared::new_shared_nested_struct3_interface as new_shared_testbed2_nested_struct3_interface;
-use tb_enum::api::enum_interface::EnumInterfaceTrait as tb_enum_EnumInterfaceTrait;
-use tb_enum::implementation::enum_interface::EnumInterface as tb_enum_EnumInterface;
-use tb_enum::core_types::enum_interface_shared::new_shared_enum_interface as new_shared_tb_enum_enum_interface;
-use tb_same1::api::same_struct1_interface::SameStruct1InterfaceTrait as tb_same1_SameStruct1InterfaceTrait;
-use tb_same1::implementation::same_struct1_interface::SameStruct1Interface as tb_same1_SameStruct1Interface;
-use tb_same1::core_types::same_struct1_interface_shared::new_shared_same_struct1_interface as new_shared_tb_same1_same_struct1_interface;
-use tb_same1::api::same_struct2_interface::SameStruct2InterfaceTrait as tb_same1_SameStruct2InterfaceTrait;
-use tb_same1::implementation::same_struct2_interface::SameStruct2Interface as tb_same1_SameStruct2Interface;
-use tb_same1::core_types::same_struct2_interface_shared::new_shared_same_struct2_interface as new_shared_tb_same1_same_struct2_interface;
-use tb_same1::api::same_enum1_interface::SameEnum1InterfaceTrait as tb_same1_SameEnum1InterfaceTrait;
-use tb_same1::implementation::same_enum1_interface::SameEnum1Interface as tb_same1_SameEnum1Interface;
-use tb_same1::core_types::same_enum1_interface_shared::new_shared_same_enum1_interface as new_shared_tb_same1_same_enum1_interface;
-use tb_same1::api::same_enum2_interface::SameEnum2InterfaceTrait as tb_same1_SameEnum2InterfaceTrait;
-use tb_same1::implementation::same_enum2_interface::SameEnum2Interface as tb_same1_SameEnum2Interface;
-use tb_same1::core_types::same_enum2_interface_shared::new_shared_same_enum2_interface as new_shared_tb_same1_same_enum2_interface;
-use tb_same2::api::same_struct1_interface::SameStruct1InterfaceTrait as tb_same2_SameStruct1InterfaceTrait;
-use tb_same2::implementation::same_struct1_interface::SameStruct1Interface as tb_same2_SameStruct1Interface;
-use tb_same2::core_types::same_struct1_interface_shared::new_shared_same_struct1_interface as new_shared_tb_same2_same_struct1_interface;
-use tb_same2::api::same_struct2_interface::SameStruct2InterfaceTrait as tb_same2_SameStruct2InterfaceTrait;
-use tb_same2::implementation::same_struct2_interface::SameStruct2Interface as tb_same2_SameStruct2Interface;
-use tb_same2::core_types::same_struct2_interface_shared::new_shared_same_struct2_interface as new_shared_tb_same2_same_struct2_interface;
-use tb_same2::api::same_enum1_interface::SameEnum1InterfaceTrait as tb_same2_SameEnum1InterfaceTrait;
-use tb_same2::implementation::same_enum1_interface::SameEnum1Interface as tb_same2_SameEnum1Interface;
-use tb_same2::core_types::same_enum1_interface_shared::new_shared_same_enum1_interface as new_shared_tb_same2_same_enum1_interface;
-use tb_same2::api::same_enum2_interface::SameEnum2InterfaceTrait as tb_same2_SameEnum2InterfaceTrait;
-use tb_same2::implementation::same_enum2_interface::SameEnum2Interface as tb_same2_SameEnum2Interface;
-use tb_same2::core_types::same_enum2_interface_shared::new_shared_same_enum2_interface as new_shared_tb_same2_same_enum2_interface;
-use tb_simple::api::void_interface::VoidInterfaceTrait as tb_simple_VoidInterfaceTrait;
-use tb_simple::implementation::void_interface::VoidInterface as tb_simple_VoidInterface;
-use tb_simple::core_types::void_interface_shared::new_shared_void_interface as new_shared_tb_simple_void_interface;
-use tb_simple::api::simple_interface::SimpleInterfaceTrait as tb_simple_SimpleInterfaceTrait;
-use tb_simple::implementation::simple_interface::SimpleInterface as tb_simple_SimpleInterface;
-use tb_simple::core_types::simple_interface_shared::new_shared_simple_interface as new_shared_tb_simple_simple_interface;
-use tb_simple::api::simple_array_interface::SimpleArrayInterfaceTrait as tb_simple_SimpleArrayInterfaceTrait;
-use tb_simple::implementation::simple_array_interface::SimpleArrayInterface as tb_simple_SimpleArrayInterface;
-use tb_simple::core_types::simple_array_interface_shared::new_shared_simple_array_interface as new_shared_tb_simple_simple_array_interface;
-use tb_simple::api::no_properties_interface::NoPropertiesInterfaceTrait as tb_simple_NoPropertiesInterfaceTrait;
-use tb_simple::implementation::no_properties_interface::NoPropertiesInterface as tb_simple_NoPropertiesInterface;
-use tb_simple::core_types::no_properties_interface_shared::new_shared_no_properties_interface as new_shared_tb_simple_no_properties_interface;
-use tb_simple::api::no_operations_interface::NoOperationsInterfaceTrait as tb_simple_NoOperationsInterfaceTrait;
-use tb_simple::implementation::no_operations_interface::NoOperationsInterface as tb_simple_NoOperationsInterface;
-use tb_simple::core_types::no_operations_interface_shared::new_shared_no_operations_interface as new_shared_tb_simple_no_operations_interface;
-use tb_simple::api::no_signals_interface::NoSignalsInterfaceTrait as tb_simple_NoSignalsInterfaceTrait;
-use tb_simple::implementation::no_signals_interface::NoSignalsInterface as tb_simple_NoSignalsInterface;
-use tb_simple::core_types::no_signals_interface_shared::new_shared_no_signals_interface as new_shared_tb_simple_no_signals_interface;
-use tb_simple::api::empty_interface::EmptyInterfaceTrait as tb_simple_EmptyInterfaceTrait;
-use tb_simple::implementation::empty_interface::EmptyInterface as tb_simple_EmptyInterface;
-use tb_simple::core_types::empty_interface_shared::new_shared_empty_interface as new_shared_tb_simple_empty_interface;
-use testbed1::api::struct_interface::StructInterfaceTrait as testbed1_StructInterfaceTrait;
-use testbed1::implementation::struct_interface::StructInterface as testbed1_StructInterface;
-use testbed1::core_types::struct_interface_shared::new_shared_struct_interface as new_shared_testbed1_struct_interface;
-use testbed1::api::struct_array_interface::StructArrayInterfaceTrait as testbed1_StructArrayInterfaceTrait;
-use testbed1::implementation::struct_array_interface::StructArrayInterface as testbed1_StructArrayInterface;
-use testbed1::core_types::struct_array_interface_shared::new_shared_struct_array_interface as new_shared_testbed1_struct_array_interface;
-use testbed1::api::struct_array2_interface::StructArray2InterfaceTrait as testbed1_StructArray2InterfaceTrait;
-use testbed1::implementation::struct_array2_interface::StructArray2Interface as testbed1_StructArray2Interface;
-use testbed1::core_types::struct_array2_interface_shared::new_shared_struct_array2_interface as new_shared_testbed1_struct_array2_interface;
-use tb_names::api::nam_es::NamEsTrait as tb_names_NamEsTrait;
-use tb_names::implementation::nam_es::NamEs as tb_names_NamEs;
-use tb_names::core_types::nam_es_shared::new_shared_nam_es as new_shared_tb_names_nam_es;
 
-fn main() {
-    println!("ApiGear Rust SDK Examples");
-    println!("========================");
+#[tokio::main(flavor = "multi_thread")]
+async fn main() {
+    println!("ApiGear Rust SDK — local implementation example");
+    println!("===============================================");
+    {
+        use testbed2::api::many_param_interface::ManyParamInterfaceTrait;
+        use testbed2::api::many_param_interface::ManyParamInterfaceTraitAsync;
+        use testbed2::implementation::many_param_interface::ManyParamInterface;
+        #[allow(unused_imports)]
+        use testbed2::api::data_structs::*;
+        println!("\n== testbed2.ManyParamInterface ==");
+        let object = ManyParamInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(Default::default()).await;
+        println!("  called func1()");
+        let value: i32 = 42i32;
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let value: i32 = 42i32;
+        object.set_prop2(value);
+        println!("  prop2 = {:?}", object.prop2());
+        let value: i32 = 42i32;
+        object.set_prop3(value);
+        println!("  prop3 = {:?}", object.prop3());
+        let value: i32 = 42i32;
+        object.set_prop4(value);
+        println!("  prop4 = {:?}", object.prop4());
+        let _publisher = object.publisher();
+        println!("  4 signal(s) available via publisher()");
+    }
+    {
+        use testbed2::api::nested_struct1_interface::NestedStruct1InterfaceTrait;
+        use testbed2::api::nested_struct1_interface::NestedStruct1InterfaceTraitAsync;
+        use testbed2::implementation::nested_struct1_interface::NestedStruct1Interface;
+        #[allow(unused_imports)]
+        use testbed2::api::data_structs::*;
+        println!("\n== testbed2.NestedStruct1Interface ==");
+        let object = NestedStruct1Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_no_return_value_async(&Default::default()).await;
+        println!("  called func_no_return_value()");
+        let value: NestedStruct1 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use testbed2::api::nested_struct2_interface::NestedStruct2InterfaceTrait;
+        use testbed2::api::nested_struct2_interface::NestedStruct2InterfaceTraitAsync;
+        use testbed2::implementation::nested_struct2_interface::NestedStruct2Interface;
+        #[allow(unused_imports)]
+        use testbed2::api::data_structs::*;
+        println!("\n== testbed2.NestedStruct2Interface ==");
+        let object = NestedStruct2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: NestedStruct1 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let value: NestedStruct2 = Default::default();
+        object.set_prop2(&value.clone());
+        println!("  prop2 = {:?}", object.prop2());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use testbed2::api::nested_struct3_interface::NestedStruct3InterfaceTrait;
+        use testbed2::api::nested_struct3_interface::NestedStruct3InterfaceTraitAsync;
+        use testbed2::implementation::nested_struct3_interface::NestedStruct3Interface;
+        #[allow(unused_imports)]
+        use testbed2::api::data_structs::*;
+        println!("\n== testbed2.NestedStruct3Interface ==");
+        let object = NestedStruct3Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: NestedStruct1 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let value: NestedStruct2 = Default::default();
+        object.set_prop2(&value.clone());
+        println!("  prop2 = {:?}", object.prop2());
+        let value: NestedStruct3 = Default::default();
+        object.set_prop3(&value.clone());
+        println!("  prop3 = {:?}", object.prop3());
+        let _publisher = object.publisher();
+        println!("  3 signal(s) available via publisher()");
+    }
+    {
+        use tb_enum::api::enum_interface::EnumInterfaceTrait;
+        use tb_enum::api::enum_interface::EnumInterfaceTraitAsync;
+        use tb_enum::implementation::enum_interface::EnumInterface;
+        #[allow(unused_imports)]
+        use tb_enum::api::data_structs::*;
+        println!("\n== tb.enum.EnumInterface ==");
+        let object = EnumInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func0_async(Default::default()).await;
+        println!("  called func0()");
+        let value: Enum0Enum = Default::default();
+        object.set_prop0(value);
+        println!("  prop0 = {:?}", object.prop0());
+        let value: Enum1Enum = Default::default();
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let value: Enum2Enum = Default::default();
+        object.set_prop2(value);
+        println!("  prop2 = {:?}", object.prop2());
+        let value: Enum3Enum = Default::default();
+        object.set_prop3(value);
+        println!("  prop3 = {:?}", object.prop3());
+        let _publisher = object.publisher();
+        println!("  4 signal(s) available via publisher()");
+    }
+    {
+        use tb_same1::api::same_struct1_interface::SameStruct1InterfaceTrait;
+        use tb_same1::api::same_struct1_interface::SameStruct1InterfaceTraitAsync;
+        use tb_same1::implementation::same_struct1_interface::SameStruct1Interface;
+        #[allow(unused_imports)]
+        use tb_same1::api::data_structs::*;
+        println!("\n== tb.same1.SameStruct1Interface ==");
+        let object = SameStruct1Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: Struct1 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use tb_same1::api::same_struct2_interface::SameStruct2InterfaceTrait;
+        use tb_same1::api::same_struct2_interface::SameStruct2InterfaceTraitAsync;
+        use tb_same1::implementation::same_struct2_interface::SameStruct2Interface;
+        #[allow(unused_imports)]
+        use tb_same1::api::data_structs::*;
+        println!("\n== tb.same1.SameStruct2Interface ==");
+        let object = SameStruct2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: Struct2 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let value: Struct2 = Default::default();
+        object.set_prop2(&value.clone());
+        println!("  prop2 = {:?}", object.prop2());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_same1::api::same_enum1_interface::SameEnum1InterfaceTrait;
+        use tb_same1::api::same_enum1_interface::SameEnum1InterfaceTraitAsync;
+        use tb_same1::implementation::same_enum1_interface::SameEnum1Interface;
+        #[allow(unused_imports)]
+        use tb_same1::api::data_structs::*;
+        println!("\n== tb.same1.SameEnum1Interface ==");
+        let object = SameEnum1Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(Default::default()).await;
+        println!("  called func1()");
+        let value: Enum1Enum = Default::default();
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use tb_same1::api::same_enum2_interface::SameEnum2InterfaceTrait;
+        use tb_same1::api::same_enum2_interface::SameEnum2InterfaceTraitAsync;
+        use tb_same1::implementation::same_enum2_interface::SameEnum2Interface;
+        #[allow(unused_imports)]
+        use tb_same1::api::data_structs::*;
+        println!("\n== tb.same1.SameEnum2Interface ==");
+        let object = SameEnum2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(Default::default()).await;
+        println!("  called func1()");
+        let value: Enum1Enum = Default::default();
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let value: Enum2Enum = Default::default();
+        object.set_prop2(value);
+        println!("  prop2 = {:?}", object.prop2());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_same2::api::same_struct1_interface::SameStruct1InterfaceTrait;
+        use tb_same2::api::same_struct1_interface::SameStruct1InterfaceTraitAsync;
+        use tb_same2::implementation::same_struct1_interface::SameStruct1Interface;
+        #[allow(unused_imports)]
+        use tb_same2::api::data_structs::*;
+        println!("\n== tb.same2.SameStruct1Interface ==");
+        let object = SameStruct1Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: Struct1 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use tb_same2::api::same_struct2_interface::SameStruct2InterfaceTrait;
+        use tb_same2::api::same_struct2_interface::SameStruct2InterfaceTraitAsync;
+        use tb_same2::implementation::same_struct2_interface::SameStruct2Interface;
+        #[allow(unused_imports)]
+        use tb_same2::api::data_structs::*;
+        println!("\n== tb.same2.SameStruct2Interface ==");
+        let object = SameStruct2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(&Default::default()).await;
+        println!("  called func1()");
+        let value: Struct2 = Default::default();
+        object.set_prop1(&value.clone());
+        println!("  prop1 = {:?}", object.prop1());
+        let value: Struct2 = Default::default();
+        object.set_prop2(&value.clone());
+        println!("  prop2 = {:?}", object.prop2());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_same2::api::same_enum1_interface::SameEnum1InterfaceTrait;
+        use tb_same2::api::same_enum1_interface::SameEnum1InterfaceTraitAsync;
+        use tb_same2::implementation::same_enum1_interface::SameEnum1Interface;
+        #[allow(unused_imports)]
+        use tb_same2::api::data_structs::*;
+        println!("\n== tb.same2.SameEnum1Interface ==");
+        let object = SameEnum1Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(Default::default()).await;
+        println!("  called func1()");
+        let value: Enum1Enum = Default::default();
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use tb_same2::api::same_enum2_interface::SameEnum2InterfaceTrait;
+        use tb_same2::api::same_enum2_interface::SameEnum2InterfaceTraitAsync;
+        use tb_same2::implementation::same_enum2_interface::SameEnum2Interface;
+        #[allow(unused_imports)]
+        use tb_same2::api::data_structs::*;
+        println!("\n== tb.same2.SameEnum2Interface ==");
+        let object = SameEnum2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func1_async(Default::default()).await;
+        println!("  called func1()");
+        let value: Enum1Enum = Default::default();
+        object.set_prop1(value);
+        println!("  prop1 = {:?}", object.prop1());
+        let value: Enum2Enum = Default::default();
+        object.set_prop2(value);
+        println!("  prop2 = {:?}", object.prop2());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::void_interface::VoidInterfaceTrait;
+        use tb_simple::api::void_interface::VoidInterfaceTraitAsync;
+        use tb_simple::implementation::void_interface::VoidInterface;
+        println!("\n== tb.simple.VoidInterface ==");
+        let object = VoidInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_void_async().await;
+        println!("  called func_void()");
+        let _publisher = object.publisher();
+        println!("  1 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::simple_interface::SimpleInterfaceTrait;
+        use tb_simple::api::simple_interface::SimpleInterfaceTraitAsync;
+        use tb_simple::implementation::simple_interface::SimpleInterface;
+        println!("\n== tb.simple.SimpleInterface ==");
+        let object = SimpleInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_no_return_value_async(Default::default()).await;
+        println!("  called func_no_return_value()");
+        let value: bool = true;
+        object.set_prop_bool(value);
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: i32 = 42i32;
+        object.set_prop_int(value);
+        println!("  prop_int = {:?}", object.prop_int());
+        let value: i32 = 42i32;
+        object.set_prop_int32(value);
+        println!("  prop_int32 = {:?}", object.prop_int32());
+        let value: i64 = 42i64;
+        object.set_prop_int64(value);
+        println!("  prop_int64 = {:?}", object.prop_int64());
+        let value: f32 = 4.2f32;
+        object.set_prop_float(value);
+        println!("  prop_float = {:?}", object.prop_float());
+        let value: f32 = 4.2f32;
+        object.set_prop_float32(value);
+        println!("  prop_float32 = {:?}", object.prop_float32());
+        let value: f64 = 4.2f64;
+        object.set_prop_float64(value);
+        println!("  prop_float64 = {:?}", object.prop_float64());
+        let value: String = String::from("hello");
+        object.set_prop_string(value.as_str());
+        println!("  prop_string = {:?}", object.prop_string());
+        let _publisher = object.publisher();
+        println!("  8 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::simple_array_interface::SimpleArrayInterfaceTrait;
+        use tb_simple::api::simple_array_interface::SimpleArrayInterfaceTraitAsync;
+        use tb_simple::implementation::simple_array_interface::SimpleArrayInterface;
+        println!("\n== tb.simple.SimpleArrayInterface ==");
+        let object = SimpleArrayInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_bool_async(Default::default()).await;
+        println!("  called func_bool()");
+        let value: Vec<bool> = vec![Default::default()];
+        object.set_prop_bool(value.as_slice());
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: Vec<i32> = vec![Default::default()];
+        object.set_prop_int(value.as_slice());
+        println!("  prop_int = {:?}", object.prop_int());
+        let value: Vec<i32> = vec![Default::default()];
+        object.set_prop_int32(value.as_slice());
+        println!("  prop_int32 = {:?}", object.prop_int32());
+        let value: Vec<i64> = vec![Default::default()];
+        object.set_prop_int64(value.as_slice());
+        println!("  prop_int64 = {:?}", object.prop_int64());
+        let value: Vec<f32> = vec![Default::default()];
+        object.set_prop_float(value.as_slice());
+        println!("  prop_float = {:?}", object.prop_float());
+        let value: Vec<f32> = vec![Default::default()];
+        object.set_prop_float32(value.as_slice());
+        println!("  prop_float32 = {:?}", object.prop_float32());
+        let value: Vec<f64> = vec![Default::default()];
+        object.set_prop_float64(value.as_slice());
+        println!("  prop_float64 = {:?}", object.prop_float64());
+        let value: Vec<String> = vec![Default::default()];
+        object.set_prop_string(value.as_slice());
+        println!("  prop_string = {:?}", object.prop_string());
+        let _publisher = object.publisher();
+        println!("  8 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::no_properties_interface::NoPropertiesInterfaceTrait;
+        use tb_simple::api::no_properties_interface::NoPropertiesInterfaceTraitAsync;
+        use tb_simple::implementation::no_properties_interface::NoPropertiesInterface;
+        println!("\n== tb.simple.NoPropertiesInterface ==");
+        let object = NoPropertiesInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_void_async().await;
+        println!("  called func_void()");
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::no_operations_interface::NoOperationsInterfaceTrait;
+        use tb_simple::implementation::no_operations_interface::NoOperationsInterface;
+        println!("\n== tb.simple.NoOperationsInterface ==");
+        let object = NoOperationsInterface::default();
+        let value: bool = true;
+        object.set_prop_bool(value);
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: i32 = 42i32;
+        object.set_prop_int(value);
+        println!("  prop_int = {:?}", object.prop_int());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
+    {
+        use tb_simple::api::no_signals_interface::NoSignalsInterfaceTrait;
+        use tb_simple::api::no_signals_interface::NoSignalsInterfaceTraitAsync;
+        use tb_simple::implementation::no_signals_interface::NoSignalsInterface;
+        println!("\n== tb.simple.NoSignalsInterface ==");
+        let object = NoSignalsInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_void_async().await;
+        println!("  called func_void()");
+        let value: bool = true;
+        object.set_prop_bool(value);
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: i32 = 42i32;
+        object.set_prop_int(value);
+        println!("  prop_int = {:?}", object.prop_int());
+    }
+    {
+        use tb_simple::api::empty_interface::EmptyInterfaceTrait;
+        use tb_simple::implementation::empty_interface::EmptyInterface;
+        println!("\n== tb.simple.EmptyInterface ==");
+        let object = EmptyInterface::default();
+    }
+    {
+        use testbed1::api::struct_interface::StructInterfaceTrait;
+        use testbed1::api::struct_interface::StructInterfaceTraitAsync;
+        use testbed1::implementation::struct_interface::StructInterface;
+        #[allow(unused_imports)]
+        use testbed1::api::data_structs::*;
+        println!("\n== testbed1.StructInterface ==");
+        let object = StructInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_bool_async(&Default::default()).await;
+        println!("  called func_bool()");
+        let value: StructBool = Default::default();
+        object.set_prop_bool(&value.clone());
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: StructInt = Default::default();
+        object.set_prop_int(&value.clone());
+        println!("  prop_int = {:?}", object.prop_int());
+        let value: StructFloat = Default::default();
+        object.set_prop_float(&value.clone());
+        println!("  prop_float = {:?}", object.prop_float());
+        let value: StructString = Default::default();
+        object.set_prop_string(&value.clone());
+        println!("  prop_string = {:?}", object.prop_string());
+        let _publisher = object.publisher();
+        println!("  4 signal(s) available via publisher()");
+    }
+    {
+        use testbed1::api::struct_array_interface::StructArrayInterfaceTrait;
+        use testbed1::api::struct_array_interface::StructArrayInterfaceTraitAsync;
+        use testbed1::implementation::struct_array_interface::StructArrayInterface;
+        #[allow(unused_imports)]
+        use testbed1::api::data_structs::*;
+        println!("\n== testbed1.StructArrayInterface ==");
+        let object = StructArrayInterface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_bool_async(Default::default()).await;
+        println!("  called func_bool()");
+        let value: Vec<StructBool> = vec![Default::default()];
+        object.set_prop_bool(value.as_slice());
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: Vec<StructInt> = vec![Default::default()];
+        object.set_prop_int(value.as_slice());
+        println!("  prop_int = {:?}", object.prop_int());
+        let value: Vec<StructFloat> = vec![Default::default()];
+        object.set_prop_float(value.as_slice());
+        println!("  prop_float = {:?}", object.prop_float());
+        let value: Vec<StructString> = vec![Default::default()];
+        object.set_prop_string(value.as_slice());
+        println!("  prop_string = {:?}", object.prop_string());
+        let value: Vec<Enum0Enum> = vec![Default::default()];
+        object.set_prop_enum(value.as_slice());
+        println!("  prop_enum = {:?}", object.prop_enum());
+        let _publisher = object.publisher();
+        println!("  5 signal(s) available via publisher()");
+    }
+    {
+        use testbed1::api::struct_array2_interface::StructArray2InterfaceTrait;
+        use testbed1::api::struct_array2_interface::StructArray2InterfaceTraitAsync;
+        use testbed1::implementation::struct_array2_interface::StructArray2Interface;
+        #[allow(unused_imports)]
+        use testbed1::api::data_structs::*;
+        println!("\n== testbed1.StructArray2Interface ==");
+        let object = StructArray2Interface::default();
+        // call the first operation through the async wrapper
+        let _ = object.func_bool_async(&Default::default()).await;
+        println!("  called func_bool()");
+        let value: StructBoolWithArray = Default::default();
+        object.set_prop_bool(&value.clone());
+        println!("  prop_bool = {:?}", object.prop_bool());
+        let value: StructIntWithArray = Default::default();
+        object.set_prop_int(&value.clone());
+        println!("  prop_int = {:?}", object.prop_int());
+        let value: StructFloatWithArray = Default::default();
+        object.set_prop_float(&value.clone());
+        println!("  prop_float = {:?}", object.prop_float());
+        let value: StructStringWithArray = Default::default();
+        object.set_prop_string(&value.clone());
+        println!("  prop_string = {:?}", object.prop_string());
+        let value: StructEnumWithArray = Default::default();
+        object.set_prop_enum(&value.clone());
+        println!("  prop_enum = {:?}", object.prop_enum());
+        let _publisher = object.publisher();
+        println!("  4 signal(s) available via publisher()");
+    }
+    {
+        use tb_names::api::nam_es::NamEsTrait;
+        use tb_names::api::nam_es::NamEsTraitAsync;
+        use tb_names::implementation::nam_es::NamEs;
+        #[allow(unused_imports)]
+        use tb_names::api::data_structs::*;
+        println!("\n== tb.names.NamEs ==");
+        let object = NamEs::default();
+        // call the first operation through the async wrapper
+        let _ = object.some_function_async(Default::default()).await;
+        println!("  called some_function()");
+        let value: bool = true;
+        object.set_switch(value);
+        println!("  switch = {:?}", object.switch());
+        let value: i32 = 42i32;
+        object.set_some_property(value);
+        println!("  some_property = {:?}", object.some_property());
+        let value: i32 = 42i32;
+        object.set_some_poperty2(value);
+        println!("  some_poperty2 = {:?}", object.some_poperty2());
+        let value: Enum_With_Under_scoresEnum = Default::default();
+        object.set_enum_property(value);
+        println!("  enum_property = {:?}", object.enum_property());
+        let _publisher = object.publisher();
+        println!("  2 signal(s) available via publisher()");
+    }
 
-    // Create default implementations
-    let _testbed2_many_param_interface = testbed2_ManyParamInterface::default();
-    let _testbed2_nested_struct1_interface = testbed2_NestedStruct1Interface::default();
-    let _testbed2_nested_struct2_interface = testbed2_NestedStruct2Interface::default();
-    let _testbed2_nested_struct3_interface = testbed2_NestedStruct3Interface::default();
-    let _tb_enum_enum_interface = tb_enum_EnumInterface::default();
-    let _tb_same1_same_struct1_interface = tb_same1_SameStruct1Interface::default();
-    let _tb_same1_same_struct2_interface = tb_same1_SameStruct2Interface::default();
-    let _tb_same1_same_enum1_interface = tb_same1_SameEnum1Interface::default();
-    let _tb_same1_same_enum2_interface = tb_same1_SameEnum2Interface::default();
-    let _tb_same2_same_struct1_interface = tb_same2_SameStruct1Interface::default();
-    let _tb_same2_same_struct2_interface = tb_same2_SameStruct2Interface::default();
-    let _tb_same2_same_enum1_interface = tb_same2_SameEnum1Interface::default();
-    let _tb_same2_same_enum2_interface = tb_same2_SameEnum2Interface::default();
-    let _tb_simple_void_interface = tb_simple_VoidInterface::default();
-    let _tb_simple_simple_interface = tb_simple_SimpleInterface::default();
-    let _tb_simple_simple_array_interface = tb_simple_SimpleArrayInterface::default();
-    let _tb_simple_no_properties_interface = tb_simple_NoPropertiesInterface::default();
-    let _tb_simple_no_operations_interface = tb_simple_NoOperationsInterface::default();
-    let _tb_simple_no_signals_interface = tb_simple_NoSignalsInterface::default();
-    let _tb_simple_empty_interface = tb_simple_EmptyInterface::default();
-    let _testbed1_struct_interface = testbed1_StructInterface::default();
-    let _testbed1_struct_array_interface = testbed1_StructArrayInterface::default();
-    let _testbed1_struct_array2_interface = testbed1_StructArray2Interface::default();
-    let _tb_names_nam_es = tb_names_NamEs::default();
-
-    // Create shared (Arc<dyn Trait>) implementations
-    let _shared_testbed2_many_param_interface = new_shared_testbed2_many_param_interface();
-    let _shared_testbed2_nested_struct1_interface = new_shared_testbed2_nested_struct1_interface();
-    let _shared_testbed2_nested_struct2_interface = new_shared_testbed2_nested_struct2_interface();
-    let _shared_testbed2_nested_struct3_interface = new_shared_testbed2_nested_struct3_interface();
-    let _shared_tb_enum_enum_interface = new_shared_tb_enum_enum_interface();
-    let _shared_tb_same1_same_struct1_interface = new_shared_tb_same1_same_struct1_interface();
-    let _shared_tb_same1_same_struct2_interface = new_shared_tb_same1_same_struct2_interface();
-    let _shared_tb_same1_same_enum1_interface = new_shared_tb_same1_same_enum1_interface();
-    let _shared_tb_same1_same_enum2_interface = new_shared_tb_same1_same_enum2_interface();
-    let _shared_tb_same2_same_struct1_interface = new_shared_tb_same2_same_struct1_interface();
-    let _shared_tb_same2_same_struct2_interface = new_shared_tb_same2_same_struct2_interface();
-    let _shared_tb_same2_same_enum1_interface = new_shared_tb_same2_same_enum1_interface();
-    let _shared_tb_same2_same_enum2_interface = new_shared_tb_same2_same_enum2_interface();
-    let _shared_tb_simple_void_interface = new_shared_tb_simple_void_interface();
-    let _shared_tb_simple_simple_interface = new_shared_tb_simple_simple_interface();
-    let _shared_tb_simple_simple_array_interface = new_shared_tb_simple_simple_array_interface();
-    let _shared_tb_simple_no_properties_interface = new_shared_tb_simple_no_properties_interface();
-    let _shared_tb_simple_no_operations_interface = new_shared_tb_simple_no_operations_interface();
-    let _shared_tb_simple_no_signals_interface = new_shared_tb_simple_no_signals_interface();
-    let _shared_tb_simple_empty_interface = new_shared_tb_simple_empty_interface();
-    let _shared_testbed1_struct_interface = new_shared_testbed1_struct_interface();
-    let _shared_testbed1_struct_array_interface = new_shared_testbed1_struct_array_interface();
-    let _shared_testbed1_struct_array2_interface = new_shared_testbed1_struct_array2_interface();
-    let _shared_tb_names_nam_es = new_shared_tb_names_nam_es();
-
-    println!("All interfaces instantiated successfully.");
+    println!("\nAll interfaces exercised locally.");
 }
