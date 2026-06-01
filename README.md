@@ -16,15 +16,19 @@ Features are individually enabled in the solution file for code generation. Each
 becomes a separate workspace member crate. The `api`/`core` crates are self-contained — only
 the IPC and monitor features pull in transport dependencies.
 
+Full documentation is at **[apigear.io/template-rust](https://apigear.io/template-rust/docs/intro)**
+(start with the [feature overview](https://apigear.io/template-rust/docs/features/features)); each
+feature below links to its page.
+
 | Feature | Description | Dependencies |
 |---------|-------------|--------------|
-| **api** | Interface traits — awaitable `fn op() -> ApiFuture<…>` plus an ergonomic `async fn op_async()` companion; a `Publisher` (tokio `watch`/`broadcast`) for properties and signals; `ApiError`/`ApiFuture` | - |
-| **core** | Per-interface data structs and shared serde types | api |
-| **stubs** | Workspace, default trait implementations, examples, per-interface unit tests | api, core |
-| **monitor** | [`tracing`](https://docs.rs/tracing) decorator wrapping any implementation | api, core |
-| **olink** | [ObjectLink](https://objectlinkprotocol.net/) IPC adapters + in-process loopback tests | api, core |
-| **mqtt** | [MQTT](https://mqtt.org/) IPC adapters via [`rumqttc`](https://docs.rs/rumqttc) + broker integration tests | api, core |
-| **nats** | [NATS](https://nats.io/) IPC adapters via [`async-nats`](https://docs.rs/async-nats) + server integration tests | api, core |
+| **[api](https://apigear.io/template-rust/docs/features/api)** | Interface traits — awaitable `fn op() -> ApiFuture<…>` plus an ergonomic `async fn op_async()` companion; a `Publisher` (tokio `watch`/`broadcast`) for properties and signals; `ApiError`/`ApiFuture` | - |
+| **[core](https://apigear.io/template-rust/docs/features/api#data-types-core)** | Per-interface data structs and shared serde types | api |
+| **[stubs](https://apigear.io/template-rust/docs/features/stubs)** | Workspace, default trait implementations, examples, per-interface unit tests | api, core |
+| **[monitor](https://apigear.io/template-rust/docs/features/monitor)** | [`tracing`](https://docs.rs/tracing) decorator wrapping any implementation | api, core |
+| **[olink](https://apigear.io/template-rust/docs/features/olink)** | [ObjectLink](https://objectlinkprotocol.net/) IPC adapters + in-process loopback tests | api, core |
+| **[mqtt](https://apigear.io/template-rust/docs/features/mqtt)** | [MQTT](https://mqtt.org/) IPC adapters via [`rumqttc`](https://docs.rs/rumqttc) + broker integration tests | api, core |
+| **[nats](https://apigear.io/template-rust/docs/features/nats)** | [NATS](https://nats.io/) IPC adapters via [`async-nats`](https://docs.rs/async-nats) + server integration tests | api, core |
 
 ## Building
 
