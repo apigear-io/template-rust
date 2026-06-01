@@ -24,12 +24,9 @@ jobs:
       # Pin the toolchain for a deterministic gate (matches ci_build_test.yml).
       - name: Install pinned Rust toolchain
         uses: dtolnay/rust-toolchain@1.94.1
-      # Real MQTT broker on 127.0.0.1:1883 (anonymous), as used by the python/qtcpp templates.
+      # Real MQTT broker on 127.0.0.1:1883 (localhost, anonymous), as used by the cpp17 template.
       - name: Start Mosquitto
-        uses: namoshek/mosquitto-github-action@v1
-        with:
-          version: '2.0'
-          ports: '1883:1883'
+        run: sudo apt-get install -y mosquitto && sudo systemctl start mosquitto
       # Real nats-server on 127.0.0.1:4222, as used by the cpp17 template.
       - name: Start NATS server
         uses: onichandame/nats-action@master
