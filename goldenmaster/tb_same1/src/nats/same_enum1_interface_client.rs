@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::same_enum1_interface::SameEnum1InterfacePublisher;
 use crate::api::same_enum1_interface::SameEnum1InterfaceTrait;
 use crate::core_types::same_enum1_interface_data::SameEnum1InterfaceData;

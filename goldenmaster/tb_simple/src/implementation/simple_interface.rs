@@ -1,5 +1,5 @@
 use crate::api::simple_interface::SimpleInterfaceTrait;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::simple_interface::SimpleInterfacePublisher;
 use parking_lot::RwLock;
 

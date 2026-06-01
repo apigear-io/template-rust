@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use testbed1::api::data_structs::*;
 use testbed1::api::struct_array2_interface::StructArray2InterfaceTrait;
+use testbed1::api::struct_array2_interface::StructArray2InterfaceTraitAsync;
 use testbed1::implementation::struct_array2_interface::StructArray2Interface;
 
 /// tests for StructArray2Interface
@@ -36,6 +37,8 @@ mod tests {
         let test_object = StructArray2Interface::default();
         let result = test_object.func_bool(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_bool_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -43,6 +46,8 @@ mod tests {
         let test_object = StructArray2Interface::default();
         let result = test_object.func_int(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_int_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -50,6 +55,8 @@ mod tests {
         let test_object = StructArray2Interface::default();
         let result = test_object.func_float(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_float_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -57,6 +64,8 @@ mod tests {
         let test_object = StructArray2Interface::default();
         let result = test_object.func_string(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_string_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -64,6 +73,8 @@ mod tests {
         let test_object = StructArray2Interface::default();
         let result = test_object.func_enum(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_enum_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

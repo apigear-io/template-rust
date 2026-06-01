@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct EnumInterfacePublisher {
@@ -75,3 +75,38 @@ pub trait EnumInterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &EnumInterfacePublisher;
 }
+
+/// Async convenience wrappers for [`EnumInterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn EnumInterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait EnumInterfaceTraitAsync: EnumInterfaceTrait {
+    fn func0_async(
+        &self,
+        param0: Enum0Enum,
+    ) -> impl std::future::Future<Output = Result<Enum0Enum, ApiError>> + Send {
+        async move { self.func0(param0).await }
+    }
+
+    fn func1_async(
+        &self,
+        param1: Enum1Enum,
+    ) -> impl std::future::Future<Output = Result<Enum1Enum, ApiError>> + Send {
+        async move { self.func1(param1).await }
+    }
+
+    fn func2_async(
+        &self,
+        param2: Enum2Enum,
+    ) -> impl std::future::Future<Output = Result<Enum2Enum, ApiError>> + Send {
+        async move { self.func2(param2).await }
+    }
+
+    fn func3_async(
+        &self,
+        param3: Enum3Enum,
+    ) -> impl std::future::Future<Output = Result<Enum3Enum, ApiError>> + Send {
+        async move { self.func3(param3).await }
+    }
+}
+
+impl<T: EnumInterfaceTrait + ?Sized> EnumInterfaceTraitAsync for T {}

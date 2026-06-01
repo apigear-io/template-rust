@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use tb_same1::api::data_structs::*;
 use tb_same1::api::same_enum1_interface::SameEnum1InterfaceTrait;
+use tb_same1::api::same_enum1_interface::SameEnum1InterfaceTraitAsync;
 use tb_same1::implementation::same_enum1_interface::SameEnum1Interface;
 
 /// tests for SameEnum1Interface
@@ -53,6 +54,8 @@ mod tests {
         let test_object = SameEnum1Interface::default();
         let result = test_object.func1(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

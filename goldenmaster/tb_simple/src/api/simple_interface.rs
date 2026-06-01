@@ -1,4 +1,4 @@
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct SimpleInterfacePublisher {
@@ -140,3 +140,77 @@ pub trait SimpleInterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &SimpleInterfacePublisher;
 }
+
+/// Async convenience wrappers for [`SimpleInterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn SimpleInterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait SimpleInterfaceTraitAsync: SimpleInterfaceTrait {
+    fn func_no_return_value_async(
+        &self,
+        param_bool: bool,
+    ) -> impl std::future::Future<Output = Result<(), ApiError>> + Send {
+        async move { self.func_no_return_value(param_bool).await }
+    }
+
+    fn func_no_params_async(&self) -> impl std::future::Future<Output = Result<bool, ApiError>> + Send {
+        async move { self.func_no_params().await }
+    }
+
+    fn func_bool_async(
+        &self,
+        param_bool: bool,
+    ) -> impl std::future::Future<Output = Result<bool, ApiError>> + Send {
+        async move { self.func_bool(param_bool).await }
+    }
+
+    fn func_int_async(
+        &self,
+        param_int: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func_int(param_int).await }
+    }
+
+    fn func_int32_async(
+        &self,
+        param_int32: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func_int32(param_int32).await }
+    }
+
+    fn func_int64_async(
+        &self,
+        param_int64: i64,
+    ) -> impl std::future::Future<Output = Result<i64, ApiError>> + Send {
+        async move { self.func_int64(param_int64).await }
+    }
+
+    fn func_float_async(
+        &self,
+        param_float: f32,
+    ) -> impl std::future::Future<Output = Result<f32, ApiError>> + Send {
+        async move { self.func_float(param_float).await }
+    }
+
+    fn func_float32_async(
+        &self,
+        param_float32: f32,
+    ) -> impl std::future::Future<Output = Result<f32, ApiError>> + Send {
+        async move { self.func_float32(param_float32).await }
+    }
+
+    fn func_float64_async(
+        &self,
+        param_float: f64,
+    ) -> impl std::future::Future<Output = Result<f64, ApiError>> + Send {
+        async move { self.func_float64(param_float).await }
+    }
+
+    fn func_string_async(
+        &self,
+        param_string: &str,
+    ) -> impl std::future::Future<Output = Result<String, ApiError>> + Send {
+        async move { self.func_string(param_string).await }
+    }
+}
+
+impl<T: SimpleInterfaceTrait + ?Sized> SimpleInterfaceTraitAsync for T {}

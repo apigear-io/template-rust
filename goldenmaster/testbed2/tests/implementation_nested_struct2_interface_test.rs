@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
 use testbed2::api::nested_struct2_interface::NestedStruct2InterfaceTrait;
+use testbed2::api::nested_struct2_interface::NestedStruct2InterfaceTraitAsync;
 use testbed2::implementation::nested_struct2_interface::NestedStruct2Interface;
 
 /// tests for NestedStruct2Interface
@@ -91,6 +92,8 @@ mod tests {
         let test_object = NestedStruct2Interface::default();
         let result = test_object.func1(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -98,6 +101,8 @@ mod tests {
         let test_object = NestedStruct2Interface::default();
         let result = test_object.func2(&Default::default(), &Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func2_async(&Default::default(), &Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

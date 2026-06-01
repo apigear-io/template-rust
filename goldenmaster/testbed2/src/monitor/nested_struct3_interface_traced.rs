@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::nested_struct3_interface::NestedStruct3InterfacePublisher;
 use crate::api::nested_struct3_interface::NestedStruct3InterfaceTrait;
 use tracing;

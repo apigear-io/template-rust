@@ -1,5 +1,5 @@
 use crate::api::no_properties_interface::NoPropertiesInterfaceTrait;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::no_properties_interface::NoPropertiesInterfacePublisher;
 
 #[derive(Default)]

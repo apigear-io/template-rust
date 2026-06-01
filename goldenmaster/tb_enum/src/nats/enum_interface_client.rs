@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::enum_interface::EnumInterfacePublisher;
 use crate::api::enum_interface::EnumInterfaceTrait;
 use crate::core_types::enum_interface_data::EnumInterfaceData;

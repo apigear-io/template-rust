@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use tb_same2::api::data_structs::*;
 use tb_same2::api::same_enum2_interface::SameEnum2InterfaceTrait;
+use tb_same2::api::same_enum2_interface::SameEnum2InterfaceTraitAsync;
 use tb_same2::implementation::same_enum2_interface::SameEnum2Interface;
 
 /// tests for SameEnum2Interface
@@ -53,6 +54,8 @@ mod tests {
         let test_object = SameEnum2Interface::default();
         let result = test_object.func1(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -60,6 +63,8 @@ mod tests {
         let test_object = SameEnum2Interface::default();
         let result = test_object.func2(Default::default(), Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func2_async(Default::default(), Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

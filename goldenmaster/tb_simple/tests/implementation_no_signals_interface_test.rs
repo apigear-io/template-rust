@@ -1,4 +1,5 @@
 use tb_simple::api::no_signals_interface::NoSignalsInterfaceTrait;
+use tb_simple::api::no_signals_interface::NoSignalsInterfaceTraitAsync;
 use tb_simple::implementation::no_signals_interface::NoSignalsInterface;
 
 /// tests for NoSignalsInterface
@@ -11,6 +12,8 @@ mod tests {
         let test_object = NoSignalsInterface::default();
         let result = test_object.func_void().await;
         assert!(result.is_ok());
+        let result_async = test_object.func_void_async().await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -18,6 +21,8 @@ mod tests {
         let test_object = NoSignalsInterface::default();
         let result = test_object.func_bool(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_bool_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

@@ -7,13 +7,13 @@ description = "Generated API SDK for tb.simple"
 license = "MIT"
 
 [dependencies]
-apigear = { workspace = true }
 async-nats = { workspace = true }
 futures = { workspace = true }
 parking_lot = { workspace = true }
 tokio = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+thiserror = { workspace = true }
 tracing = { workspace = true }
 objectlink-core = { workspace = true }
 rumqttc = { workspace = true }

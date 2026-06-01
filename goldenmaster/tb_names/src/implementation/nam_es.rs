@@ -1,7 +1,7 @@
 use crate::api::nam_es::NamEsTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::nam_es::NamEsPublisher;
 use parking_lot::RwLock;
 

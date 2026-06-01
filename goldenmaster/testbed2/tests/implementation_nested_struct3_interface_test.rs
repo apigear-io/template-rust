@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
 use testbed2::api::nested_struct3_interface::NestedStruct3InterfaceTrait;
+use testbed2::api::nested_struct3_interface::NestedStruct3InterfaceTraitAsync;
 use testbed2::implementation::nested_struct3_interface::NestedStruct3Interface;
 
 /// tests for NestedStruct3Interface
@@ -91,6 +92,8 @@ mod tests {
         let test_object = NestedStruct3Interface::default();
         let result = test_object.func1(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -98,6 +101,8 @@ mod tests {
         let test_object = NestedStruct3Interface::default();
         let result = test_object.func2(&Default::default(), &Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func2_async(&Default::default(), &Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -105,6 +110,8 @@ mod tests {
         let test_object = NestedStruct3Interface::default();
         let result = test_object.func3(&Default::default(), &Default::default(), &Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func3_async(&Default::default(), &Default::default(), &Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

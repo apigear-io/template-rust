@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use testbed2::api::data_structs::*;
 use testbed2::api::many_param_interface::ManyParamInterfaceTrait;
+use testbed2::api::many_param_interface::ManyParamInterfaceTraitAsync;
 use testbed2::implementation::many_param_interface::ManyParamInterface;
 
 /// tests for ManyParamInterface
@@ -91,6 +92,8 @@ mod tests {
         let test_object = ManyParamInterface::default();
         let result = test_object.func1(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -98,6 +101,8 @@ mod tests {
         let test_object = ManyParamInterface::default();
         let result = test_object.func2(Default::default(), Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func2_async(Default::default(), Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -105,6 +110,8 @@ mod tests {
         let test_object = ManyParamInterface::default();
         let result = test_object.func3(Default::default(), Default::default(), Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func3_async(Default::default(), Default::default(), Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -112,6 +119,8 @@ mod tests {
         let test_object = ManyParamInterface::default();
         let result = test_object.func4(Default::default(), Default::default(), Default::default(), Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func4_async(Default::default(), Default::default(), Default::default(), Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

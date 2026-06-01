@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct NestedStruct2InterfacePublisher {
@@ -46,3 +46,25 @@ pub trait NestedStruct2InterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &NestedStruct2InterfacePublisher;
 }
+
+/// Async convenience wrappers for [`NestedStruct2InterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn NestedStruct2InterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait NestedStruct2InterfaceTraitAsync: NestedStruct2InterfaceTrait {
+    fn func1_async(
+        &self,
+        param1: &NestedStruct1,
+    ) -> impl std::future::Future<Output = Result<NestedStruct1, ApiError>> + Send {
+        async move { self.func1(param1).await }
+    }
+
+    fn func2_async(
+        &self,
+        param1: &NestedStruct1,
+        param2: &NestedStruct2,
+    ) -> impl std::future::Future<Output = Result<NestedStruct1, ApiError>> + Send {
+        async move { self.func2(param1, param2).await }
+    }
+}
+
+impl<T: NestedStruct2InterfaceTrait + ?Sized> NestedStruct2InterfaceTraitAsync for T {}

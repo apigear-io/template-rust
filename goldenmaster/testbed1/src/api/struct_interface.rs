@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct StructInterfacePublisher {
@@ -75,3 +75,38 @@ pub trait StructInterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &StructInterfacePublisher;
 }
+
+/// Async convenience wrappers for [`StructInterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn StructInterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait StructInterfaceTraitAsync: StructInterfaceTrait {
+    fn func_bool_async(
+        &self,
+        param_bool: &StructBool,
+    ) -> impl std::future::Future<Output = Result<StructBool, ApiError>> + Send {
+        async move { self.func_bool(param_bool).await }
+    }
+
+    fn func_int_async(
+        &self,
+        param_int: &StructInt,
+    ) -> impl std::future::Future<Output = Result<StructInt, ApiError>> + Send {
+        async move { self.func_int(param_int).await }
+    }
+
+    fn func_float_async(
+        &self,
+        param_float: &StructFloat,
+    ) -> impl std::future::Future<Output = Result<StructFloat, ApiError>> + Send {
+        async move { self.func_float(param_float).await }
+    }
+
+    fn func_string_async(
+        &self,
+        param_string: &StructString,
+    ) -> impl std::future::Future<Output = Result<StructString, ApiError>> + Send {
+        async move { self.func_string(param_string).await }
+    }
+}
+
+impl<T: StructInterfaceTrait + ?Sized> StructInterfaceTraitAsync for T {}

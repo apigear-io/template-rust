@@ -1,4 +1,4 @@
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::void_interface::VoidInterfacePublisher;
 use crate::api::void_interface::VoidInterfaceTrait;
 use tracing;

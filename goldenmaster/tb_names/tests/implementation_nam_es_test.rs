@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use tb_names::api::data_structs::*;
 use tb_names::api::nam_es::NamEsTrait;
+use tb_names::api::nam_es::NamEsTraitAsync;
 use tb_names::implementation::nam_es::NamEs;
 
 /// tests for NamEs
@@ -36,6 +37,8 @@ mod tests {
         let test_object = NamEs::default();
         let result = test_object.some_function(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.some_function_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -43,6 +46,8 @@ mod tests {
         let test_object = NamEs::default();
         let result = test_object.some_function2(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.some_function2_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

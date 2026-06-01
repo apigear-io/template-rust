@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct SameStruct1InterfacePublisher {
@@ -30,3 +30,17 @@ pub trait SameStruct1InterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &SameStruct1InterfacePublisher;
 }
+
+/// Async convenience wrappers for [`SameStruct1InterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn SameStruct1InterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait SameStruct1InterfaceTraitAsync: SameStruct1InterfaceTrait {
+    fn func1_async(
+        &self,
+        param1: &Struct1,
+    ) -> impl std::future::Future<Output = Result<Struct1, ApiError>> + Send {
+        async move { self.func1(param1).await }
+    }
+}
+
+impl<T: SameStruct1InterfaceTrait + ?Sized> SameStruct1InterfaceTraitAsync for T {}

@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::same_struct2_interface::SameStruct2InterfacePublisher;
 use crate::api::same_struct2_interface::SameStruct2InterfaceTrait;
 use crate::core_types::same_struct2_interface_data::SameStruct2InterfaceData;
