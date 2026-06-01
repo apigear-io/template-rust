@@ -148,6 +148,18 @@ features:
           target: "examples/Cargo.toml"
         - source: "examples/src/main.rs.tpl"
           target: "examples/src/main.rs"
+        - source: "examples/src/bin/olink_server.rs.tpl"
+          target: "examples/src/bin/olink_server.rs"
+        - source: "examples/src/bin/olink_client.rs.tpl"
+          target: "examples/src/bin/olink_client.rs"
+        - source: "examples/src/bin/mqtt_server.rs.tpl"
+          target: "examples/src/bin/mqtt_server.rs"
+        - source: "examples/src/bin/mqtt_client.rs.tpl"
+          target: "examples/src/bin/mqtt_client.rs"
+        - source: "examples/src/bin/nats_server.rs.tpl"
+          target: "examples/src/bin/nats_server.rs"
+        - source: "examples/src/bin/nats_client.rs.tpl"
+          target: "examples/src/bin/nats_client.rs"
     - match: module
       prefix: "{{snake .Module.Name}}/"
       documents:
