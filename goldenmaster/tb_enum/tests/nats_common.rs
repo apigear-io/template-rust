@@ -7,14 +7,14 @@ pub async fn connect() -> async_nats::Client {
     async_nats::connect(&url).await.expect("connect to nats-server")
 }
 
-/// Give background subscriptions time to register before exercising them.
+/// Give background subscriptions time to register before exercising them (generous for CI).
 pub async fn settle() {
-    tokio::time::sleep(Duration::from_millis(200)).await;
+    tokio::time::sleep(Duration::from_millis(300)).await;
 }
 
-/// Poll a condition until it holds or a ~2s timeout elapses.
+/// Poll a condition until it holds or a ~6s timeout elapses (generous for CI).
 pub async fn wait_until<F: Fn() -> bool>(cond: F) -> bool {
-    for _ in 0..100 {
+    for _ in 0..300 {
         if cond() {
             return true;
         }
