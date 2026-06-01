@@ -36,6 +36,21 @@ cargo fmt     --manifest-path goldenmaster/Cargo.toml --all -- --check
 cargo doc     --manifest-path goldenmaster/Cargo.toml --no-deps
 ```
 
+## Examples
+
+The generated `examples` crate ships runnable programs for local use and every IPC transport:
+
+| Command | What it shows |
+|---------|---------------|
+| `cargo run -p <name>_examples` | Local, in-process use of every interface's implementation (operations, properties, signals) |
+| `cargo run -p <name>_examples --bin olink_server` / `--bin olink_client` | ObjectLink service + client over a TCP socket |
+| `cargo run -p <name>_examples --bin mqtt_server` / `--bin mqtt_client` | MQTT service + client (needs a broker) |
+| `cargo run -p <name>_examples --bin nats_server` / `--bin nats_client` | NATS service + client (needs a server) |
+
+Run a server and its client in two terminals. The IPC examples default to `127.0.0.1:1883`
+(MQTT), `127.0.0.1:4222` (NATS) and `127.0.0.1:8182` (OLink), each overridable via the
+`MQTT_PORT`, `NATS_URL` and `OLINK_ADDR` environment variables.
+
 ## Testing
 
 | Tests | How they run |
