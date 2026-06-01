@@ -1,7 +1,7 @@
 build/
 
 # ignore folder for local apigear copy
-bin
+/bin/
 
 # goldenmaster test folder
 test
