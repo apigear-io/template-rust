@@ -12,7 +12,7 @@ use crate::api::data_structs::*;{{ nl }}
 {{- end }}
 
 {{- if $hasOps -}}
-use apigear::{ApiError, ApiFuture};{{ nl }}
+use crate::api::{ApiError, ApiFuture};{{ nl }}
 {{- end }}
 
 {{- if $hasPubSub -}}
@@ -104,3 +104,29 @@ pub trait {{Camel .Interface.Name}}Trait: Send + Sync {{ if $isEmpty }}{}{{ else
     fn publisher(&self) -> &{{Camel .Interface.Name}}Publisher;
 {{- end }}
 }{{ end }}
+{{- if $hasOps }}
+
+/// Async convenience wrappers for [`{{Camel .Interface.Name}}Trait`] operations.
+/// Provided for every implementor (including `dyn {{Camel .Interface.Name}}Trait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait {{Camel .Interface.Name}}TraitAsync: {{Camel .Interface.Name}}Trait {
+{{- range $i, $e := .Interface.Operations }}
+{{- if $i }}{{ nl }}{{ end }}
+{{- $operation := . }}
+{{- if len $operation.Params }}
+    fn {{snake $operation.Name }}_async(
+        &self,
+        {{rsParams "" "" ",\n        " $operation.Params}},
+    ) -> impl std::future::Future<Output = Result<{{ rsReturn "" $operation.Return}}, ApiError>> + Send {
+        async move { self.{{snake $operation.Name }}({{ range $j, $p := $operation.Params }}{{ if $j }}, {{ end }}{{ rsVar "" . }}{{ end }}).await }
+    }
+{{- else }}
+    fn {{snake $operation.Name }}_async(&self) -> impl std::future::Future<Output = Result<{{ rsReturn "" $operation.Return}}, ApiError>> + Send {
+        async move { self.{{snake $operation.Name }}().await }
+    }
+{{- end }}
+{{- end }}
+}
+
+impl<T: {{Camel .Interface.Name}}Trait + ?Sized> {{Camel .Interface.Name}}TraitAsync for T {}
+{{- end }}

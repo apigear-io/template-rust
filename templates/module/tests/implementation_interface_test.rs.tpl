@@ -11,6 +11,9 @@ use {{snake .Module.Name}}::api::data_structs::*;{{ nl }}
 {{- if or $hasOps $hasPubSub -}}
 use {{snake .Module.Name}}::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Trait;
 {{ end -}}
+{{- if $hasOps -}}
+use {{snake .Module.Name}}::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}TraitAsync;
+{{ end -}}
 use {{snake .Module.Name}}::implementation::{{snake .Interface.Name}}::{{Camel .Interface.Name}};
 
 /// tests for {{Camel .Interface.Name}}
@@ -69,6 +72,15 @@ Default::default()
 {{- end -}}
 ).await;
         assert!(result.is_ok());
+        let result_async = test_object.{{snake $operation.Name }}_async(
+{{- range $i, $e := $operation.Params }}
+{{-     if $i }}, {{ end -}}
+{{-     $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type) -}}
+{{      if and (eq false .IsArray) (ne "string" .Type) $isComplex }}&{{end -}}
+Default::default()
+{{- end -}}
+).await;
+        assert!(result_async.is_ok());
     }
 {{- end }}
 

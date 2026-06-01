@@ -9,7 +9,7 @@ use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Trait;
 use crate::api::data_structs::*;
 {{- end }}
 {{- if $hasOps }}
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 {{- end }}
 {{- if $hasPubSub }}
 use crate::api::{{snake .Interface.Name}}::{{Camel .Interface.Name}}Publisher;
