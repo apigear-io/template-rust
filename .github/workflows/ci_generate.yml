@@ -2,6 +2,9 @@
 
 name: Technology Template Goldenmaster Test
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [main]
