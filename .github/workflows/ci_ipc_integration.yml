@@ -1,0 +1,41 @@
+# Runs the generated MQTT and NATS round-trip tests against a real broker and
+# server. These tests are marked `#[ignore]` (they need a broker), so the normal
+# Build & Test workflow skips them and this job runs them with `--ignored`.
+
+name: IPC Integration Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'goldenmaster/**'
+      - 'deps/**'
+      - '.github/workflows/ci_ipc_integration.yml'
+    branches: [main]
+
+jobs:
+  ipc_integration:
+    name: MQTT + NATS round-trip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      # Pin the toolchain for a deterministic gate (matches ci_build_test.yml).
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@1.94.1
+      # Real MQTT broker on 127.0.0.1:1883 (anonymous), as used by the python/qtcpp templates.
+      - name: Start Mosquitto
+        uses: namoshek/mosquitto-github-action@v1
+        with:
+          version: '2.0'
+          ports: '1883:1883'
+      # Real nats-server on 127.0.0.1:4222, as used by the cpp17 template.
+      - name: Start NATS server
+        uses: onichandame/nats-action@master
+        with:
+          port: "4222"
+      # The generated tests default to 127.0.0.1:1883 (MQTT_PORT) and
+      # 127.0.0.1:4222 (NATS_URL); `--ignored` selects exactly the broker-backed tests.
+      - name: Run MQTT + NATS integration tests
+        run: cargo test --manifest-path goldenmaster/Cargo.toml -- --ignored
