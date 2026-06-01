@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct NamEsPublisher {
@@ -63,3 +63,24 @@ pub trait NamEsTrait: Send + Sync {
 
     fn publisher(&self) -> &NamEsPublisher;
 }
+
+/// Async convenience wrappers for [`NamEsTrait`] operations.
+/// Provided for every implementor (including `dyn NamEsTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait NamEsTraitAsync: NamEsTrait {
+    fn some_function_async(
+        &self,
+        some_param: bool,
+    ) -> impl std::future::Future<Output = Result<(), ApiError>> + Send {
+        async move { self.some_function(some_param).await }
+    }
+
+    fn some_function2_async(
+        &self,
+        some_param: bool,
+    ) -> impl std::future::Future<Output = Result<(), ApiError>> + Send {
+        async move { self.some_function2(some_param).await }
+    }
+}
+
+impl<T: NamEsTrait + ?Sized> NamEsTraitAsync for T {}

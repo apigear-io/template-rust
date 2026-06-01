@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::nam_es::NamEsPublisher;
 use crate::api::nam_es::NamEsTrait;
 use crate::core_types::nam_es_data::NamEsData;

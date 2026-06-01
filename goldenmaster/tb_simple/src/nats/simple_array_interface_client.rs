@@ -1,4 +1,4 @@
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::simple_array_interface::SimpleArrayInterfacePublisher;
 use crate::api::simple_array_interface::SimpleArrayInterfaceTrait;
 use crate::core_types::simple_array_interface_data::SimpleArrayInterfaceData;

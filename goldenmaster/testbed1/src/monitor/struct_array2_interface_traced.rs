@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::struct_array2_interface::StructArray2InterfacePublisher;
 use crate::api::struct_array2_interface::StructArray2InterfaceTrait;
 use tracing;

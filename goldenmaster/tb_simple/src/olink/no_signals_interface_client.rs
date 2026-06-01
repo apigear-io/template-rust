@@ -1,4 +1,4 @@
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::no_signals_interface::NoSignalsInterfacePublisher;
 use crate::api::no_signals_interface::NoSignalsInterfaceTrait;
 use crate::core_types::no_signals_interface_data::NoSignalsInterfaceData;

@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::nested_struct2_interface::NestedStruct2InterfacePublisher;
 use crate::api::nested_struct2_interface::NestedStruct2InterfaceTrait;
 use crate::core_types::nested_struct2_interface_data::NestedStruct2InterfaceData;

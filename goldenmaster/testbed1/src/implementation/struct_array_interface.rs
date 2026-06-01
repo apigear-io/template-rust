@@ -1,7 +1,7 @@
 use crate::api::struct_array_interface::StructArrayInterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::struct_array_interface::StructArrayInterfacePublisher;
 use parking_lot::RwLock;
 

@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use testbed1::api::data_structs::*;
 use testbed1::api::struct_interface::StructInterfaceTrait;
+use testbed1::api::struct_interface::StructInterfaceTraitAsync;
 use testbed1::implementation::struct_interface::StructInterface;
 
 /// tests for StructInterface
@@ -36,6 +37,8 @@ mod tests {
         let test_object = StructInterface::default();
         let result = test_object.func_bool(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_bool_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -43,6 +46,8 @@ mod tests {
         let test_object = StructInterface::default();
         let result = test_object.func_int(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_int_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -50,6 +55,8 @@ mod tests {
         let test_object = StructInterface::default();
         let result = test_object.func_float(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_float_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -57,6 +64,8 @@ mod tests {
         let test_object = StructInterface::default();
         let result = test_object.func_string(&Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_string_async(&Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

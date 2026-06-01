@@ -1,4 +1,5 @@
 use tb_simple::api::void_interface::VoidInterfaceTrait;
+use tb_simple::api::void_interface::VoidInterfaceTraitAsync;
 use tb_simple::implementation::void_interface::VoidInterface;
 
 /// tests for VoidInterface
@@ -11,6 +12,8 @@ mod tests {
         let test_object = VoidInterface::default();
         let result = test_object.func_void().await;
         assert!(result.is_ok());
+        let result_async = test_object.func_void_async().await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct SameEnum2InterfacePublisher {
@@ -46,3 +46,25 @@ pub trait SameEnum2InterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &SameEnum2InterfacePublisher;
 }
+
+/// Async convenience wrappers for [`SameEnum2InterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn SameEnum2InterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait SameEnum2InterfaceTraitAsync: SameEnum2InterfaceTrait {
+    fn func1_async(
+        &self,
+        param1: Enum1Enum,
+    ) -> impl std::future::Future<Output = Result<Enum1Enum, ApiError>> + Send {
+        async move { self.func1(param1).await }
+    }
+
+    fn func2_async(
+        &self,
+        param1: Enum1Enum,
+        param2: Enum2Enum,
+    ) -> impl std::future::Future<Output = Result<Enum1Enum, ApiError>> + Send {
+        async move { self.func2(param1, param2).await }
+    }
+}
+
+impl<T: SameEnum2InterfaceTrait + ?Sized> SameEnum2InterfaceTraitAsync for T {}

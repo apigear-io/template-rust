@@ -1,6 +1,7 @@
 #[allow(unused_imports)]
 use tb_enum::api::data_structs::*;
 use tb_enum::api::enum_interface::EnumInterfaceTrait;
+use tb_enum::api::enum_interface::EnumInterfaceTraitAsync;
 use tb_enum::implementation::enum_interface::EnumInterface;
 
 /// tests for EnumInterface
@@ -105,6 +106,8 @@ mod tests {
         let test_object = EnumInterface::default();
         let result = test_object.func0(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func0_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -112,6 +115,8 @@ mod tests {
         let test_object = EnumInterface::default();
         let result = test_object.func1(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func1_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -119,6 +124,8 @@ mod tests {
         let test_object = EnumInterface::default();
         let result = test_object.func2(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func2_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -126,6 +133,8 @@ mod tests {
         let test_object = EnumInterface::default();
         let result = test_object.func3(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func3_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

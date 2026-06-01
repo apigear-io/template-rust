@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct StructArray2InterfacePublisher {
@@ -89,3 +89,45 @@ pub trait StructArray2InterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &StructArray2InterfacePublisher;
 }
+
+/// Async convenience wrappers for [`StructArray2InterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn StructArray2InterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait StructArray2InterfaceTraitAsync: StructArray2InterfaceTrait {
+    fn func_bool_async(
+        &self,
+        param_bool: &StructBoolWithArray,
+    ) -> impl std::future::Future<Output = Result<Vec<StructBool>, ApiError>> + Send {
+        async move { self.func_bool(param_bool).await }
+    }
+
+    fn func_int_async(
+        &self,
+        param_int: &StructIntWithArray,
+    ) -> impl std::future::Future<Output = Result<Vec<StructInt>, ApiError>> + Send {
+        async move { self.func_int(param_int).await }
+    }
+
+    fn func_float_async(
+        &self,
+        param_float: &StructFloatWithArray,
+    ) -> impl std::future::Future<Output = Result<Vec<StructFloat>, ApiError>> + Send {
+        async move { self.func_float(param_float).await }
+    }
+
+    fn func_string_async(
+        &self,
+        param_string: &StructStringWithArray,
+    ) -> impl std::future::Future<Output = Result<Vec<StructString>, ApiError>> + Send {
+        async move { self.func_string(param_string).await }
+    }
+
+    fn func_enum_async(
+        &self,
+        param_enum: &StructEnumWithArray,
+    ) -> impl std::future::Future<Output = Result<Vec<Enum0Enum>, ApiError>> + Send {
+        async move { self.func_enum(param_enum).await }
+    }
+}
+
+impl<T: StructArray2InterfaceTrait + ?Sized> StructArray2InterfaceTraitAsync for T {}

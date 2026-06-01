@@ -1,4 +1,4 @@
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch};
 
 pub struct NoSignalsInterfacePublisher {
@@ -38,3 +38,21 @@ pub trait NoSignalsInterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &NoSignalsInterfacePublisher;
 }
+
+/// Async convenience wrappers for [`NoSignalsInterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn NoSignalsInterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait NoSignalsInterfaceTraitAsync: NoSignalsInterfaceTrait {
+    fn func_void_async(&self) -> impl std::future::Future<Output = Result<(), ApiError>> + Send {
+        async move { self.func_void().await }
+    }
+
+    fn func_bool_async(
+        &self,
+        param_bool: bool,
+    ) -> impl std::future::Future<Output = Result<bool, ApiError>> + Send {
+        async move { self.func_bool(param_bool).await }
+    }
+}
+
+impl<T: NoSignalsInterfaceTrait + ?Sized> NoSignalsInterfaceTraitAsync for T {}

@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use tokio::sync::{watch, broadcast};
 
 pub struct ManyParamInterfacePublisher {
@@ -81,3 +81,44 @@ pub trait ManyParamInterfaceTrait: Send + Sync {
 
     fn publisher(&self) -> &ManyParamInterfacePublisher;
 }
+
+/// Async convenience wrappers for [`ManyParamInterfaceTrait`] operations.
+/// Provided for every implementor (including `dyn ManyParamInterfaceTrait`) through a
+/// blanket impl: call `obj.<op>_async(..).await` to get a `Result<_, ApiError>` directly.
+pub trait ManyParamInterfaceTraitAsync: ManyParamInterfaceTrait {
+    fn func1_async(
+        &self,
+        param1: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func1(param1).await }
+    }
+
+    fn func2_async(
+        &self,
+        param1: i32,
+        param2: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func2(param1, param2).await }
+    }
+
+    fn func3_async(
+        &self,
+        param1: i32,
+        param2: i32,
+        param3: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func3(param1, param2, param3).await }
+    }
+
+    fn func4_async(
+        &self,
+        param1: i32,
+        param2: i32,
+        param3: i32,
+        param4: i32,
+    ) -> impl std::future::Future<Output = Result<i32, ApiError>> + Send {
+        async move { self.func4(param1, param2, param3, param4).await }
+    }
+}
+
+impl<T: ManyParamInterfaceTrait + ?Sized> ManyParamInterfaceTraitAsync for T {}

@@ -1,3 +1,5 @@
+pub mod api_common;
+pub use api_common::{ApiError, ApiFuture};
 pub mod void_interface;
 pub mod simple_interface;
 pub mod simple_array_interface;

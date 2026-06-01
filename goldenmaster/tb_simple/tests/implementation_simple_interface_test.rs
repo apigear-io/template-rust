@@ -1,4 +1,5 @@
 use tb_simple::api::simple_interface::SimpleInterfaceTrait;
+use tb_simple::api::simple_interface::SimpleInterfaceTraitAsync;
 use tb_simple::implementation::simple_interface::SimpleInterface;
 
 /// tests for SimpleInterface
@@ -11,6 +12,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_no_return_value(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_no_return_value_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -18,6 +21,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_no_params().await;
         assert!(result.is_ok());
+        let result_async = test_object.func_no_params_async().await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -25,6 +30,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_bool(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_bool_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -32,6 +39,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_int(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_int_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -39,6 +48,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_int32(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_int32_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -46,6 +57,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_int64(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_int64_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -53,6 +66,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_float(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_float_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -60,6 +75,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_float32(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_float32_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -67,6 +84,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_float64(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_float64_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[tokio::test]
@@ -74,6 +93,8 @@ mod tests {
         let test_object = SimpleInterface::default();
         let result = test_object.func_string(Default::default()).await;
         assert!(result.is_ok());
+        let result_async = test_object.func_string_async(Default::default()).await;
+        assert!(result_async.is_ok());
     }
 
     #[test]

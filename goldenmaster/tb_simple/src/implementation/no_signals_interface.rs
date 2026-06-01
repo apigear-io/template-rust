@@ -1,5 +1,5 @@
 use crate::api::no_signals_interface::NoSignalsInterfaceTrait;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::no_signals_interface::NoSignalsInterfacePublisher;
 use parking_lot::RwLock;
 

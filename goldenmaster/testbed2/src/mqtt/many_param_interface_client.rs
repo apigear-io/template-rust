@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::many_param_interface::ManyParamInterfacePublisher;
 use crate::api::many_param_interface::ManyParamInterfaceTrait;
 use crate::core_types::many_param_interface_data::ManyParamInterfaceData;

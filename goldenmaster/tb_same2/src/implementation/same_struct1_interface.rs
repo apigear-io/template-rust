@@ -1,7 +1,7 @@
 use crate::api::same_struct1_interface::SameStruct1InterfaceTrait;
 #[allow(unused_imports)]
 use crate::api::data_structs::*;
-use apigear::{ApiError, ApiFuture};
+use crate::api::{ApiError, ApiFuture};
 use crate::api::same_struct1_interface::SameStruct1InterfacePublisher;
 use parking_lot::RwLock;
 
