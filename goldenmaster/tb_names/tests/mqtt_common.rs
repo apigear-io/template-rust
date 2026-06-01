@@ -36,14 +36,14 @@ where
     })
 }
 
-/// Give the broker connection + subscriptions time to establish.
+/// Give the broker connection + subscriptions time to establish (generous for CI).
 pub async fn settle() {
-    tokio::time::sleep(Duration::from_millis(400)).await;
+    tokio::time::sleep(Duration::from_millis(1000)).await;
 }
 
-/// Poll a condition until it holds or a ~2s timeout elapses.
+/// Poll a condition until it holds or a ~6s timeout elapses (generous for CI).
 pub async fn wait_until<F: Fn() -> bool>(cond: F) -> bool {
-    for _ in 0..100 {
+    for _ in 0..300 {
         if cond() {
             return true;
         }
