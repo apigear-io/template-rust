@@ -61,6 +61,8 @@ The adapters speak the agreed ApiGear MQTT (MQTT 5) wire scheme, so a Rust clien
 
 Operation replies are correlated using the request's MQTT 5 `CorrelationData`, which the service echoes back. Because property notifications are retained, a client that connects later still receives the current value (the MQTT scheme has no separate state topic).
 
+See **[ApiGear over MQTT](/docs/protocols/mqtt/mapping)** for the topic structure and payload format.
+
 ## MQTT client adapter
 
 The file `📜hello_client.rs` contains `HelloMqttClient`, the MQTT client version of the `Hello` interface. It implements `HelloTrait`, so you use it like a local implementation. It takes a shared [`rumqttc`](https://docs.rs/rumqttc) v5 `AsyncClient` and a unique `client_id` (used to route RPC replies), subscribes to the interface's topics, and decodes incoming messages.

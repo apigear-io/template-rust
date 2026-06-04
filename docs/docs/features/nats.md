@@ -61,6 +61,8 @@ The adapters speak the agreed ApiGear NATS wire scheme, so a Rust client or serv
 | init request | `io.world.Hello.init` (payload = client id) | client → service |
 | init reply | `io.world.Hello.init.resp.<clientId>` (current state) | service → client |
 
+See **[ApiGear over NATS](/docs/protocols/nats/mapping)** for the subject structure and payload format.
+
 ## NATS client adapter
 
 The file `📜hello_client.rs` contains `HelloNatsClient`, the NATS client version of the `Hello` interface. It implements `HelloTrait`, so you use it like a local implementation. It takes a connected [`async-nats`](https://docs.rs/async-nats) client and subscribes to the interface's subjects.
