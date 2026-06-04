@@ -1,4 +1,8 @@
 ---
+sidebar_label: "API"
+title: "Rust Template API Generation - ApiGear"
+description: "How the ApiGear Rust template generates API code from ObjectAPI definitions — interfaces, structs, and enums for your Rust SDK."
+keywords: [rust, apigear, objectapi, api generation, interfaces, structs, enums]
 sidebar_position: 1
 ---
 

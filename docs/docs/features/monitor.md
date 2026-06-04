@@ -1,4 +1,8 @@
 ---
+sidebar_label: "Monitor"
+title: "Rust Template Monitoring - ApiGear"
+description: "Traffic monitoring in the ApiGear Rust template: trace interface properties, methods, and signals from your Rust SDK in ApiGear Studio."
+keywords: [rust, apigear, objectapi, monitoring, tracing, apigear studio]
 sidebar_position: 4
 ---
 

@@ -1,4 +1,8 @@
 ---
+sidebar_label: "Introduction"
+title: "Rust SDK Generator - ApiGear Template"
+description: "Generate Rust SDKs from ObjectAPI definitions with ApiGear: trait-based interfaces, async Tokio clients, OLink, NATS, and MQTT networking, and built-in monitoring."
+keywords: [rust, api code generator, sdk generator, apigear, objectapi, tokio, olink, nats]
 sidebar_position: 1
 ---
 

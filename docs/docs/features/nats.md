@@ -1,4 +1,8 @@
 ---
+sidebar_label: "NATS"
+title: "Rust Template NATS Networking - ApiGear"
+description: "NATS networking in the ApiGear Rust template: connect Rust interface clients and services over the NATS messaging system."
+keywords: [rust, apigear, objectapi, nats, networking, messaging]
 sidebar_position: 6
 ---
 

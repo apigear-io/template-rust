@@ -1,4 +1,8 @@
 ---
+sidebar_label: "MQTT"
+title: "Rust Template MQTT Networking - ApiGear"
+description: "MQTT networking in the ApiGear Rust template: expose and consume Rust interfaces over MQTT using generated client and server adapters."
+keywords: [rust, apigear, objectapi, mqtt, networking, messaging]
 sidebar_position: 5
 ---
 

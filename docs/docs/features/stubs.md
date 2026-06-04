@@ -1,4 +1,8 @@
 ---
+sidebar_label: "Stubs"
+title: "Rust Template Stub Implementations - ApiGear"
+description: "Generated stub implementations in the ApiGear Rust template: ready-to-extend default classes for your interfaces, ideal for prototyping and testing Rust services."
+keywords: [rust, apigear, objectapi, stubs, default implementation, prototyping]
 sidebar_position: 2
 ---
 

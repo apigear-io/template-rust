@@ -1,11 +1,15 @@
 ---
+sidebar_label: "OLink"
+title: "Rust Template OLink Networking - ApiGear"
+description: "OLink (ObjectLink) networking in the ApiGear Rust template: connect Rust interface clients and services over the ObjectLink protocol with built-in monitoring."
+keywords: [rust, apigear, objectapi, olink, objectlink, networking]
 sidebar_position: 3
 ---
 
 import CodeBlock from '@theme/CodeBlock';
 import helloWorldModuleComponent from '!!raw-loader!./data/helloworld.module.yaml';
 
-# Olink
+# OLink
 
 This feature provides a _client_ and a _service_ adapter for your interfaces over the [ObjectLink](/docs/protocols/objectlink/intro) protocol. It lets you connect applications built with the same or different technologies — check all of our [templates](/docs/sdk/intro).
 
