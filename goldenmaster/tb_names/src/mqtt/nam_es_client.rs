@@ -5,15 +5,18 @@ use crate::api::nam_es::NamEsPublisher;
 use crate::api::nam_es::NamEsTrait;
 use crate::core_types::nam_es_data::NamEsData;
 use parking_lot::RwLock;
-use rumqttc::AsyncClient;
+use rumqttc::v5::mqttbytes::QoS;
+use rumqttc::v5::AsyncClient;
 use serde_json::{json, Value};
 use std::sync::Arc;
 
-const TOPIC_PREFIX: &str = "apigear/tb.names/Nam_Es";
+const TOPIC_PREFIX: &str = "tb.names/Nam_Es";
 
 /// MQTT client adapter for NamEs.
-/// Implements the interface trait by forwarding operations over MQTT
-/// and caching property values locally.
+/// Implements the interface trait using the agreed ApiGear (MQTT 5) wire scheme:
+/// operations are published on `rpc/<op>` with an MQTT 5 `ResponseTopic` +
+/// `CorrelationData` and the reply is awaited; property writes go to `set/<prop>`;
+/// retained `prop/<prop>` notifications and `sig/<sig>` signals update local state.
 pub struct NamEsMqttClient {
     data: RwLock<NamEsData>,
     client: Arc<AsyncClient>,
@@ -21,55 +24,42 @@ pub struct NamEsMqttClient {
 }
 
 impl NamEsMqttClient {
-    /// Create a new MQTT client adapter with the given MQTT async client.
-    pub fn new(client: Arc<AsyncClient>) -> Self {
+    /// Create a new MQTT client adapter. `client_id` must be unique per client and
+    /// is used to route RPC replies (`rpc/<op>/<client_id>/result`).
+    pub fn new(
+        client: Arc<AsyncClient>,
+        _client_id: impl Into<String>,
+    ) -> Self {
         Self { data: RwLock::new(NamEsData::default()), client, publisher: NamEsPublisher::default() }
     }
 
     /// Subscribe to all relevant MQTT topics for this interface.
-    pub async fn subscribe_topics(&self) -> Result<(), rumqttc::ClientError> {
-        self.client.subscribe(format!("{}/prop/Switch", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/prop/SOME_PROPERTY", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/prop/Some_Poperty2", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/prop/enum_property", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/sig/SOME_SIGNAL", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/sig/Some_Signal2", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/op/SOME_FUNCTION/resp", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/op/Some_Function2/resp", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/state", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
+    pub async fn subscribe_topics(&self) -> Result<(), rumqttc::v5::ClientError> {
+        self.client.subscribe(format!("{}/prop/Switch", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/prop/SOME_PROPERTY", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/prop/Some_Poperty2", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/prop/enum_property", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/sig/SOME_SIGNAL", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/sig/Some_Signal2", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
         Ok(())
     }
 
     /// Handle an incoming MQTT message by dispatching to the appropriate handler.
+    /// `correlation_data` (from the MQTT 5 publish properties) routes RPC replies.
     pub fn handle_message(
         &self,
         topic: &str,
         payload: &[u8],
+        _correlation_data: Option<&[u8]>,
     ) {
         let suffix = topic.strip_prefix(&format!("{}/", TOPIC_PREFIX)).unwrap_or("");
         let value: Value = serde_json::from_slice(payload).unwrap_or_default();
-
-        if suffix == "state" {
-            self.handle_state(value);
-            return;
-        }
-
         if let Some(prop_name) = suffix.strip_prefix("prop/") {
             self.handle_property_change(prop_name, value);
             return;
         }
-
         if let Some(sig_name) = suffix.strip_prefix("sig/") {
             self.handle_signal(sig_name, value);
-        }
-    }
-
-    fn handle_state(
-        &self,
-        value: Value,
-    ) {
-        if let Ok(data) = serde_json::from_value::<NamEsData>(value) {
-            *self.data.write() = data;
         }
     }
 
@@ -140,11 +130,12 @@ impl NamEsTrait for NamEsMqttClient {
     ) -> ApiFuture<'_, Result<(), ApiError>> {
         let args = json!([some_param]);
         let client = self.client.clone();
-        let topic = format!("{}/op/SOME_FUNCTION/req", TOPIC_PREFIX);
+        let request_topic = format!("{}/rpc/SOME_FUNCTION", TOPIC_PREFIX);
+        // Void operation: fire-and-forget, no reply is requested or awaited.
         Box::pin(async move {
             let payload = serde_json::to_vec(&args).unwrap_or_default();
-            client.publish(&topic, rumqttc::QoS::AtLeastOnce, false, payload).await.map_err(|e| ApiError::OperationFailed(e.to_string()))?;
-            Ok(Default::default())
+            client.publish(request_topic, QoS::AtLeastOnce, false, payload).await.map_err(|e| ApiError::OperationFailed(e.to_string()))?;
+            Ok(())
         })
     }
 
@@ -154,11 +145,12 @@ impl NamEsTrait for NamEsMqttClient {
     ) -> ApiFuture<'_, Result<(), ApiError>> {
         let args = json!([some_param]);
         let client = self.client.clone();
-        let topic = format!("{}/op/Some_Function2/req", TOPIC_PREFIX);
+        let request_topic = format!("{}/rpc/Some_Function2", TOPIC_PREFIX);
+        // Void operation: fire-and-forget, no reply is requested or awaited.
         Box::pin(async move {
             let payload = serde_json::to_vec(&args).unwrap_or_default();
-            client.publish(&topic, rumqttc::QoS::AtLeastOnce, false, payload).await.map_err(|e| ApiError::OperationFailed(e.to_string()))?;
-            Ok(Default::default())
+            client.publish(request_topic, QoS::AtLeastOnce, false, payload).await.map_err(|e| ApiError::OperationFailed(e.to_string()))?;
+            Ok(())
         })
     }
 
@@ -170,10 +162,10 @@ impl NamEsTrait for NamEsMqttClient {
         switch: bool,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/Switch", TOPIC_PREFIX);
+        let topic = format!("{}/set/Switch", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(switch)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 
@@ -185,10 +177,10 @@ impl NamEsTrait for NamEsMqttClient {
         some_property: i32,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/SOME_PROPERTY", TOPIC_PREFIX);
+        let topic = format!("{}/set/SOME_PROPERTY", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(some_property)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 
@@ -200,10 +192,10 @@ impl NamEsTrait for NamEsMqttClient {
         some_poperty2: i32,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/Some_Poperty2", TOPIC_PREFIX);
+        let topic = format!("{}/set/Some_Poperty2", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(some_poperty2)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 
@@ -215,10 +207,10 @@ impl NamEsTrait for NamEsMqttClient {
         enum_property: Enum_With_Under_scoresEnum,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/enum_property", TOPIC_PREFIX);
+        let topic = format!("{}/set/enum_property", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(enum_property)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 

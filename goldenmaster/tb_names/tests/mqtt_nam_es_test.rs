@@ -19,16 +19,16 @@ async fn test_mqtt_nam_es_roundtrip() {
     let service = Arc::new(NamEsMqttService::new(impl_.clone() as Arc<dyn NamEsTrait>, service_client));
     service.subscribe_topics().await.expect("service subscribe");
     let service_drive = service.clone();
-    let _service_handle = mqtt_common::drive(service_loop, move |topic, payload| service_drive.handle_message(topic, payload));
+    let _service_handle = mqtt_common::drive(service_loop, move |topic, payload, response_topic, correlation_data| service_drive.handle_message(topic, payload, response_topic, correlation_data));
 
     let (client_client, client_loop) = mqtt_common::connect("cli-tb_names-nam_es");
-    let client = Arc::new(NamEsMqttClient::new(client_client));
+    let client = Arc::new(NamEsMqttClient::new(client_client, "cli-tb_names-nam_es"));
     client.subscribe_topics().await.expect("client subscribe");
     let client_drive = client.clone();
-    let _client_handle = mqtt_common::drive(client_loop, move |topic, payload| client_drive.handle_message(topic, payload));
+    let _client_handle = mqtt_common::drive(client_loop, move |topic, payload, _response_topic, correlation_data| client_drive.handle_message(topic, payload, correlation_data));
 
     mqtt_common::settle().await;
-    let _ = service.publish_state().await;
+    let _ = service.publish_current_state().await;
 
     // Operations: published as MQTT requests and delivered to the broker.
     assert!(client.some_function(Default::default()).await.is_ok());
