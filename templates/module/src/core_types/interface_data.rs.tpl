@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 {{- if .Interface.Properties }}
 pub struct {{Camel .Interface.Name}}Data {
 {{- range .Interface.Properties }}
+    #[serde(rename = "{{.Name}}")]
     pub {{snake .Name}}: {{rsType "" .}},
 {{- end }}
 }

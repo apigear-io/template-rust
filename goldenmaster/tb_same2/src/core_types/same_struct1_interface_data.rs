@@ -5,5 +5,6 @@ use serde::{Deserialize, Serialize};
 /// Bundles all properties of SameStruct1Interface for state synchronization.
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SameStruct1InterfaceData {
+    #[serde(rename = "prop1")]
     pub prop1: Struct1,
 }
