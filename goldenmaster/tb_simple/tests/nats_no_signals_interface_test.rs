@@ -14,7 +14,6 @@ async fn test_nats_no_signals_interface_roundtrip() {
     let impl_ = Arc::new(NoSignalsInterface::default());
     let service = Arc::new(NoSignalsInterfaceNatsService::new(impl_.clone() as Arc<dyn NoSignalsInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(NoSignalsInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

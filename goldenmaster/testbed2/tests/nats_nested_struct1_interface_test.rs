@@ -16,7 +16,6 @@ async fn test_nats_nested_struct1_interface_roundtrip() {
     let impl_ = Arc::new(NestedStruct1Interface::default());
     let service = Arc::new(NestedStruct1InterfaceNatsService::new(impl_.clone() as Arc<dyn NestedStruct1InterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(NestedStruct1InterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

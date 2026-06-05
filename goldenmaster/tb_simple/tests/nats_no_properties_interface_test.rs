@@ -14,7 +14,6 @@ async fn test_nats_no_properties_interface_roundtrip() {
     let impl_ = Arc::new(NoPropertiesInterface::default());
     let service = Arc::new(NoPropertiesInterfaceNatsService::new(impl_.clone() as Arc<dyn NoPropertiesInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(NoPropertiesInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

@@ -16,7 +16,6 @@ async fn test_nats_nam_es_roundtrip() {
     let impl_ = Arc::new(NamEs::default());
     let service = Arc::new(NamEsNatsService::new(impl_.clone() as Arc<dyn NamEsTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(NamEsNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

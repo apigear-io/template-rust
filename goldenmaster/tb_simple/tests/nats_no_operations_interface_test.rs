@@ -14,7 +14,6 @@ async fn test_nats_no_operations_interface_roundtrip() {
     let impl_ = Arc::new(NoOperationsInterface::default());
     let service = Arc::new(NoOperationsInterfaceNatsService::new(impl_.clone() as Arc<dyn NoOperationsInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(NoOperationsInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

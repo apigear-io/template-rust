@@ -29,7 +29,6 @@ async fn test_nats_{{snake .Interface.Name}}_roundtrip() {
     let impl_ = Arc::new({{Camel .Interface.Name}}::default());
     let service = Arc::new({{Camel .Interface.Name}}NatsService::new(impl_.clone() as Arc<dyn {{Camel .Interface.Name}}Trait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new({{Camel .Interface.Name}}NatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();
