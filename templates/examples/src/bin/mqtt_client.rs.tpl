@@ -6,7 +6,8 @@
 //!     cargo run --bin mqtt_client
 //! Override the broker port with the MQTT_PORT environment variable (default 1883).
 #![allow(unused_imports, unused_variables)]
-use rumqttc::{AsyncClient, Event, MqttOptions, Packet};
+use rumqttc::v5::mqttbytes::v5::Packet;
+use rumqttc::v5::{AsyncClient, Event, MqttOptions};
 use std::sync::Arc;
 use std::time::Duration;
 use {{snake $module.Name}}::api::{{snake $interface.Name}}::{{Camel $interface.Name}}Trait;
@@ -15,19 +16,24 @@ use {{snake $module.Name}}::mqtt::{{snake $interface.Name}}_client::{{Camel $int
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {
     let port: u16 = std::env::var("MQTT_PORT").ok().and_then(|s| s.parse().ok()).unwrap_or(1883);
-    let mut opts = MqttOptions::new("{{snake $module.Name}}-{{snake $interface.Name}}-client", "127.0.0.1", port);
+    let client_id = "{{snake $module.Name}}-{{snake $interface.Name}}-client";
+    let mut opts = MqttOptions::new(client_id, "127.0.0.1", port);
     opts.set_keep_alive(Duration::from_secs(5));
     let (mqtt, mut eventloop) = AsyncClient::new(opts, 64);
 
-    let client = Arc::new({{Camel $interface.Name}}MqttClient::new(Arc::new(mqtt)));
+    let client = Arc::new({{Camel $interface.Name}}MqttClient::new(Arc::new(mqtt), client_id));
     client.subscribe_topics().await.expect("subscribe to topics");
 
-    // Drive the MQTT event loop so the client receives state, property changes and signals.
+    // Drive the MQTT event loop so the client receives RPC replies, property changes and signals.
     let pump = client.clone();
     tokio::spawn(async move {
         loop {
             match eventloop.poll().await {
-                Ok(Event::Incoming(Packet::Publish(p))) => pump.handle_message(&p.topic, &p.payload),
+                Ok(Event::Incoming(Packet::Publish(p))) => {
+                    let topic = String::from_utf8_lossy(&p.topic);
+                    let correlation_data = p.properties.as_ref().and_then(|pr| pr.correlation_data.as_deref());
+                    pump.handle_message(&topic, &p.payload, correlation_data);
+                }
                 Ok(_) => {}
                 Err(_) => tokio::time::sleep(Duration::from_millis(200)).await,
             }
@@ -40,8 +46,8 @@ async fn main() {
 {{- range $i, $e := $interface.Operations }}
 {{- if not $i }}
 
-    // Invoke the first operation (published as an MQTT request).
-    let _ = client.{{snake .Name }}(
+    // Invoke the first operation (published as an MQTT request; reply awaited).
+    let result = client.{{snake .Name }}(
 {{- range $j, $p := .Params }}
 {{-   if $j }}, {{ end -}}
 {{-   $isComplex := or ( and (eq false .IsPrimitive) (eq false .IsEnum) ) (eq true .IsArray) (eq "string" .Type) -}}
@@ -49,7 +55,7 @@ async fn main() {
 Default::default()
 {{- end -}}
 ).await;
-    println!("[{{snake $interface.Name}}-mqtt-client] called {{snake .Name}}()");
+    println!("[{{snake $interface.Name}}-mqtt-client] {{snake .Name}}() -> {:?}", result);
 {{- end }}
 {{- end }}
 {{- if len $interface.Properties }}

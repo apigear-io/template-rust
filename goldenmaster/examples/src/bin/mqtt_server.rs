@@ -5,7 +5,8 @@
 //!     cargo run --bin mqtt_server
 //!     cargo run --bin mqtt_client
 //! Override the broker port with the MQTT_PORT environment variable (default 1883).
-use rumqttc::{AsyncClient, Event, MqttOptions, Packet};
+use rumqttc::v5::mqttbytes::v5::Packet;
+use rumqttc::v5::{AsyncClient, Event, MqttOptions};
 use std::sync::Arc;
 use std::time::Duration;
 use testbed2::api::many_param_interface::ManyParamInterfaceTrait;
@@ -27,9 +28,17 @@ async fn main() {
     loop {
         match eventloop.poll().await {
             Ok(Event::Incoming(Packet::ConnAck(_))) => {
-                let _ = service.publish_state().await;
+                // Re-publish retained property state for clients that (re)connect.
+                let _ = service.publish_current_state().await;
             }
-            Ok(Event::Incoming(Packet::Publish(p))) => service.handle_message(&p.topic, &p.payload),
+            Ok(Event::Incoming(Packet::Publish(p))) => {
+                let topic = String::from_utf8_lossy(&p.topic);
+                let (response_topic, correlation_data) = match &p.properties {
+                    Some(pr) => (pr.response_topic.as_deref(), pr.correlation_data.as_deref()),
+                    None => (None, None),
+                };
+                service.handle_message(&topic, &p.payload, response_topic, correlation_data);
+            }
             Ok(_) => {}
             Err(e) => {
                 eprintln!("[many_param_interface-mqtt-service] connection error: {e}");

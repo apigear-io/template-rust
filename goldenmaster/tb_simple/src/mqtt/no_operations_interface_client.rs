@@ -2,15 +2,18 @@ use crate::api::no_operations_interface::NoOperationsInterfacePublisher;
 use crate::api::no_operations_interface::NoOperationsInterfaceTrait;
 use crate::core_types::no_operations_interface_data::NoOperationsInterfaceData;
 use parking_lot::RwLock;
-use rumqttc::AsyncClient;
+use rumqttc::v5::mqttbytes::QoS;
+use rumqttc::v5::AsyncClient;
 use serde_json::{json, Value};
 use std::sync::Arc;
 
-const TOPIC_PREFIX: &str = "apigear/tb.simple/NoOperationsInterface";
+const TOPIC_PREFIX: &str = "tb.simple/NoOperationsInterface";
 
 /// MQTT client adapter for NoOperationsInterface.
-/// Implements the interface trait by forwarding operations over MQTT
-/// and caching property values locally.
+/// Implements the interface trait using the agreed ApiGear (MQTT 5) wire scheme:
+/// operations are published on `rpc/<op>` with an MQTT 5 `ResponseTopic` +
+/// `CorrelationData` and the reply is awaited; property writes go to `set/<prop>`;
+/// retained `prop/<prop>` notifications and `sig/<sig>` signals update local state.
 pub struct NoOperationsInterfaceMqttClient {
     data: RwLock<NoOperationsInterfaceData>,
     client: Arc<AsyncClient>,
@@ -18,51 +21,40 @@ pub struct NoOperationsInterfaceMqttClient {
 }
 
 impl NoOperationsInterfaceMqttClient {
-    /// Create a new MQTT client adapter with the given MQTT async client.
-    pub fn new(client: Arc<AsyncClient>) -> Self {
+    /// Create a new MQTT client adapter. `client_id` must be unique per client and
+    /// is used to route RPC replies (`rpc/<op>/<client_id>/result`).
+    pub fn new(
+        client: Arc<AsyncClient>,
+        _client_id: impl Into<String>,
+    ) -> Self {
         Self { data: RwLock::new(NoOperationsInterfaceData::default()), client, publisher: NoOperationsInterfacePublisher::default() }
     }
 
     /// Subscribe to all relevant MQTT topics for this interface.
-    pub async fn subscribe_topics(&self) -> Result<(), rumqttc::ClientError> {
-        self.client.subscribe(format!("{}/prop/propBool", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/prop/propInt", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/sig/sigVoid", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/sig/sigBool", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
-        self.client.subscribe(format!("{}/state", TOPIC_PREFIX), rumqttc::QoS::AtLeastOnce).await?;
+    pub async fn subscribe_topics(&self) -> Result<(), rumqttc::v5::ClientError> {
+        self.client.subscribe(format!("{}/prop/propBool", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/prop/propInt", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/sig/sigVoid", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
+        self.client.subscribe(format!("{}/sig/sigBool", TOPIC_PREFIX), QoS::AtLeastOnce).await?;
         Ok(())
     }
 
     /// Handle an incoming MQTT message by dispatching to the appropriate handler.
+    /// `correlation_data` (from the MQTT 5 publish properties) routes RPC replies.
     pub fn handle_message(
         &self,
         topic: &str,
         payload: &[u8],
+        _correlation_data: Option<&[u8]>,
     ) {
         let suffix = topic.strip_prefix(&format!("{}/", TOPIC_PREFIX)).unwrap_or("");
         let value: Value = serde_json::from_slice(payload).unwrap_or_default();
-
-        if suffix == "state" {
-            self.handle_state(value);
-            return;
-        }
-
         if let Some(prop_name) = suffix.strip_prefix("prop/") {
             self.handle_property_change(prop_name, value);
             return;
         }
-
         if let Some(sig_name) = suffix.strip_prefix("sig/") {
             self.handle_signal(sig_name, value);
-        }
-    }
-
-    fn handle_state(
-        &self,
-        value: Value,
-    ) {
-        if let Ok(data) = serde_json::from_value::<NoOperationsInterfaceData>(value) {
-            *self.data.write() = data;
         }
     }
 
@@ -121,10 +113,10 @@ impl NoOperationsInterfaceTrait for NoOperationsInterfaceMqttClient {
         prop_bool: bool,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/propBool", TOPIC_PREFIX);
+        let topic = format!("{}/set/propBool", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(prop_bool)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 
@@ -136,10 +128,10 @@ impl NoOperationsInterfaceTrait for NoOperationsInterfaceMqttClient {
         prop_int: i32,
     ) {
         let client = self.client.clone();
-        let topic = format!("{}/prop/propInt", TOPIC_PREFIX);
+        let topic = format!("{}/set/propInt", TOPIC_PREFIX);
         let payload = serde_json::to_vec(&json!(prop_int)).unwrap_or_default();
         tokio::spawn(async move {
-            let _ = client.publish(&topic, rumqttc::QoS::AtLeastOnce, true, payload).await;
+            let _ = client.publish(&topic, QoS::AtLeastOnce, false, payload).await;
         });
     }
 
