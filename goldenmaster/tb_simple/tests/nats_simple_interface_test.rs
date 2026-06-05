@@ -14,7 +14,6 @@ async fn test_nats_simple_interface_roundtrip() {
     let impl_ = Arc::new(SimpleInterface::default());
     let service = Arc::new(SimpleInterfaceNatsService::new(impl_.clone() as Arc<dyn SimpleInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(SimpleInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

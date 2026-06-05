@@ -16,7 +16,6 @@ async fn test_nats_many_param_interface_roundtrip() {
     let impl_ = Arc::new(ManyParamInterface::default());
     let service = Arc::new(ManyParamInterfaceNatsService::new(impl_.clone() as Arc<dyn ManyParamInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(ManyParamInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

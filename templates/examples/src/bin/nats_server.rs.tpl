@@ -23,9 +23,9 @@ async fn main() {
     let _subscription = service.subscribe();
     println!("[{{snake $interface.Name}}-nats-service] serving on {url} (Ctrl-C to stop)");
 
-    // Re-publish the state periodically so late-joining clients still receive it.
+    // subscribe() announced `service.available` and answers the `init` handshake,
+    // so late-joining clients fetch the current state themselves. Stay alive.
     loop {
-        let _ = service.publish_state().await;
-        tokio::time::sleep(Duration::from_millis(500)).await;
+        tokio::time::sleep(Duration::from_secs(3600)).await;
     }
 }

@@ -16,7 +16,6 @@ async fn test_nats_enum_interface_roundtrip() {
     let impl_ = Arc::new(EnumInterface::default());
     let service = Arc::new(EnumInterfaceNatsService::new(impl_.clone() as Arc<dyn EnumInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(EnumInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

@@ -16,7 +16,6 @@ async fn test_nats_same_enum2_interface_roundtrip() {
     let impl_ = Arc::new(SameEnum2Interface::default());
     let service = Arc::new(SameEnum2InterfaceNatsService::new(impl_.clone() as Arc<dyn SameEnum2InterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(SameEnum2InterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

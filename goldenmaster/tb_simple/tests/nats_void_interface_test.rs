@@ -14,7 +14,6 @@ async fn test_nats_void_interface_roundtrip() {
     let impl_ = Arc::new(VoidInterface::default());
     let service = Arc::new(VoidInterfaceNatsService::new(impl_.clone() as Arc<dyn VoidInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(VoidInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();

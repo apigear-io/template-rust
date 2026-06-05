@@ -16,7 +16,6 @@ async fn test_nats_struct_interface_roundtrip() {
     let impl_ = Arc::new(StructInterface::default());
     let service = Arc::new(StructInterfaceNatsService::new(impl_.clone() as Arc<dyn StructInterfaceTrait>, nats_common::connect().await));
     let _service_sub = service.subscribe();
-    let _ = service.publish_state().await;
 
     let client = Arc::new(StructInterfaceNatsClient::new(nats_common::connect().await));
     let _client_sub = client.subscribe();
